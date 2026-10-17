@@ -17,8 +17,8 @@ jobs:
           node-version: 22
       - run: npm run check
 
-  # the code reads the way the project writes it (oxfmt), and has none of
-  # the mistakes oxlint knows
+  # the code has none of the mistakes oxlint knows (the examples are
+  # linted by hand: pnpm lint)
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +31,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
+      - run: pnpm lint --ignore-pattern 'examples/**'
 
   # the Rust player, against the same conformance data
   rust:
