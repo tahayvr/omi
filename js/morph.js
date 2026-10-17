@@ -73,13 +73,18 @@ function morphTo(id) {
   syncMorphUI();
 }
 
-// how long to stay on a mode: long enough to play its loop once, and the
-// morph into it, but no hurry and no dawdling
-const dwell = (id) =>
-  (Math.min(4.8, Math.max(2.4, omi.loopSeconds(id))) +
-    omi.pack.morph.duration +
-    omi.pack.morph.stagger) /
-  Math.max(0.25, S.speed || 1);
+/* How long a tour stays on a mode, in seconds: the morph into it, then
+   whole loops of it, at least 2.4 s of them. A mode's loops start when its
+   morph lands, so moving on after whole loops never cuts one short. */
+function showFor(player, id) {
+  const loop = player.loopSeconds(id),
+    loops = loop > 0 ? loop * Math.ceil(2.4 / loop - 1e-9) : 2.4;
+  return (
+    (player.pack.morph.duration + player.pack.morph.stagger + loops) /
+    Math.max(0.25, S.speed || 1)
+  );
+}
+const dwell = (id) => showFor(omi, id);
 function nextMode() {
   const ids = modeIds();
   morphTo(ids[(ids.indexOf(omi.mode) + 1) % ids.length]);

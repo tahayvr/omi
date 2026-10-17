@@ -171,14 +171,6 @@
   gap: 12px;
   min-width: 0;
 }
-.hname {
-  margin: 0;
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.8;
-  text-align: center;
-}
 .hero-art {
   width: 100%;
   max-width: 480px;

@@ -2,15 +2,26 @@
    The hero morphs through a few featured modes, the anatomy shows what Omi is
    made of, the Modes section (morph.js) plays every mode, and the ASCII section
    shows Omi as text. Every mode, to look at and export, is in the jig. */
+// the hero's tour: states and feelings, mixed so no two in a row look alike
 const FEATURED = [
   "idle",
-  "wink",
   "thinking",
+  "love",
+  "download",
+  "wink",
+  "working",
+  "laughing",
   "typing",
+  "confused",
   "listening",
-  "party",
-  "sleeping",
   "sudo",
+  "success",
+  "sleeping",
+  "angry",
+  "warning",
+  "peek",
+  "party",
+  "tiling",
   "mind-blown",
 ];
 let heroId = "idle",
@@ -24,18 +35,20 @@ let asciiKey = "";
 function renderSite() {
   // hero: starts as the plain logo and morphs into each featured mode
   const hd = byIdD(heroId) || DESIGNS[0];
-  if (!heroOmi)
+  if (!heroOmi) {
     heroOmi = mountOmi($("heroCanvas"), {
       margin: 36,
       bleed: 124,
       mode: "logo",
     });
-  else syncOmi(heroOmi);
+    // the tour starts once there's a hero to time it by
+    if (!RM.matches)
+      heroTimer = setTimeout(heroNext, showFor(heroOmi, heroId) * 1000);
+  } else syncOmi(heroOmi);
   const fg = eff(hd.id).fg;
   heroOmi.color = fg === S.fg ? null : fg; // null: the page's accent color
   if (heroOmi.mode !== hd.id)
     heroOmi.set(hd.id, { instant: pagePlayerOpts().instant });
-  $("heroName").textContent = hd.name; // the canvas's own label is the player's
   // anatomy: the three in one frame, sized to fit them all, so the logo is
   // the same size in each
   const logo = { id: "logo", name: "Logo", face: [], mood: "" },
@@ -101,17 +114,18 @@ function setHero(id, manual) {
   heroId = id;
   if (manual) {
     heroAuto = false;
-    clearInterval(heroTimer);
+    clearTimeout(heroTimer);
   }
   renderSite();
   applySpeed();
 }
-if (!RM.matches)
-  heroTimer = setInterval(() => {
-    if (!heroAuto) return;
-    const i = FEATURED.indexOf(heroId);
-    setHero(FEATURED[(i + 1) % FEATURED.length], false);
-  }, 3600);
+// the next featured mode once this one has morphed in and played its loops
+function heroNext() {
+  if (!heroAuto) return;
+  const i = FEATURED.indexOf(heroId);
+  setHero(FEATURED[(i + 1) % FEATURED.length], false);
+  heroTimer = setTimeout(heroNext, showFor(heroOmi, heroId) * 1000);
+}
 
 function render() {
   paintStage();
