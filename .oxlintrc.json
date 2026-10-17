@@ -25,6 +25,12 @@
       // `if (x) (a = 1), (b = 2);` is how these two set a few things at once
       "files": ["player/omi.js", "examples/terminal/omi-tty.js"],
       "rules": { "no-unused-expressions": "off" }
+    },
+    {
+      // a terminal speaks in escape codes: reading its keys, mouse and
+      // answers means matching control characters
+      "files": ["examples/terminal/omi-tty.js"],
+      "rules": { "no-control-regex": "off" }
     }
   ]
 }

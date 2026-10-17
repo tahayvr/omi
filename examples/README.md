@@ -4,18 +4,19 @@ Each example uses only the published pack in [`../pack`](../pack): `omi.json`
 (the data) and `omi.js` (the reference player). Copy those two files into your
 project and start from the example closest to your environment.
 
-| Example               | Environment                        | How it draws                                                                                                                            |
-| --------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [omarchy](omarchy/)   | Omarchy shell plugins (Quickshell) | The player runs in QML's JavaScript engine; `Rectangle`s snapped to device pixels draw its rects, in the theme's accent                 |
-| [web](web/index.html) | Web pages, Electron                | The player draws on a `<canvas>` by itself                                                                                              |
-| [qml](qml/Omi.qml)    | Qt Quick apps (Qt 6.4+)            | The same item as the Omarchy one (Rectangles snapped to device pixels, `even`, `look`, `react()`), reading the pack with XMLHttpRequest |
+| Example                         | Environment                        | How it draws                                                                                                                            |
+| ------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [omarchy](omarchy/)             | Omarchy shell plugins (Quickshell) | The player runs in QML's JavaScript engine; `Rectangle`s snapped to device pixels draw its rects, in the theme's accent                 |
+| [web](web/index.html)           | Web pages, Electron                | The player draws on a `<canvas>` by itself                                                                                              |
+| [qml](qml/Omi.qml)              | Qt Quick apps (Qt 6.4+)            | The same item as the Omarchy one (Rectangles snapped to device pixels, `even`, `look`, `react()`), reading the pack with XMLHttpRequest |
+| [terminal](terminal/omi-tty.js) | Any terminal (Node)                | Rects become half-block characters, in the Omarchy theme's accent or the terminal's own colors                                          |
 
 The web and Qt examples are small showcases: Omi enters as the plain logo
 and comes to life, its eyes follow the pointer, a click or Space plays a
 reaction, ← → step through the modes, and the swatches show it takes any one
 color. The web page follows the system's light or dark setting and, with
-reduced motion on, holds still.
-| [terminal](terminal/omi-tty.js) | Any terminal (Node) | Rects become half-block characters, in the Omarchy theme's accent or the terminal's own colors |
+reduced motion on, holds still. The terminal one is a showcase too, and
+runs a command with Omi beside it.
 
 ## The pattern
 
@@ -54,16 +55,31 @@ state instead of calling `set` yourself: see the
   pack in your resources instead. Inside the Omarchy shell, use the Omarchy
   example: it reads the pack with Quickshell's `FileView`, which needs no
   environment variable.
-- **Terminal:** `node examples/terminal/omi-tty.js` tours every mode;
-  `node examples/terminal/omi-tty.js idle thinking` cycles the modes you name;
-  `--once warning` prints one still; `--follow` shows the shared Omi (start
-  `node service/omi-service.js` first, and change it with
-  `node service/omictl.js set thinking`). It sizes Omi to a multiple of 22
-  pixels so it stays crisp, refits when the window is resized, draws empty
-  pixels in the terminal's own background (no box), and only redraws rows
-  that change. `--look 0,-1` turns the eyes, `--fg` / `--bg` pick colors.
-  Whole-body motion is off, since at terminal sizes it stutters a pixel at a
-  time; `--bounce` turns it on.
+- **Terminal:** `node examples/terminal/omi-tty.js` shows Omi live: it
+  tours every mode, its eyes follow the mouse, a click or Space plays a
+  reaction, ← → step through the modes (↑ ↓ a group at a time), `c` changes
+  the color, `b` turns on whole-body motion, `t` stops or starts the tour,
+  and left alone off the tour it falls asleep.
+  `node examples/terminal/omi-tty.js idle thinking` keeps to the modes you
+  name.
+  - `node examples/terminal/omi-tty.js -- npm test` runs a command with Omi
+    beside it, thinking while it runs (`--busy working` picks another mode)
+    with the command's last lines next to it, then happy or sad. The block
+    stays in the scrollback, a failed command's whole output is printed
+    under it, and the exit code is the command's.
+  - `--once warning` prints one still, and `--say "Hello"` puts text beside
+    it: a greeting for a shell's start.
+  - `--follow` shows the shared Omi (start `node service/omi-service.js`
+    first, and change it with `node service/omictl.js set thinking`).
+
+  It sizes Omi to a multiple of 22 pixels so it stays crisp, and refits when
+  the window is resized. It draws in the Omarchy theme's accent, and
+  recolors when the theme changes; outside Omarchy, in the terminal's own
+  colors, which it asks the terminal for so faded pixels blend into the
+  real background. Empty pixels show the terminal's background (no box),
+  and only rows that change are redrawn. `--look 0,-1` turns the eyes,
+  `--fg` / `--bg` pick colors. Whole-body motion is off at first, since at
+  terminal sizes it stutters a pixel at a time.
 
 ## Another language
 
