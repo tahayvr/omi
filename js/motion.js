@@ -191,24 +191,29 @@ const ANIM = {
     ],
   },
   drop: {
-    // tears
+    // tears: from the cheek they fall and fade out at the bottom, then,
+    // unseen, start again at the top and fade in on the way to the cheek
     dur: 1.2,
     ease: "ease-in-out",
     keys: [
-      [0, { ty: -10, op: 0 }],
-      [0.3, { ty: 0, op: 1 }],
-      [0.75, { ty: 10, op: 1 }],
-      [1, { ty: 20, op: 0 }],
+      [0, { ty: 0, op: 1 }],
+      [0.45, { ty: 10, op: 1 }],
+      [0.7, { ty: 20, op: 0 }],
+      [0.7001, { ty: -10, op: 0 }],
+      [1, { ty: 0, op: 1 }],
     ],
   },
   shades: {
+    // on, then they fade out where they are and, unseen, go back up to
+    // drop down again
     dur: 3.6,
     ease: [0.2, 0.8, 0.2, 1],
     keys: [
-      [0, { ty: -140, op: 0 }],
-      [0.18, { ty: 0, op: 1 }],
-      [0.88, { ty: 0, op: 1 }],
-      [1, { ty: 0, op: 0 }],
+      [0, { ty: 0, op: 1 }],
+      [0.7, { ty: 0, op: 1 }],
+      [0.82, { ty: 0, op: 0 }],
+      [0.8201, { ty: -140, op: 0 }],
+      [1, { ty: 0, op: 1 }],
     ],
   },
 
@@ -559,6 +564,12 @@ function sample(a, p, r = {}) {
    begin elsewhere, so pick a point where every channel has a key (or holds
    still) and the curve is unchanged. */
 function rotate(a, by) {
+  // a loop that ends somewhere other than where it starts jumps at the end;
+  // started elsewhere, that jump would become a slide between the two ends
+  if (JSON.stringify(sample(a, 0)) !== JSON.stringify(sample(a, 1)))
+    throw new Error(
+      "START can't rotate a loop whose ends differ: key it from its rest instead",
+    );
   const wrap = (p) => +((((p - by) % 1) + 1) % 1).toFixed(6),
     qs = [...new Set([0, 1, ...a.keys.map(([p]) => wrap(p))])].sort(
       (x, y) => x - y,
@@ -584,10 +595,8 @@ Object.values(ANIM).forEach(prep);
 // where each loop starts, so its first frame is the pose it rests in
 const START = {
   peek: 0.25, // risen, looking over the ledge
-  shades: 0.18, // on
   skq: 0.4, // the full skeptical look (the eye and the brow move together)
   skb: 0.4,
-  drop: 0.3, // a tear on the cheek
   tile: 0.12, // window drawn
   dot: 0.3, // lit
   pop: 0.2, // bright

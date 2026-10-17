@@ -10,7 +10,7 @@
 //         look: [0, -1]                // the eyes look up, on top of any mode
 //     }
 //
-//     omi.react("happy")               // a short reaction, then back to `mode`
+//     omi.react("laughing")             // a short reaction, then back to `mode`
 //
 // Omi is drawn as Rectangles snapped to device pixels, so it stays crisp at
 // any scale, fractional ones included. In your app, ship omi.js and

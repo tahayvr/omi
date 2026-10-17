@@ -182,7 +182,6 @@ const DESIGNS = [
     { id: "listening", name: "Listening", face: F.listening, mood: "" },
   ]),
   ...G_("Emotions", [
-    { id: "happy", name: "Happy", face: F.happy, mood: "" },
     { id: "laughing", name: "Laughing", face: F.laughing, mood: "" },
     { id: "excited", name: "Excited", face: F.excited, mood: "" },
     { id: "love", name: "Love", ...EGG.love },

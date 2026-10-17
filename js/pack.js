@@ -27,7 +27,6 @@ const GAZE_INSIDE = [60, 60, 180, 180];
 // jokes, left out of generic pickers.
 const REACTIONS = {
   success: 1.2,
-  happy: 1.8,
   laughing: 1.6,
   excited: 1.8,
   love: 2,
@@ -40,6 +39,7 @@ const FAMILIES = {
   thinking: ["thinking", "thinking-dots"],
   download: ["download", "download-falling"],
   upload: ["upload", "upload-rising"],
+  sad: ["sad", "crying"],
 };
 const EASTER = ["glitch", "code-rain", "vim"];
 // What a screen reader says for each mode: every app gives it to its toolkit
@@ -62,7 +62,6 @@ const LABELS = {
   sleeping: "Omi is asleep",
   typing: "Omi is typing",
   listening: "Omi is listening",
-  happy: "Omi is happy",
   laughing: "Omi is laughing",
   excited: "Omi is excited",
   love: "Omi loves it",
@@ -71,7 +70,7 @@ const LABELS = {
   confused: "Omi is confused",
   skeptical: "Omi is skeptical",
   sad: "Omi is sad",
-  crying: "Omi is crying",
+  crying: "Omi is sad",
   angry: "Omi is angry",
   sudo: "Omi needs your password",
   peek: "Omi is peeking in",
@@ -193,7 +192,7 @@ const CONFORMANCE_TIMES = [0, 0.9, 3.3],
     ["logo", "idle"],
     ["idle", "warning"],
     ["idle", "thinking"],
-    ["working", "happy"],
+    ["working", "laughing"],
     ["sleeping", "party"],
     ["idle", "peek"],
     ["peek", "sudo"],

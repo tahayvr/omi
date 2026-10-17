@@ -1,6 +1,6 @@
 # Every Omi mode
 
-Omi has 34 modes, each a set of rectangles with a looping
+Omi has 33 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
 `node tools/modes-doc.js` from the pack, so it always matches
 `pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
@@ -41,16 +41,15 @@ drawn by the reference player.
 | ![Omi is asleep](modes/sleeping.svg) | `sleeping` | Sleeping | state | 4 s | Omi is asleep | Paused, put off until later, or the night light |
 | ![Omi is typing](modes/typing.svg) | `typing` | Typing | state | 3.1 s | Omi is typing | The user is typing, or something is being written for them |
 | ![Omi is listening](modes/listening.svg) | `listening` | Listening | state | 4 s | Omi is listening | Waiting for the user to press a key |
-| ![Omi is happy](modes/happy.svg) | `happy` | Happy | reaction, 1.8 s | 4 s | Omi is happy | Pleased, then back |
 | ![Omi is laughing](modes/laughing.svg) | `laughing` | Laughing | reaction, 1.6 s | 0.7 s | Omi is laughing | A joke landed, then back |
 | ![Omi is excited](modes/excited.svg) | `excited` | Excited | reaction, 1.8 s | 0.9 s | Omi is excited | Something good is about to happen (a theme picker, a download that's nearly done) |
 | ![Omi loves it](modes/love.svg) | `love` | Love | reaction, 2 s | 1.2 s | Omi loves it | A favourite, a thank-you, then back |
-| ![Omi winks](modes/wink.svg) | `wink` | Wink | reaction, 1.2 s | 2.8 s | Omi winks | A small aside, then back |
+| ![Omi winks](modes/wink.svg) | `wink` | Wink | reaction, 1.2 s | 4 s | Omi winks | A small aside, then back |
 | ![Omi is shy](modes/shy.svg) | `shy` | Shy | reaction, 2 s | 6 s | Omi is shy | A compliment received, then back |
 | ![Omi is confused](modes/confused.svg) | `confused` | Confused | state | 3.4 s | Omi is confused | Not sure what happened; a stall |
 | ![Omi is skeptical](modes/skeptical.svg) | `skeptical` | Skeptical | state | 5 s | Omi is skeptical | Doubt: an odd input, an unusual request |
-| ![Omi is sad](modes/sad.svg) | `sad` | Sad | state | 4 s | Omi is sad | Something was lost; never for a cancel or a skip |
-| ![Omi is crying](modes/crying.svg) | `crying` | Crying | state | 1.2 s | Omi is crying | Something went badly; never to guilt the user |
+| ![Omi is sad](modes/sad.svg) | `sad` | Sad | state | 4 s | Omi is sad | Something was lost; never for a cancel or a skip (family: sad) |
+| ![Omi is sad](modes/crying.svg) | `crying` | Crying | state | 1.2 s | Omi is sad | Something went badly; never to guilt the user (family: sad) |
 | ![Omi is angry](modes/angry.svg) | `angry` | Angry | state | 2 s | Omi is angry | Blocked by something outside the user's control |
 | ![Omi needs your password](modes/sudo.svg) | `sudo` | Sudo | state | 3.6 s | Omi needs your password | About to ask for a password |
 | ![Omi is peeking in](modes/peek.svg) | `peek` | Peek | state | 4.5 s | Omi is peeking in | Looking in from the edge: a hint, a quick check-in |

@@ -21,8 +21,8 @@ it: apps never read the jig's code. Ideas waiting to be designed are in
   the morph pairs between modes, so a mode drawn on it morphs cleanly. The
   frame always sits on the cells, and every piece on whole units.
 - **No mouths.** Omi reads through its eyes, brows and props. The one
-  mouth that existed (sudo's) was removed; happy and laughing shape the
-  frame instead. A new mode with a mouth is a design decision to argue
+  mouth that existed (sudo's) was removed; laughing shapes the frame
+  instead. A new mode with a mouth is a design decision to argue
   for, not a default.
 - **Stays inside the view.** The pack's `view` is the logo with 70 units of
   room on every side; props live there, and may drift off its edge (z's,

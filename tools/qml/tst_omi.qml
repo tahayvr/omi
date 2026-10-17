@@ -61,9 +61,9 @@ TestCase {
         omi.mode = "idle";
         settled.wait(3000);
         compare(omi.label, mode("idle").label, "a screen reader hears the mode's label");
-        omi.react("happy", 0.6);
-        compare(omi.showing, "happy", "the reaction plays over the mode");
-        compare(omi.label, mode("happy").label, "and the reaction's while it plays");
+        omi.react("laughing", 0.6);
+        compare(omi.showing, "laughing", "the reaction plays over the mode");
+        compare(omi.label, mode("laughing").label, "and the reaction's while it plays");
         compare(omi.mode, "idle", "the mode stays");
         tryCompare(omi, "showing", "idle", 3000, "then goes back");
         compare(omi.label, mode("idle").label);

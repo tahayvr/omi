@@ -82,14 +82,6 @@ const F = {
     ...Z(310, 10, 40),
     ...Z(330, -50, 40, 1.3),
   ],
-  wink: [
-    ...blk(90, 100, [
-      [0, 0],
-      [1, 1],
-      [0, 2],
-    ]),
-    R(160, 140, 40, 20, "cur"),
-  ],
   sudo: [
     R(80, 110, 60, 40, "shades"),
     R(140, 110, 20, 20, "shades"),
@@ -182,14 +174,8 @@ Object.assign(F, {
     ),
     R(140, 200, 20, 20, "pulseop"),
   ]),
-  wink: [
-    ...blk(90, 100, [
-      [0, 0],
-      [1, 1],
-      [0, 2],
-    ]),
-    R(160, 140, 40, 20, "cur"),
-  ],
+  // wink: idle's left eye, the right one shut
+  wink: [R(100, 110, 20, 40, "eye"), R(170, 130, 40, 10)],
 });
 /* snake: inner frame split into 20-unit cells, in path order from the top gap clockwise */
 const INNER = new Set([
@@ -223,7 +209,6 @@ const SNAKE = SNAKE_PATH.map(([x, y], i) => ({
    is the inner frame's bottom; see mouth() in frames.js. Animated faces rest
    on the full expression, so stills and PNG exports read correctly. */
 Object.assign(F, {
-  happy: F.idle,
   laughing: [
     ...blk(90, 100, [
       [0, 0],

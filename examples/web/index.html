@@ -141,7 +141,7 @@
         <p id="name" aria-live="polite"></p>
         <p class="hint">
           Omi watches your pointer. Click it or press <kbd>Space</kbd> to make
-          it happy; <kbd>←</kbd> <kbd>→</kbd> step through the modes.
+          it laugh; <kbd>←</kbd> <kbd>→</kbd> step through the modes.
         </p>
         <div id="accents" role="group" aria-label="Omi's color"></div>
       </section>
@@ -198,12 +198,12 @@
       document.addEventListener("pointerleave", () => omi.look(0, 0));
 
       // --- poke Omi
-      canvas.addEventListener("click", () => react("happy"));
+      canvas.addEventListener("click", () => react("laughing"));
       addEventListener("keydown", (e) => {
         if (e.target.closest("button")) return; // let buttons take their keys
         const ids = pack.modes.map((m) => m.id),
           i = ids.indexOf(mode);
-        if (e.key === " ") react("happy");
+        if (e.key === " ") react("laughing");
         else if (e.key === "ArrowRight") setMode(ids[(i + 1) % ids.length]);
         else if (e.key === "ArrowLeft")
           setMode(ids[(i - 1 + ids.length) % ids.length]);

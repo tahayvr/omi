@@ -42,7 +42,6 @@ const USE = {
   sleeping: "Paused, put off until later, or the night light",
   typing: "The user is typing, or something is being written for them",
   listening: "Waiting for the user to press a key",
-  happy: "Pleased, then back",
   laughing: "A joke landed, then back",
   excited:
     "Something good is about to happen (a theme picker, a download that's nearly done)",

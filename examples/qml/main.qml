@@ -1,6 +1,6 @@
 // Try it:  QML_XHR_ALLOW_FILE_READ=1 qml examples/qml/main.qml
 //
-// Omi watches the mouse, a click (or Space) makes it happy, ← → step
+// Omi watches the mouse, a click (or Space) makes it laugh, ← → step
 // through the modes, and the swatches show it takes any one color.
 import QtQuick
 import QtQuick.Controls
@@ -46,7 +46,7 @@ ApplicationWindow {
     Item {
         anchors.fill: parent
         focus: true
-        Keys.onSpacePressed: omi.react("happy")
+        Keys.onSpacePressed: omi.react("laughing")
         Keys.onLeftPressed: window.stepMode(-1)
         Keys.onRightPressed: window.stepMode(1)
     }
@@ -88,7 +88,7 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: omi.react("happy")
+                        onClicked: omi.react("laughing")
                     }
                 }
                 Label {
@@ -99,7 +99,7 @@ ApplicationWindow {
                 }
                 Label {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Omi watches the mouse. Click it or press Space to make it happy; ← → step through the modes."
+                    text: "Omi watches the mouse. Click it or press Space to make it laugh; ← → step through the modes."
                     color: window.muted
                     font.pixelSize: 12
                 }

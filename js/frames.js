@@ -184,12 +184,10 @@ function mouth({ left = [], right = [], bottom = [], dimDip = false } = {}) {
 }
 const both = (segs) => ({ left: segs, right: segs });
 Object.assign(FRAMES, {
-  happy: mouth({
-    ...both([[180, 240]]),
-    bottom: [[40, 260]],
-  }),
+  // the sides lit all the way down, so it rests whole; the "ha" blinks
   laughing: mouth({
     ...both([
+      [160, 180],
       [180, 200, "ha"],
       [200, 240],
     ]),
