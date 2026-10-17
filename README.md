@@ -31,10 +31,9 @@ use Omi as it ships:
   app's accent. The players' options (speed, the rest between loops,
   whole-body motion, where the eyes look) fit Omi to your app; they don't
   change what Omi is.
-- **Missing a mode? Propose it**, in an
-  [issue](https://github.com/tahayvr/omi/issues) or in
-  [the ideas](docs/4-design/2-ideas.md), rather than making it in your app,
-  so every app gets the same one.
+- **Missing a mode? Propose it** in an
+  [issue](https://github.com/tahayvr/omi/issues), rather than making it in
+  your app, so every app gets the same one.
 
 The constraints it's drawn by, in short (the long form is in
 [docs/4-design/1-designing-a-mode.md](docs/4-design/1-designing-a-mode.md)):
@@ -82,8 +81,6 @@ The constraints it's drawn by, in short (the long form is in
   by, and how a mode goes from the jig to the kit.
 - **[protocol/](protocol/) and [service/](service/):** one Omi shared by
   every app on the machine.
-- **[docs/4-design/2-ideas.md](docs/4-design/2-ideas.md):** modes and reactions still to make, each
-  with a sketch.
 
 Checks: `npm run check` runs the ones that only need Node: that kit/ and
 docs/modes are built from what's committed (`tools/build-kit.js --check`,

@@ -2,8 +2,7 @@
 
 How a mode goes from an idea to the kit that every app draws. The jig
 (`jig.html`) is where Omi is designed, and the kit is what comes out of
-it: apps never read the jig's code. Ideas waiting to be designed are in
-[ideas.md](2-ideas.md), each with a sketch of the pieces and the motion.
+it: apps never read the jig's code.
 
 ## The rules Omi is drawn by
 
@@ -67,8 +66,7 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
 
 1. **Start from an idea with a sketch.** Say what the mode is for (a state
    or a reaction, and when an app would show it), which pieces it adds or
-   changes, and how they move. The ideas table has this shape; add yours
-   there first if it isn't.
+   changes, and how they move.
 2. **Draw the pieces.** In `js/designs.js`, add an entry to `DESIGNS` in
    the right group: `{ id, name, face, mood }`, where `face` is a list of
    rects (`R(x, y, w, h, anim)`, role set with `as("extra", …)` or the
@@ -117,8 +115,7 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
    something the spec doesn't cover, and the spec needs the rule before
    the kit does.
 8. **Commit `kit/` and `docs/` with the source.** Apps copy the kit, so
-   a mode that isn't in `kit/` doesn't exist to them. Mark the idea as
-   "in kit" in `ideas.md`. `pnpm fmt` first, so the code reads the way
+   a mode that isn't in `kit/` doesn't exist to them. `pnpm fmt` first, so the code reads the way
    the rest does, and `pnpm lint` (both need `pnpm install` once).
 
 ## What the jig shows is what apps get
