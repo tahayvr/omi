@@ -115,7 +115,6 @@ if (!RM.matches)
 
 function render() {
   paintStage();
-  $("modeCount").textContent = DESIGNS.length;
   renderSite();
   applySpeed();
 }

@@ -1,9 +1,4 @@
 /* Breakpoints */
-@media (max-width: 900px) {
-  .nav {
-    display: none;
-  }
-}
 @media (max-width: 720px) {
   .pill {
     display: none;
