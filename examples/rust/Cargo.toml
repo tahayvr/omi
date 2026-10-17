@@ -1,0 +1,13 @@
+[package]
+name = "omi-window"
+version = "0.1.0"
+edition = "2021"
+description = "Omi in a desktop window, drawn pixel by pixel with the Rust player"
+license = "MIT"
+publish = false
+
+[dependencies]
+# the player, straight from the repo
+omi = { path = "../../player/rust" }
+# a window and a pixel buffer to draw in, nothing more
+minifb = "0.29"
