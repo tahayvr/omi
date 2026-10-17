@@ -1,0 +1,99 @@
+[
+  {
+    "section": "Start",
+    "pages": [
+      {
+        "id": "start/overview",
+        "title": "Overview",
+        "file": "docs/1-start/1-overview.md",
+        "source": "README.md"
+      },
+      {
+        "id": "start/omi-in-your-app",
+        "title": "Omi in your app",
+        "file": "docs/1-start/2-omi-in-your-app.md",
+        "source": "docs/1-start/2-omi-in-your-app.md"
+      },
+      {
+        "id": "start/omi-in-omarchy",
+        "title": "Omi in Omarchy",
+        "file": "docs/1-start/3-omi-in-omarchy.md",
+        "source": "docs/1-start/3-omi-in-omarchy.md"
+      }
+    ]
+  },
+  {
+    "section": "Reference",
+    "pages": [
+      {
+        "id": "reference/the-kit",
+        "title": "The kit",
+        "file": "docs/2-reference/1-the-kit.md",
+        "source": "kit/README.md"
+      },
+      {
+        "id": "reference/every-mode",
+        "title": "Every mode",
+        "file": "docs/2-reference/2-every-mode.md",
+        "source": "docs/2-reference/2-every-mode.md"
+      },
+      {
+        "id": "reference/state-protocol",
+        "title": "State protocol",
+        "file": "docs/2-reference/3-state-protocol.md",
+        "source": "docs/2-reference/3-state-protocol.md"
+      },
+      {
+        "id": "reference/state-service",
+        "title": "State service",
+        "file": "docs/2-reference/4-state-service.md",
+        "source": "docs/2-reference/4-state-service.md"
+      }
+    ]
+  },
+  {
+    "section": "Players",
+    "pages": [
+      {
+        "id": "players/python",
+        "title": "Python",
+        "file": "docs/3-players/1-python.md",
+        "source": "player/python/README.md"
+      },
+      {
+        "id": "players/rust",
+        "title": "Rust",
+        "file": "docs/3-players/2-rust.md",
+        "source": "player/rust/README.md"
+      }
+    ]
+  },
+  {
+    "section": "Design",
+    "pages": [
+      {
+        "id": "design/designing-a-mode",
+        "title": "Designing a mode",
+        "file": "docs/4-design/1-designing-a-mode.md",
+        "source": "docs/4-design/1-designing-a-mode.md"
+      },
+      {
+        "id": "design/ideas",
+        "title": "Ideas",
+        "file": "docs/4-design/2-ideas.md",
+        "source": "docs/4-design/2-ideas.md"
+      }
+    ]
+  },
+  {
+    "section": "Project",
+    "pages": [
+      {
+        "id": "project/changelog",
+        "title": "Changelog",
+        "file": "docs/5-project/1-changelog.md",
+        "source": "CHANGELOG.md"
+      }
+    ]
+  }
+]

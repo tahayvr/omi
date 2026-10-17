@@ -1,4 +1,4 @@
-/* A Node client for the Omi state protocol (../protocol/README.md).
+/* A Node client for the Omi state protocol (../docs/2-reference/3-state-protocol.md).
 
      const { connect, follow } = require("./client.js");
 

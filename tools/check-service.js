@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Checks the reference service (service/) against the Omi state protocol
-   (protocol/README.md), with real sockets and real players.
+   (docs/2-reference/3-state-protocol.md), with real sockets and real players.
 
      node tools/check-service.js */
 const fs = require("fs"),

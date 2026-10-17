@@ -17,8 +17,27 @@ installs, `listening` while it waits for a key) and reacts to what just
 happened (`success`, `love`), and because every app uses the same
 modes for the same situations, Omi means the same thing everywhere.
 
-The rules it's drawn by, in short (the long form is in
-[docs/designing.md](docs/designing.md)):
+## Respect the design. Use the constraints!
+
+Omi is one design, shared by every app that shows it. That's what the kit
+and its players are for: an app picks a mode, and Omi looks, moves and
+means the same thing everywhere, in a shell plugin, a web page or a
+terminal. Change it in one app and it stops being Omi in all of them. So
+use Omi as it ships:
+
+- **Show the kit's modes as they are**, played by a player. Don't redraw
+  Omi, stretch it, add to it, or make variants of your own.
+- **Choose its color, and leave its look to the kit.** Omi takes your
+  app's accent. The players' options (speed, the rest between loops,
+  whole-body motion, where the eyes look) fit Omi to your app; they don't
+  change what Omi is.
+- **Missing a mode? Propose it**, in an
+  [issue](https://github.com/tahayvr/omi/issues) or in
+  [the ideas](docs/4-design/2-ideas.md), rather than making it in your app,
+  so every app gets the same one.
+
+The constraints it's drawn by, in short (the long form is in
+[docs/4-design/1-designing-a-mode.md](docs/4-design/1-designing-a-mode.md)):
 
 - **It is the logo.** Every mode is the Omarchy logo's own rectangles, with
   a face inside, props around, or the frame itself bending.
@@ -32,7 +51,7 @@ The rules it's drawn by, in short (the long form is in
 - **Calm by default.** States are something the eye can rest on;
   reactions are quick and go back by themselves.
 
-[docs/modes.md](docs/modes.md) shows every mode with what it's for.
+[docs/2-reference/2-every-mode.md](docs/2-reference/2-every-mode.md) shows every mode with what it's for.
 
 - **The site:** [index.html](index.html), the home page that shows Omi
   off, and [jig.html](jig.html), the design jig, where every mode is looked
@@ -56,14 +75,14 @@ The rules it's drawn by, in short (the long form is in
   Quick app, a terminal (Node, or nothing but bash, jq and awk, with a
   bashrc that makes the shared Omi follow your shell), and desktop windows
   in Python and in Rust with their players.
-- **[docs/omarchy.md](docs/omarchy.md):** building Omi into Omarchy, and which
+- **[docs/1-start/3-omi-in-omarchy.md](docs/1-start/3-omi-in-omarchy.md):** building Omi into Omarchy, and which
   mode to show when.
-- **[docs/modes.md](docs/modes.md):** every mode, with a still and what it's
-  for. **[docs/designing.md](docs/designing.md):** the rules Omi is drawn
+- **[docs/2-reference/2-every-mode.md](docs/2-reference/2-every-mode.md):** every mode, with a still and what it's
+  for. **[docs/4-design/1-designing-a-mode.md](docs/4-design/1-designing-a-mode.md):** the rules Omi is drawn
   by, and how a mode goes from the jig to the kit.
 - **[protocol/](protocol/) and [service/](service/):** one Omi shared by
   every app on the machine.
-- **[docs/ideas.md](docs/ideas.md):** modes and reactions still to make, each
+- **[docs/4-design/2-ideas.md](docs/4-design/2-ideas.md):** modes and reactions still to make, each
   with a sketch.
 
 Checks: `npm run check` runs the ones that only need Node: that kit/ and

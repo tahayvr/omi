@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* The reference Omi state service (../protocol/README.md): holds what Omi is
+/* The reference Omi state service (../docs/2-reference/3-state-protocol.md): holds what Omi is
    doing and shares it with every app on the machine.
 
      node service/omi-service.js [--kit kit/omi.json] [--socket path]

@@ -8,7 +8,7 @@
 # then idle again. A command stopped with Ctrl+C just goes back to idle.
 # Every app showing the shared Omi follows: the Omarchy plugin, the terminal
 # example with --follow, your own. It needs the Omi service running (see
-# service/README.md) and socat or nc to reach it; without them it does nothing.
+# docs/2-reference/4-state-service.md) and socat or nc to reach it; without them it does nothing.
 #
 #   omi thinking        set the shared Omi by hand
 #   omi laughing 2      for 2 seconds, then back to idle
@@ -25,7 +25,7 @@
 __omi_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # Where the service listens: $OMI_SOCKET, $XDG_RUNTIME_DIR/omi.sock, or a
-# per-user file in the temporary directory (see protocol/README.md).
+# per-user file in the temporary directory (see docs/2-reference/3-state-protocol.md).
 __omi_socket() {
   if [[ -n ${OMI_SOCKET-} ]]; then echo "$OMI_SOCKET"
   elif [[ -n ${XDG_RUNTIME_DIR-} ]]; then echo "$XDG_RUNTIME_DIR/omi.sock"

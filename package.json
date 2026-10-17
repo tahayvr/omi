@@ -5,10 +5,10 @@
   "description": "Omi, the Omarchy mascot: the design jig, the Omi kit, its players and the checks that hold them together",
   "license": "SEE LICENSE",
   "scripts": {
-    "build": "node tools/build-kit.js && node tools/modes-doc.js",
+    "build": "node tools/build-kit.js && node tools/modes-doc.js && node tools/docs-index.js",
     "build:site": "node tools/publish-site.js _site",
     "build:card": "node tools/social-card.js",
-    "check": "node tools/build-kit.js --check && node tools/check-kit.js && node tools/modes-doc.js --check && node tools/check-player.js && node tools/check-service.js",
+    "check": "node tools/build-kit.js --check && node tools/check-kit.js && node tools/modes-doc.js --check && node tools/docs-index.js --check && node tools/check-player.js && node tools/check-service.js",
     "check:site": "node tools/check-site.js",
     "check:bash": "node tools/check-bash.js",
     "check:morphs": "node tools/check-morphs.js",

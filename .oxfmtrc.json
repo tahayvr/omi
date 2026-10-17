@@ -5,7 +5,8 @@
     "kit/",
     "player/python/omi/omi.json",
     "player/rust/omi.json",
-    "docs/modes.md",
+    "docs/2-reference/2-every-mode.md",
+    "docs/index.json",
     "docs/modes/",
     "js/vendor/",
     "pnpm-lock.yaml"

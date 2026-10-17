@@ -3,7 +3,7 @@
 How a mode goes from an idea to the kit that every app draws. The jig
 (`jig.html`) is where Omi is designed, and the kit is what comes out of
 it: apps never read the jig's code. Ideas waiting to be designed are in
-[ideas.md](ideas.md), each with a sketch of the pieces and the motion.
+[ideas.md](2-ideas.md), each with a sketch of the pieces and the motion.
 
 ## The rules Omi is drawn by
 
@@ -51,17 +51,17 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
 
 ## Where things are
 
-| What                                                 | Where                                                                             |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------- |
-| The modes: faces, props, which loop each piece plays | `js/designs.js` (`DESIGNS`, grouped; faces in `F`, props and eggs beside it)      |
-| The pieces' building blocks and the logo             | `js/geometry.js` (`R`, `LOGO`, `F`, `ARROW`, `QMARK`…)                            |
-| Frame effects: bars that flow, grow or tile          | `js/frames.js`                                                                    |
-| Every animation, as keyframes                        | `js/motion.js` (`ANIM`)                                                           |
-| What a mode is for: kind, hold, family, easter       | `js/kit.js` (`REACTIONS`, `FAMILIES`, `EASTER`)                                   |
-| What a screen reader says for each mode              | `js/kit.js` (`LABELS`)                                                            |
-| The kit's shape, as a JSON Schema                    | `js/kit.js` (`KIT_SCHEMA`), written to `kit/omi.schema.json`                      |
-| The kit and its spec                                 | `js/kit.js` (`buildKit`, `KIT_README`), written to `kit/` by `tools/build-kit.js` |
-| The gallery                                          | `docs/modes.md` and `docs/modes/`, written by `tools/modes-doc.js`                |
+| What                                                 | Where                                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| The modes: faces, props, which loop each piece plays | `js/designs.js` (`DESIGNS`, grouped; faces in `F`, props and eggs beside it)          |
+| The pieces' building blocks and the logo             | `js/geometry.js` (`R`, `LOGO`, `F`, `ARROW`, `QMARK`…)                                |
+| Frame effects: bars that flow, grow or tile          | `js/frames.js`                                                                        |
+| Every animation, as keyframes                        | `js/motion.js` (`ANIM`)                                                               |
+| What a mode is for: kind, hold, family, easter       | `js/kit.js` (`REACTIONS`, `FAMILIES`, `EASTER`)                                       |
+| What a screen reader says for each mode              | `js/kit.js` (`LABELS`)                                                                |
+| The kit's shape, as a JSON Schema                    | `js/kit.js` (`KIT_SCHEMA`), written to `kit/omi.schema.json`                          |
+| The kit and its spec                                 | `js/kit.js` (`buildKit`, `KIT_README`), written to `kit/` by `tools/build-kit.js`     |
+| The gallery                                          | `docs/2-reference/2-every-mode.md` and `docs/modes/`, written by `tools/modes-doc.js` |
 
 ## Making one
 

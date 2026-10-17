@@ -50,7 +50,7 @@ screen reader says for a mode: your toolkit's accessible name), `mode`,
 `ValueError`. See "Drawing Omi crisp" in the kit README for how to snap
 the rects to device pixels.
 
-To show the shared Omi of the [state protocol](../../protocol/README.md),
+To show the shared Omi of the [state protocol](../../docs/2-reference/3-state-protocol.md),
 hand each `state` to the player with its `since`:
 
     omi.set(state["mode"], instant=state["instant"], since=state["since"])

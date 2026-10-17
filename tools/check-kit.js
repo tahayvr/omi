@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* Checks the kit itself: that kit/omi.json has the shape
    kit/omi.schema.json gives it, that it hangs together, and that it keeps
-   the rules Omi is drawn by (docs/designing.md), as far as a program can
+   the rules Omi is drawn by (docs/4-design/1-designing-a-mode.md), as far as a program can
    tell.
 
      node tools/check-kit.js

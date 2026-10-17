@@ -120,7 +120,7 @@ by themselves. Modes without eyes (`logo`, `tiling`, `confused`) ignore it.
 ## One Omi for the whole machine
 
 When several apps show Omi at once, they can share one state so they move
-together: see the [Omi state protocol](../protocol/README.md). An app sets
+together: see the [Omi state protocol](../2-reference/3-state-protocol.md). An app sets
 the mode over a socket; every app showing Omi follows with its own player. In
 Omarchy this is not wired up yet. Until it is, each plugin owns its Omi.
 

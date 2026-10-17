@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Writes docs/modes.md, the gallery of every mode in the kit, and a still
+/* Writes docs/2-reference/2-every-mode.md, the gallery of every mode in the kit, and a still
    of each one as an SVG in docs/modes/ (plus docs/modes/sheet.svg, all of
    them on one sheet), from kit/omi.json through the reference player.
 
@@ -139,7 +139,7 @@ const rows = kit.modes.map((m) => {
     .filter(Boolean)
     .join(", ");
   const loop = omi.loopSeconds(m.id);
-  return `| ![${m.label}](modes/${m.id}.svg) | \`${m.id}\` | ${m.name} | ${what} | ${loop ? secs(loop) : "still"} | ${m.label} | ${USE[m.id] || ""}${tags ? ` (${tags})` : ""} |`;
+  return `| ![${m.label}](../modes/${m.id}.svg) | \`${m.id}\` | ${m.name} | ${what} | ${loop ? secs(loop) : "still"} | ${m.label} | ${USE[m.id] || ""}${tags ? ` (${tags})` : ""} |`;
 });
 const unknown = Object.keys(USE).filter(
   (id) => !kit.modes.some((m) => m.id === id),
@@ -155,7 +155,7 @@ animation, and it morphs from any one to any other. This page is made by
 \`kit/omi.json\`; the stills are each mode at rest (time 0 of its loops),
 drawn by the reference player.
 
-![Every mode](modes/sheet.svg)
+![Every mode](../modes/sheet.svg)
 
 - **state or reaction** is what the mode is for (\`kind\` in the kit). A
   state stays as long as what it stands for lasts. A reaction is shown for
@@ -169,7 +169,7 @@ drawn by the reference player.
 - **A screen reader says** is the mode's \`label\` in the kit: the
   accessible name every app gives the picture, so Omi is announced the same
   way everywhere. It is each still's own name on this page.
-- "Use it for" is advice for app authors; [docs/omarchy.md](omarchy.md)
+- "Use it for" is advice for app authors; [docs/1-start/3-omi-in-omarchy.md](../1-start/3-omi-in-omarchy.md)
   has the rules of thumb behind it (react to what the user did, never
   guilt the user, keep reactions short while they concentrate).
 
@@ -177,7 +177,7 @@ drawn by the reference player.
 | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join("\n")}
 `;
-files["docs/modes.md"] = md;
+files["docs/2-reference/2-every-mode.md"] = md;
 
 // stills of modes the kit no longer has
 const gone = fs.existsSync(outDir)
@@ -201,7 +201,7 @@ if (process.argv.includes("--check")) {
     process.exit(1);
   }
   console.log(
-    `ok: docs/modes.md and ${kit.modes.length} stills are up to date`,
+    `ok: docs/2-reference/2-every-mode.md and ${kit.modes.length} stills are up to date`,
   );
   process.exit(0);
 }
@@ -211,5 +211,5 @@ for (const f of gone) fs.unlinkSync(path.join(outDir, f));
 for (const [name, text] of Object.entries(files))
   fs.writeFileSync(path.join(root, name), text);
 console.log(
-  `docs/modes.md: ${kit.modes.length} modes; docs/modes/: ${kit.modes.length} stills and sheet.svg`,
+  `docs/2-reference/2-every-mode.md: ${kit.modes.length} modes; docs/modes/: ${kit.modes.length} stills and sheet.svg`,
 );
