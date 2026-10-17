@@ -151,13 +151,33 @@ const ANIM = {
       { tx: +(20 * Math.sin((i / 8) * Math.PI)).toFixed(3) },
     ]),
   },
-  pulse: {
-    dur: 0.8,
+  // listening: the inner sound marks travel out and fade, then come back in
+  // place; the outer ones a beat later
+  wave: {
+    rest: 0.8,
+    dur: 1.2,
     ease: "ease-in-out",
+    vars: ["mx"],
     keys: [
-      [0, { sx: 1 }],
-      [0.5, { sx: 1.5 }],
-      [1, { sx: 1 }],
+      [0, { tx: 0, op: 1 }],
+      [0.45, { tx: ["mx", 1], op: 0 }],
+      [0.5, { tx: 0, op: 0 }],
+      [0.85, { tx: 0, op: 1 }],
+      [1, { tx: 0, op: 1 }],
+    ],
+  },
+  wave2: {
+    rest: 0.8,
+    dur: 1.2,
+    ease: "ease-in-out",
+    vars: ["mx"],
+    keys: [
+      [0, { tx: 0, op: 1 }],
+      [0.15, { tx: 0, op: 1 }],
+      [0.6, { tx: ["mx", 1], op: 0 }],
+      [0.65, { tx: 0, op: 0 }],
+      [0.95, { tx: 0, op: 1 }],
+      [1, { tx: 0, op: 1 }],
     ],
   },
   z: {
@@ -405,16 +425,6 @@ const ANIM = {
       [1, { op: 0.15 }],
     ],
   },
-  ripple: {
-    dur: 0.8,
-    ease: "ease-in-out",
-    keys: [
-      [0, { op: 0.3 }],
-      [0.2, { op: 1 }],
-      [0.6, { op: 0.3 }],
-      [1, { op: 0.3 }],
-    ],
-  },
   breathe: {
     dur: 4,
     ease: "ease-in-out",
@@ -622,7 +632,6 @@ const START = {
   dot: 0.3, // lit
   pop: 0.2, // bright
   breathe: 0.5,
-  ripple: 0.2,
 };
 for (const [k, by] of Object.entries(START))
   ANIM[k] = prep(rotate(ANIM[k], by));

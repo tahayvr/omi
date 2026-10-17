@@ -151,7 +151,18 @@ Object.assign(F, {
     R(195, 115, 5, 30),
   ],
   lowbat: [R(100, 200, 20, 20), R(180, 200, 20, 20)],
-  listening: [R(100, 110, 20, 40, "pulse"), R(180, 110, 20, 40, "pulse")],
+  // listening: idle's eyes, and sound marks beside the head, (( Omi )),
+  // that travel out a cell and fade, then come back (mx: which way)
+  listening: [
+    R(100, 110, 20, 40, "eye"),
+    R(180, 110, 20, 40, "eye"),
+    ...as("extra", [
+      { ...R(-20, 120, 10, 60, "wave"), mx: -20 },
+      { ...R(-40, 100, 10, 100, "wave2"), mx: -20 },
+      { ...R(310, 120, 10, 60, "wave"), mx: 20 },
+      { ...R(330, 100, 10, 100, "wave2"), mx: 20 },
+    ]),
+  ],
   // a question mark where the eyes were
   confused: as("extra", [
     ...chase(

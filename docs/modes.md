@@ -40,7 +40,7 @@ drawn by the reference player.
 | ![Omi is low on battery](modes/low-battery.svg) | `low-battery` | Low battery | state | 5 s | Omi is low on battery | The battery is low |
 | ![Omi is asleep](modes/sleeping.svg) | `sleeping` | Sleeping | state | 4 s | Omi is asleep | Paused, put off until later, or the night light |
 | ![Omi is typing](modes/typing.svg) | `typing` | Typing | state | 3.1 s | Omi is typing | The user is typing, or something is being written for them |
-| ![Omi is listening](modes/listening.svg) | `listening` | Listening | state | 1 s | Omi is listening | Waiting for the user to press a key |
+| ![Omi is listening](modes/listening.svg) | `listening` | Listening | state | 4 s | Omi is listening | Waiting for the user to press a key |
 | ![Omi is happy](modes/happy.svg) | `happy` | Happy | reaction, 1.8 s | 4 s | Omi is happy | Pleased, then back |
 | ![Omi is laughing](modes/laughing.svg) | `laughing` | Laughing | reaction, 1.6 s | 0.7 s | Omi is laughing | A joke landed, then back |
 | ![Omi is excited](modes/excited.svg) | `excited` | Excited | reaction, 1.8 s | 0.9 s | Omi is excited | Something good is about to happen (a theme picker, a download that's nearly done) |

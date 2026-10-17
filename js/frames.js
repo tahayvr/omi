@@ -134,21 +134,6 @@ const FRAMES = {
     ...tint(INNER_RECTS, "breathe"),
     ...tint(OUTER_RECTS, "breathe"),
   ],
-  listening: [
-    MISC[0],
-    MISC[2],
-    ...tint([MISC[1]], "ripple").map((r) => ({ ...r, dl: 0.1 })),
-    ...INNER_RECTS.filter((r) => r.w !== 20),
-    ...tint(
-      INNER_RECTS.filter((r) => r.w === 20),
-      "ripple",
-    ),
-    ...OUTER_RECTS.filter((r) => r.w !== 20),
-    ...tint(
-      OUTER_RECTS.filter((r) => r.w === 20),
-      "ripple",
-    ).map((r) => ({ ...r, dl: 0.2 })),
-  ],
   typing: [
     ...MISC,
     ...INNER_RECTS,
