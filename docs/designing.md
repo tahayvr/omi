@@ -94,8 +94,8 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
    won't build without one.
 5. **Look at it in the jig.** `npm run dev` and open
    http://localhost:8000/jig.html: every design looping, each one bigger in
-   its single view. The home page (http://localhost:8000) plays any pair in
-   Morph, and its Terminal section shows Omi at half-block size.
+   its single view. The home page (http://localhost:8000) plays every mode in
+   its Modes section, and its Terminal section shows Omi at half-block size.
    Check it at the small end too: 44 device pixels across is where props
    must still read.
 6. **Build the pack.** `node tools/build-pack.js` writes `pack/omi.json`,
@@ -126,7 +126,7 @@ The site (the home page and the jig) doesn't have a way of its own to draw
 Omi. Each page builds the pack from its sources as it loads and hands it to
 the reference player, the same two things an app copies out of `pack/`:
 
-- The home page's hero and Morph section are players on a canvas.
+- The home page's hero and Modes section are players on a canvas.
 - Stills and video frames, and so every picture or video exported from the
   jig, are the player's rects (`playerRects` in `js/morph.js`).
 - A mode looping in a tile, in the single view or in an exported animated

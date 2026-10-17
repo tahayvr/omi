@@ -1,6 +1,6 @@
 /* ---------- Omi on the page: the reference player, fed the Omi pack ----------
    The page shows exactly what an app gets: the pack built by pack.js, as
-   JSON, played by player/omi.js. The hero and the Morph section are players
+   JSON, played by player/omi.js. The hero and the Modes section are players
    on a canvas; stills and video frames (and so every export of them) are the
    player's rects, from playerRects(). If it looks right here, it looks right
    in any app that uses the pack.
@@ -58,77 +58,159 @@ function syncOmi(player) {
   player.draw(); // picks up a new theme color
 }
 
-/* ---------- the Morph section ---------- */
-const morphDesign = (id) =>
-  id === MORPH_LOGO.id ? MORPH_LOGO : DESIGNS.find((d) => d.id === id);
-const morphOrder = () => [MORPH_LOGO.id, ...DESIGNS.map((d) => d.id)];
+/* ---------- the Modes section (home page) ----------
+   One big Omi and a chip per mode: pick one and Omi morphs into it from
+   wherever it is. It plays through every mode by itself, unless the viewer
+   asks for less motion; picking a mode pauses it, and Play goes on from
+   there. */
+const modeIds = () => DESIGNS.map((d) => d.id);
 let omi = null,
-  morphTour = 0;
+  playing = false,
+  playTimer = 0;
 
 function morphTo(id) {
   omi.set(id, { instant: pagePlayerOpts().instant });
   syncMorphUI();
 }
 
-function stopTour() {
-  clearInterval(morphTour);
-  morphTour = 0;
+// how long to stay on a mode: long enough to play its loop once, and the
+// morph into it, but no hurry and no dawdling
+const dwell = (id) =>
+  (Math.min(4.8, Math.max(2.4, omi.loopSeconds(id))) +
+    omi.pack.morph.duration +
+    omi.pack.morph.stagger) /
+  Math.max(0.25, S.speed || 1);
+function nextMode() {
+  const ids = modeIds();
+  morphTo(ids[(ids.indexOf(omi.mode) + 1) % ids.length]);
+  playTimer = setTimeout(nextMode, dwell(omi.mode) * 1000);
+}
+function play() {
+  if (playing) return;
+  playing = true;
+  playTimer = setTimeout(nextMode, dwell(omi.mode) * 1000);
   syncMorphUI();
 }
-function toggleTour() {
-  if (morphTour) return stopTour();
-  const step = () => {
-    const ids = morphOrder();
-    morphTo(ids[(ids.indexOf(omi.mode) + 1) % ids.length]);
-  };
-  step();
-  morphTour = setInterval(step, 2400 / Math.max(0.25, S.speed || 1));
+function pause() {
+  playing = false;
+  clearTimeout(playTimer);
   syncMorphUI();
 }
 
-function syncMorphUI() {
-  const id = omi ? omi.mode : MORPH_LOGO.id;
+// The picker shows one group at a time, under a tab per group; idle opens
+// the thinking tab rather than having one of its own.
+const groupOf = (d) => (d.group === "Core" ? "Thinking" : d.group),
+  TAB_NAME = { "System states": "System" },
+  tabName = (g) => TAB_NAME[g] || g;
+let shownGroup = "Thinking";
+function showGroup(g) {
+  shownGroup = g;
+  document.querySelectorAll("#mpick .mtab").forEach((t) => {
+    const on = t.dataset.group === g;
+    t.setAttribute("aria-selected", String(on));
+    t.tabIndex = on ? 0 : -1;
+  });
   document
-    .querySelectorAll("#mpick .mbtn")
+    .querySelectorAll("#mpick .mpanel")
+    .forEach((p) => (p.hidden = p.dataset.group !== g));
+}
+
+function syncMorphUI() {
+  const id = omi ? omi.mode : "idle";
+  document
+    .querySelectorAll("#mpick .mthumb")
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.id === id)),
     );
-  const d = morphDesign(id);
+  const d = DESIGNS.find((x) => x.id === id);
+  // while it plays, the tabs follow the mode on show
+  if (d && playing && groupOf(d) !== shownGroup) showGroup(groupOf(d));
+  // and where a tab's modes are a row that scrolls (phones), the row keeps
+  // the mode on show in sight
+  const on = document.querySelector(
+      `#mpick .mpanel:not([hidden]) .mthumb[aria-pressed="true"]`,
+    ),
+    row = on && on.parentElement;
+  if (row && row.scrollWidth > row.clientWidth)
+    row.scrollTo({
+      left: on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2,
+      behavior: RM.matches ? "auto" : "smooth",
+    });
   $("mname").textContent = d ? d.name : "";
-  const t = $("mtour");
-  t.setAttribute("aria-pressed", String(!!morphTour));
-  t.textContent = morphTour ? "Stop tour" : "Play tour";
+  $("msays").textContent = omi ? omi.label(id) : "";
+  const b = $("mplay");
+  b.setAttribute("aria-pressed", String(playing));
+  b.classList.toggle("on", playing);
+  $("mplayText").textContent = playing ? "Pause" : "Play";
+}
+
+// a still of each mode, all in the pack's view so Omi is one size in all
+let thumbsKey = "";
+function drawThumbs() {
+  const key = S.fg;
+  if (key === thumbsKey) return;
+  thumbsKey = key;
+  document.querySelectorAll("#mpick .mthumb").forEach((b) => {
+    const d = DESIGNS.find((x) => x.id === b.dataset.id);
+    b.querySelector(".mart-s").innerHTML = svgFor(d, {
+      color: S.fg,
+      animated: false,
+      vb: MORPH_VB,
+    }).replace("<svg ", '<svg aria-hidden="true" ');
+  });
 }
 
 function renderMorph() {
   const pick = $("mpick");
   if (!pick._built) {
     pick._built = true;
-    const btn = (d) =>
-      `<button class="mbtn" data-id="${d.id}" aria-pressed="false">${d.name}</button>`;
-    const groups = [...new Set(DESIGNS.map((d) => d.group))];
+    const groups = [...new Set(DESIGNS.map(groupOf))];
     pick.innerHTML =
-      `<div class="mgroup"><h3>Start</h3><div class="mbtns">${btn(MORPH_LOGO)}<button class="mbtn tour" id="mtour" aria-pressed="false">Play tour</button></div></div>` +
+      `<div class="mtabs" role="tablist" aria-label="Kinds of mode">${groups
+        .map(
+          (g) =>
+            `<button class="mtab" type="button" role="tab" id="mtab-${g.replace(/\W/g, "")}" data-group="${g}" aria-controls="mpanel-${g.replace(/\W/g, "")}" aria-selected="false">${tabName(g)}<span>${DESIGNS.filter((d) => groupOf(d) === g).length}</span></button>`,
+        )
+        .join("")}</div><div class="mpanels">` +
       groups
         .map(
           (g) =>
-            `<div class="mgroup"><h3>${g}</h3><div class="mbtns">${DESIGNS.filter(
-              (d) => d.group === g,
+            `<div class="mpanel" role="tabpanel" id="mpanel-${g.replace(/\W/g, "")}" data-group="${g}" aria-labelledby="mtab-${g.replace(/\W/g, "")}">${DESIGNS.filter(
+              (d) => groupOf(d) === g,
             )
-              .map(btn)
-              .join("")}</div></div>`,
+              .map(
+                (d) =>
+                  `<button class="mthumb" type="button" data-id="${d.id}" aria-pressed="false"><span class="mart-s"></span><span class="mlabel">${d.name}</span></button>`,
+              )
+              .join("")}</div>`,
         )
-        .join("");
+        .join("") +
+      "</div>";
     pick.addEventListener("click", (e) => {
-      const b = e.target.closest(".mbtn");
+      const t = e.target.closest(".mtab");
+      if (t) return showGroup(t.dataset.group);
+      const b = e.target.closest(".mthumb");
       if (!b) return;
-      if (b.id === "mtour") return toggleTour();
-      if (morphTour) stopTour();
+      pause();
       morphTo(b.dataset.id);
     });
-    omi = mountOmi($("mcanvas"));
+    // arrow keys move between the tabs, as a tab list does
+    pick.querySelector(".mtabs").addEventListener("keydown", (e) => {
+      const i = groups.indexOf(shownGroup),
+        n = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!n) return;
+      e.preventDefault();
+      showGroup(groups[(i + n + groups.length) % groups.length]);
+      pick.querySelector(`.mtab[data-group="${shownGroup}"]`).focus();
+    });
+    $("mplay").addEventListener("click", () => (playing ? pause() : play()));
+    omi = mountOmi($("mcanvas"), { mode: "idle" });
+    showGroup("Thinking");
+    drawThumbs();
     syncMorphUI();
+    if (!RM.matches) play();
     return;
   }
+  drawThumbs();
   syncOmi(omi);
 }

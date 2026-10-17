@@ -1,6 +1,6 @@
 /* ---------- the home page: a showcase (index.html) ----------
    The hero morphs through a few featured modes, the anatomy shows what Omi is
-   made of, the Morph section (morph.js) plays any pair, and the terminal
+   made of, the Modes section (morph.js) plays every mode, and the terminal
    shows Omi as text. Every mode, to look at and export, is in the jig. */
 const FEATURED = [
   "idle",

@@ -1,5 +1,5 @@
-/* Morph section: one big Omi, a button per mode */
-#morph {
+/* Modes section (home page): one big Omi, a chip per mode */
+#modes {
   /* the canvas bleeds past the art; never past the page edge */
   overflow-x: clip;
 }
@@ -15,65 +15,234 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   min-width: 0;
 }
 .mart {
   max-width: 560px;
 }
-.mpick {
+
+/* what's showing, and play / pause */
+.mnow {
+  width: 100%;
+  max-width: 560px;
   display: flex;
-  flex-direction: column;
-  gap: 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.mwhat {
   min-width: 0;
 }
-.mgroup h3 {
-  margin: 0 0 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.mname {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--label);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.msays {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--label);
   opacity: 0.7;
 }
-.mbtns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.mbtn {
-  min-height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--rule);
-  border-radius: 0;
+.mplay {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px 0 12px;
+  border: 1px solid var(--accent);
   background: transparent;
-  color: var(--label);
-  font-size: 13px;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition:
     background 0.15s,
-    color 0.15s,
-    border-color 0.15s;
+    color 0.15s;
 }
-.mbtn:hover {
-  background: var(--label-hover);
-}
-.mbtn[aria-pressed="true"] {
+.mplay:hover {
   background: var(--accent);
-  border-color: var(--accent);
   color: var(--accent-ink);
 }
-.mbtn.tour {
-  border-style: dashed;
+.mplay svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
+.mplay .i-pause,
+.mplay.on .i-play {
+  display: none;
+}
+.mplay.on .i-pause {
+  display: inline;
+}
+
+/* the picker: a tab per kind of mode, and that kind's modes as pictures */
+.mpick {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.mtabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--rule);
+}
+.mtab {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  color: var(--label);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.6;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    opacity 0.15s,
+    border-color 0.15s;
+}
+.mtab span {
+  margin-left: 6px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+.mtab:hover {
+  opacity: 1;
+}
+.mtab[aria-selected="true"] {
+  opacity: 1;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+/* the panels share one cell, so the picker is as tall as its biggest group
+   and the page doesn't jump when the tour changes tabs */
+.mpanels {
+  display: grid;
+}
+.mpanel {
+  position: relative;
+  grid-area: 1 / 1;
+  align-content: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+.mpanel[hidden] {
+  display: grid;
+  visibility: hidden;
+}
+.mthumb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 6px 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--label);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.mart-s {
+  width: 100%;
+  max-width: 72px;
+  aspect-ratio: 1;
+}
+.mart-s svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mlabel {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: center;
+}
+.mthumb:hover {
+  background: var(--label-hover);
+}
+.mthumb[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--label-hover);
+}
+.mthumb[aria-pressed="true"] .mlabel {
+  color: var(--accent);
+  font-weight: 600;
+}
+.mtab:focus-visible,
+.mthumb:focus-visible,
+.mplay:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* one column: Omi on top, the picker under it */
 @media (max-width: 900px) {
   .morph {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 28px;
   }
   .mstage {
     position: static;
   }
-  .mart {
+  .mart,
+  .mnow {
     max-width: 380px;
+  }
+}
+/* phones: each tab's modes in one row that scrolls sideways, so the
+   picker stays one row tall and Omi stays in view above it; the row fades
+   out at its end to show there's more */
+@media (max-width: 720px) {
+  .mpanel,
+  .mpanel[hidden] {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+    mask-image: linear-gradient(to right, #000 82%, transparent);
+  }
+  .mpanel::-webkit-scrollbar {
+    display: none;
+  }
+  .mthumb {
+    flex: 0 0 80px;
+    scroll-snap-align: start;
+    padding: 8px 2px 6px;
+  }
+  .mlabel {
+    font-size: 11px;
+  }
+  .mtab {
+    padding: 0 4px;
+    font-size: 12px;
+  }
+  .mtab span {
+    display: none;
+  }
+  .mname {
+    font-size: 18px;
   }
 }

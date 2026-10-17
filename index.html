@@ -32,7 +32,7 @@
             /></svg
         ></a>
         <nav class="nav" aria-label="Sections">
-          <a href="#anatomy">Anatomy</a><a href="#morph">Morph</a
+          <a href="#anatomy">Anatomy</a><a href="#modes">Modes</a
           ><a href="#terminal">Terminal</a><a href="jig.html">Jig</a>
         </nav>
         <span class="spacer"></span>
@@ -74,15 +74,14 @@
               <div class="row3" id="anat"></div>
             </section>
 
-            <section class="s" id="morph">
+            <section class="s" id="modes">
               <div class="shead">
-                <p class="eyebrow">Morph</p>
-                <h2>Any mode, into any other</h2>
+                <p class="eyebrow">Modes</p>
                 <p>
-                  Every mode is built from the same pixels, so Omi never cuts
-                  between states. The frame stays put and only changes
-                  brightness, while the face's pieces travel, split and merge
-                  into the next mode. Pick one, or click again mid-morph.
+                  One body for everything Omi does: thinking, working,
+                  downloading, a laugh, a little love. Pick a mode and Omi
+                  morphs into it from wherever it is, piece by piece, the way it
+                  does in every app that shows it.
                 </p>
               </div>
               <div class="morph">
@@ -90,7 +89,27 @@
                   <div class="mart omi-stage">
                     <canvas id="mcanvas" role="img" aria-label="Omi"></canvas>
                   </div>
-                  <p class="hname" id="mname" aria-live="polite"></p>
+                  <div class="mnow">
+                    <div class="mwhat">
+                      <p class="mname" id="mname" aria-live="polite"></p>
+                      <p class="msays" id="msays"></p>
+                    </div>
+                    <button
+                      class="mplay"
+                      id="mplay"
+                      type="button"
+                      aria-pressed="false"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path class="i-play" d="M8 5v14l11-7z"></path>
+                        <path
+                          class="i-pause"
+                          d="M7 5h4v14H7zM13 5h4v14h-4z"
+                        ></path>
+                      </svg>
+                      <span id="mplayText">Play</span>
+                    </button>
+                  </div>
                 </div>
                 <div class="mpick" id="mpick"></div>
               </div>

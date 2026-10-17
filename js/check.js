@@ -8,7 +8,7 @@
    2. A mode looping as CSS (the tiles, the single view, the animated SVG
       export) is, at any moment, what the player draws.
 
-   Stills, video frames, the hero and the Morph section are the player's own
+   Stills, video frames, the hero and the Modes section are the player's own
    rects (playerRects, morph.js), so they have nothing to drift from.
 
    tools/check-site.js opens this in Chrome without a window (npm run

@@ -1,7 +1,7 @@
 /* ---------- motion: every animation, as data ----------
    One definition per animation. The pack's animations are this table
    (pack.js), and the player plays them: stills, video frames, the hero and
-   the Morph section are all the player's. The one other reader is the CSS at
+   the Modes section are all the player's. The one other reader is the CSS at
    the end of this file, for modes that loop without a script (the tiles, the
    animated SVG export); jig.html?check holds it to the player.
 
