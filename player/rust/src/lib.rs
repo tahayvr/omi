@@ -54,6 +54,9 @@ pub enum Kind {
 pub struct Options {
     /// Animation and morph speed, 1 = normal.
     pub speed: f64,
+    /// Scales the still time between passes of a loop (the wait between
+    /// blinks): 1 as designed, 0 back to back, 2 twice as long.
+    pub rest: f64,
     /// False shows each mode at rest, with no loops.
     pub animate: bool,
     /// False leaves out whole-body moves (bob, hop, shake).
@@ -66,6 +69,7 @@ impl Default for Options {
     fn default() -> Self {
         Options {
             speed: 1.0,
+            rest: 1.0,
             animate: true,
             body_motion: true,
             mode: None,
@@ -96,6 +100,7 @@ struct Gaze {
 pub struct Player {
     pack: Pack,
     speed: f64,
+    rest: f64,
     animate: bool,
     body_motion: bool,
     /// Index into `pack.modes`.
@@ -126,6 +131,7 @@ impl Player {
         Player {
             pack,
             speed: opts.speed,
+            rest: opts.rest,
             animate: opts.animate,
             body_motion: opts.body_motion,
             mode,
@@ -156,6 +162,20 @@ impl Player {
 
     pub fn set_speed(&mut self, speed: f64) {
         self.speed = speed;
+    }
+
+    /// The rest scale: how the still time between passes is scaled.
+    pub fn rest(&self) -> f64 {
+        self.rest
+    }
+
+    pub fn set_rest(&mut self, rest: f64) {
+        self.rest = rest;
+    }
+
+    // the rest scale, never below 0
+    fn rest_scale(&self) -> f64 {
+        self.rest.max(0.0)
     }
 
     pub fn animate(&self) -> bool {
@@ -335,7 +355,7 @@ impl Player {
             return REST;
         };
         let var = |name: &str| piece.map_or(0.0, |p| p.var(name));
-        anim::motion(a, t, delay, duration, &var)
+        anim::motion(a, t, delay, duration, self.rest_scale(), &var)
     }
 
     fn rects_of(&self, mode: &Mode, t: f64) -> Vec<Rect> {
@@ -486,17 +506,19 @@ impl Player {
     }
 
     /// How long a mode takes to play every piece's loop once: the longest
-    /// animation duration (a piece's own when it sets one) plus the piece's
-    /// delay, the body and clip animations included. 0 for a still mode or
+    /// animation rest (times the rest scale) and duration (a piece's own
+    /// when it sets one) plus the piece's delay, the body and clip
+    /// animations included. 0 for a still mode or
     /// an unknown one.
     pub fn loop_seconds(&self, id: &str) -> f64 {
         let Some(mode) = self.pack.mode(id) else {
             return 0.0;
         };
         let mut t: f64 = 0.0;
+        let scale = self.rest_scale();
         let mut use_anim = |name: Option<&String>, delay: f64, duration: Option<f64>| {
             if let Some(a) = name.and_then(|n| self.pack.animations.get(n)) {
-                t = t.max(duration.unwrap_or(a.duration) + delay);
+                t = t.max(a.rest * scale + duration.unwrap_or(a.duration) + delay);
             }
         };
         use_anim(mode.anim.as_ref(), 0.0, None);

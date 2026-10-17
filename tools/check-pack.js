@@ -197,6 +197,41 @@ rule(
   problems,
 );
 
+/* ---------- rests ---------- */
+// An animation with a rest holds its pose at progress 0 through it, so it
+// must end there (or the rest would start with a jump), and its pieces play
+// it at its own duration (the rest is the animation's, one for the row).
+const restProblems = [];
+const CHANNELS = [["tx", "ty", "sx", "sy"], ["op"]],
+  REST_AT = { tx: 0, ty: 0, sx: 1, sy: 1, op: 1 };
+for (const [name, a] of Object.entries(A)) {
+  if (!a.rest) continue;
+  for (const props of CHANNELS) {
+    const ks = a.keys.filter(([, v]) => props.some((q) => q in v)),
+      at = (k) =>
+        JSON.stringify(
+          props.map((q) => (k && q in k[1] ? k[1][q] : REST_AT[q])),
+        );
+    if (!ks.length) continue;
+    const first = ks[0][0] === 0 ? ks[0] : null,
+      last = ks[ks.length - 1][0] === 1 ? ks[ks.length - 1] : null;
+    if (at(first) !== at(last))
+      restProblems.push(
+        `the animation "${name}" has a rest but doesn't end where it starts (${props.join(", ")})`,
+      );
+  }
+}
+for (const m of pack.modes)
+  for (const p of m.pieces)
+    if (p.duration != null && A[p.anim] && A[p.anim].rest)
+      restProblems.push(
+        `${m.id}: ${piece(p)} sets its own duration for "${p.anim}", which has a rest`,
+      );
+rule(
+  "a rest is still: an animation with one ends where it starts, and its pieces play it at its own duration",
+  restProblems,
+);
+
 /* ---------- the rules Omi is drawn by ---------- */
 // the reference player, without a browser: what a mode looks like at a time
 const ctx = vm.createContext({});

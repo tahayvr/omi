@@ -31,9 +31,10 @@ for players in other languages:
       omi.set("thinking"); // morphs from wherever Omi is
     </script>
 
-Options: color (null follows the canvas's CSS color), speed, animate (false
-shows every mode at rest; morphs and the gaze still play), bodyMotion (false
-leaves out whole-body bobs), mode (where to start), view (an [x, y, w, h]
+Options: color (null follows the canvas's CSS color), speed, rest (scales
+the still time between passes of a loop: 1 as designed, 0 back to back, 2
+twice as long), animate (false shows every mode at rest; morphs and the
+gaze still play), bodyMotion (false leaves out whole-body bobs), mode (where to start), view (an [x, y, w, h]
 to show instead of the pack's view), label (false leaves the canvas's
 accessible name alone: otherwise the player keeps its aria-label on the
 mode's `label`, and gives it role="img" if it has no role).
@@ -116,7 +117,9 @@ What a mode is for:
 ## Animations
 
 An animation loops forever. Each one has a `duration` (seconds), an `ease`
-and `keys`: [progress 0..1, values].
+and `keys`: [progress 0..1, values], and may have a `rest` (seconds, 0 if
+it has none): every pass of the loop starts by holding still for its rest,
+then plays its keys over its duration.
 
 Values on top of the piece's rest position:
 
@@ -126,7 +129,12 @@ Values on top of the piece's rest position:
 
 To find a piece's look at time t (seconds):
 
-1. progress p = ((t - delay) / duration) mod 1, kept in 0..1.
+1. Its rest is r = rest × the player's rest scale (1 unless the app asks
+   for another; never below 0), its cycle c = r + duration, where duration
+   is the piece's own if it sets one. Take u = (t − delay) mod c, kept in
+   0..c. While u < r the piece holds its pose at progress 0; after that,
+   progress p = (u − r) / duration. (Without a rest, that is p = ((t −
+   delay) / duration) mod 1.)
 2. Values come in two channels: move (tx, ty, sx, sy) and opacity (op).
    Work out each channel on its own.
 3. A channel's keys are the keys that set any of its values. If the channel
@@ -157,12 +165,24 @@ and sy only, never its op.
 
 A mode at rest is time 0. Start a mode's animations at t = 0 when you show
 it, and a still and its animation always match. Note that a piece with a
-`delay` is then (−delay mod duration) into its loop (progress wraps), so
-at rest it shows the end of its loop, not the start.
+`delay` is then (−delay mod cycle) into its cycle (it wraps), so at rest it
+shows the end of its loop, not the start.
+
+`rest` is the still time between passes: the eyes wait between blinks,
+the transfer modes between one pass of the frame and the next. It comes
+first in every cycle, holding the pose the mode rests in, so an app can
+scale it without changing what a pass looks like: at 1 a mode plays as
+designed, at 0 its passes run back to back, at 2 they wait twice as long.
+The pack keeps to two rules for it: an animation with a rest ends where it
+starts (its keys at 0 and 1 give the same values, so nothing jumps into the
+rest), and a piece that plays one doesn't set its own duration. A row of
+pieces in step (a delay each) shares the one rest: the animation's
+duration covers the whole row, and the rest falls between passes of it.
 
 A mode's loop time (`loopSeconds` in the reference player) is the longest
-of (duration + delay) over its pieces, its body `anim` and its window's,
-where duration is the piece's own if it sets one. 0 for a still mode.
+of (rest × the rest scale + duration + delay) over its pieces, its body
+`anim` and its window's, where duration is the piece's own if it sets
+one. 0 for a still mode.
 
 ## Time
 
@@ -363,6 +383,8 @@ listed, in drawing order.
 - `gazes`: a mode at rest with no loops (animate off), looking ahead, then
   turned to `look`: `half` is `half.at` seconds in, `end` is
   once it has landed. Yours must match both, in drawing order.
+- `rests`: modes with a rest, drawn with the rest scale at `rest`: the
+  rects at a few times, like `modes`. Yours must match, in drawing order.
 
 ## License
 

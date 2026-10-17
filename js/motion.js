@@ -5,7 +5,12 @@
    the end of this file, for modes that loop without a script (the tiles, the
    animated SVG export); index.html?check holds it to the player.
 
-   An animation loops every `dur` seconds. `keys` are [progress 0..1, values]:
+   An animation loops every `rest` + `dur` seconds: it holds still for
+   `rest` (0 if it has none), then plays its keys over `dur`. Apps can scale
+   the rest (the player's `rest`: 0 back to back, 2 twice as long), so a
+   pause between passes belongs in `rest`, not in the keys. A loop with a
+   rest ends where it starts, and its pieces don't set their own `dur`.
+   `keys` are [progress 0..1, values]:
      tx, ty   move, in grid units
      sx, sy   scale, about the piece's own center
      op       opacity
@@ -78,15 +83,15 @@ const ANIM = {
   },
   "m-error": {
     body: true,
-    dur: 2.2,
+    rest: 1.54,
+    dur: 0.66,
     ease: "ease-in-out",
     keys: [
       [0, { tx: 0 }],
-      [0.7, { tx: 0 }],
-      [0.74, { tx: -9 }],
-      [0.8, { tx: 9 }],
-      [0.86, { tx: -6 }],
-      [0.92, { tx: 6 }],
+      [0.1333, { tx: -9 }],
+      [0.3333, { tx: 9 }],
+      [0.5333, { tx: -6 }],
+      [0.7333, { tx: 6 }],
       [1, { tx: 0 }],
     ],
   },
@@ -104,13 +109,13 @@ const ANIM = {
 
   /* eyes and face */
   eye: {
-    // blink
-    dur: 4,
+    // blink: open for the rest, then shut and open again
+    rest: 3.6,
+    dur: 0.4,
     ease: "ease",
     keys: [
       [0, { sy: 1 }],
-      [0.9, { sy: 1 }],
-      [0.94, { sy: 0.1 }],
+      [0.4, { sy: 0.1 }],
       [1, { sy: 1 }],
     ],
   },
@@ -303,30 +308,32 @@ const ANIM = {
   t30: fade(0.3, 0.2),
   t40: fade(0.4, 0.2),
   t60: fade(0.6, 0.2),
-  // transfer: a dip in the first tenth of the loop, whole after it
+  // transfer (frames.js flow()): a pass is 1.6 s, the frame's cells each
+  // dipping in turn, then the logo rests whole for 1.2 s
   pass: {
-    dur: 2.8,
+    rest: 1.2,
+    dur: 1.6,
     ease: "linear",
     keys: [
       [0, { op: 1 }],
-      [0.03, { op: 0.2 }],
-      [0.07, { op: 0.2 }],
-      [0.1, { op: 1 }],
+      [0.0525, { op: 0.2 }],
+      [0.1225, { op: 0.2 }],
+      [0.175, { op: 1 }],
       [1, { op: 1 }],
     ],
   },
-  // the arrow: painted in at 0.04, whole until 0.6, gone by 0.62. Delayed
-  // by its place after the frame's gap, that is gone as the gap sets off
-  // and painted as it arrives.
+  // the arrow, in the same pass: gone as the gap sets off, painted again
+  // 1.2 s in, as the gap gets to the end of the frame
   paint: {
-    dur: 2.8,
+    rest: 1.2,
+    dur: 1.6,
     ease: "linear",
     keys: [
-      [0, { op: 0 }],
-      [0.04, { op: 1 }],
-      [0.6, { op: 1 }],
-      [0.62, { op: 0 }],
-      [1, { op: 0 }],
+      [0, { op: 1 }],
+      [0.02, { op: 0 }],
+      [0.75, { op: 0 }],
+      [0.78, { op: 1 }],
+      [1, { op: 1 }],
     ],
   },
   sn: {
@@ -693,30 +700,37 @@ function animCSS(name, a) {
     Array.isArray(v)
       ? `calc(var(--${v[0]}) * ${v[1]}px)`
       : `${+v.toFixed(4)}px`;
-  const frames = a.keys
-    .map(([p, v]) => {
-      const d = [];
-      if (MOVE.some((q) => q in v))
-        d.push(
-          `transform:translate(${num(v.tx ?? 0)},${num(v.ty ?? 0)}) scale(${v.sx ?? 1},${v.sy ?? 1})`,
-        );
-      if ("op" in v) d.push(`opacity:${v.op}`);
-      return `${+(p * 100).toFixed(2)}%{${d.join(";")}}`;
-    })
-    .join("");
-  return `@keyframes omi-${name}{${frames}}\n.omi-a .${name}{animation:omi-${name} ${a.dur}s ${easeCSS(a.ease)} infinite}`;
+  // the rest comes first: the keys play over the end of the cycle, and the
+  // first key holds until then
+  const rest = a.rest || 0,
+    cycle = rest + a.dur,
+    at = (p) => +(((rest + p * a.dur) / cycle) * 100).toFixed(4);
+  const style = (v) => {
+    const d = [];
+    if (MOVE.some((q) => q in v))
+      d.push(
+        `transform:translate(${num(v.tx ?? 0)},${num(v.ty ?? 0)}) scale(${v.sx ?? 1},${v.sy ?? 1})`,
+      );
+    if ("op" in v) d.push(`opacity:${v.op}`);
+    return d.join(";");
+  };
+  const frames =
+    (rest ? `0%{${style(a.keys[0][1])}}` : "") +
+    a.keys.map(([p, v]) => `${at(p)}%{${style(v)}}`).join("");
+  return `@keyframes omi-${name}{${frames}}\n.omi-a .${name}{animation:omi-${name} ${+cycle.toFixed(6)}s ${easeCSS(a.ease)} infinite}`;
 }
 // A piece's own timing and vars, as an inline style.
 function pieceStyle(r) {
   const a = r.c && ANIM[r.c];
   if (!a) return "";
   const dur = r.dur || a.dur,
+    cycle = dur + (a.rest || 0),
     s = [];
-  if (dur !== a.dur) s.push(`animation-duration:${dur}s`);
+  if (dur !== a.dur) s.push(`animation-duration:${cycle}s`);
   // run dl seconds behind the loop, as the player does: a negative delay,
   // so it is already mid-loop on the first frame instead of waiting. To the
   // microsecond, since a millisecond off shows in a fast fade.
-  if (r.dl) s.push(`animation-delay:${+((r.dl % dur) - dur).toFixed(6)}s`);
+  if (r.dl) s.push(`animation-delay:${+((r.dl % cycle) - cycle).toFixed(6)}s`);
   (a.vars || []).forEach((v) => s.push(`--${v}:${r[v]}`));
   return s.join(";");
 }

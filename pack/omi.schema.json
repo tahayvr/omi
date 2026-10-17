@@ -190,9 +190,14 @@
       "additionalProperties": false,
       "properties": {
         "duration": {
-          "description": "Seconds a loop takes.",
+          "description": "Seconds a loop plays its keys over.",
           "type": "number",
           "exclusiveMinimum": 0
+        },
+        "rest": {
+          "description": "Seconds it holds still before each pass, at its pose at progress 0; apps can scale it.",
+          "type": "number",
+          "minimum": 0
         },
         "ease": {
           "anyOf": [

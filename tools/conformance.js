@@ -86,6 +86,17 @@ var checkConformance = function (Omi, pack, conf) {
     omi.look(0, 0);
     while (omi.gazing && ms < 30000) omi.frame((ms += 10));
   }
+  // Rests: modes drawn with the still time between passes scaled.
+  for (const c of conf.rests || []) {
+    omi.rest = c.rest;
+    const m = pack.modes.find((x) => x.id === c.mode);
+    for (const t of Object.keys(c.times)) {
+      checks++;
+      if (!m || !sameList(shown(omi.modeRects(m, +t)), c.times[t]))
+        fails.push(`${c.mode} with rest ${c.rest} at ${t}s`);
+    }
+    omi.rest = 1;
+  }
   omi.destroy();
   return { checks, fails };
 };

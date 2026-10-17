@@ -81,6 +81,10 @@ cells, and `peek`'s eyes are below the logo.
 3. **Give it motion.** Pick an existing animation by name, or add one to
    `ANIM` in `js/motion.js`: a duration, an ease and keyframes of `tx`,
    `ty`, `sx`, `sy`, `op`. A piece can lag its loop with `dl` to stagger a
+   row. A pause between passes (the wait between blinks) goes in `rest`,
+   not in the keys: the loop holds still for it, at its pose at rest,
+   before every pass, and apps can scale it (`rest` in the players). A row
+   of pieces in step shares the one rest, so make `dur` cover the whole
    row. Check it at rest: if frame 0 isn't the pose you want to morph into,
    add the loop to `START` with how far in to begin.
 4. **Say what it's for.** In `js/pack.js`, add a reaction's hold to

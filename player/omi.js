@@ -22,6 +22,9 @@
    Options (also settable later as properties):
      color        fill color; null follows the canvas's CSS `color`
      speed        animation and morph speed, 1 = normal
+     rest         scales the still time between passes of a loop (the wait
+                  between blinks): 1 as designed, 0 back to back, 2 twice
+                  as long
      animate      false shows each mode at rest, with no loops
      bodyMotion   false leaves out whole-body moves (bob, hop, shake)
      even         true (default) draws each logo cell a whole number of
@@ -91,11 +94,16 @@ var Omi = (function () {
     return a;
   }
   // How an animated piece looks t seconds in, on top of its rest position.
-  function look(a, t, piece) {
+  // Every cycle holds still for the animation's rest (times the player's
+  // rest scale), then plays the keys over the duration.
+  function look(a, t, piece, scale) {
     const out = Object.assign({}, REST);
     if (!a) return out;
     const dur = piece.duration || a.duration,
-      p = ((((t - (piece.delay || 0)) / dur) % 1) + 1) % 1,
+      r = (a.rest || 0) * scale,
+      c = r + dur,
+      u = (((t - (piece.delay || 0)) % c) + c) % c,
+      p = u < r ? 0 : Math.min(1, (u - r) / dur),
       val = (v, q) =>
         v == null ? REST[q] : Array.isArray(v) ? (piece[v[0]] || 0) * v[1] : v;
     for (const ch of a.channels) {
@@ -427,6 +435,7 @@ var Omi = (function () {
       this._gaze = { from: [0, 0], to: [0, 0], p: 1 };
       this.color = opts.color ?? null;
       this.speed = opts.speed ?? 1;
+      this.rest = opts.rest ?? 1;
       this.view = opts.view || pack.view;
       this._animate = opts.animate ?? true;
       this._bodyMotion = opts.bodyMotion ?? true;
@@ -460,6 +469,10 @@ var Omi = (function () {
       this._animate = !!on;
       this.t = 0; // a mode at rest is time 0
       this.wake();
+    }
+    // the rest scale, never below 0
+    _restScale() {
+      return Math.max(0, +this.rest || 0);
     }
     get bodyMotion() {
       return this._bodyMotion;
@@ -563,18 +576,25 @@ var Omi = (function () {
     }
 
     /* How long a mode takes to play every piece's loop once: the longest of
-       its animations' duration (a piece's own duration if it sets one) plus
-       the piece's delay, the body and clip window included. 0 for a still
+       its animations' rest (times the rest scale) and duration (a piece's
+       own duration if it sets one) plus the piece's delay, the body and clip
+       window included. 0 for a still
        mode. For tours and demos: show a mode at least this long after its
        morph lands. */
     loopSeconds(id) {
       const mode = this.modes[id];
       if (!mode) return 0;
-      const A = this.pack.animations;
+      const A = this.pack.animations,
+        scale = this._restScale();
       let t = 0;
       const use = (name, delay, duration) => {
         if (name && A[name])
-          t = Math.max(t, (duration ?? A[name].duration) + (delay || 0));
+          t = Math.max(
+            t,
+            (A[name].rest || 0) * scale +
+              (duration ?? A[name].duration) +
+              (delay || 0),
+          );
       };
       use(mode.anim);
       if (mode.clip) use(mode.clip.anim);
@@ -674,9 +694,13 @@ var Omi = (function () {
     // The rects of a mode t seconds into its loops (t = 0: at rest).
     modeRects(mode, t) {
       const A = this.anims,
-        body = this._bodyMotion && mode.anim ? look(A[mode.anim], t, {}) : null,
+        scale = this._restScale(),
+        body =
+          this._bodyMotion && mode.anim
+            ? look(A[mode.anim], t, {}, scale)
+            : null,
         win = mode.clip,
-        layer = win && win.anim ? look(A[win.anim], t, {}) : null,
+        layer = win && win.anim ? look(A[win.anim], t, {}, scale) : null,
         [bx, by, bw, bh] = mode.bounds,
         cx = bx + bw / 2,
         cy = by + bh / 2,
@@ -689,7 +713,7 @@ var Omi = (function () {
           ]
         : mode.pieces;
       for (const p of order) {
-        const m = look(A[p.anim], t, p),
+        const m = look(A[p.anim], t, p, scale),
           w = p.w * m.sx,
           h = p.h * m.sy;
         let r = {

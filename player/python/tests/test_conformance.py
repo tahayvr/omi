@@ -29,6 +29,7 @@ COUNTS = {
     "modes": 0,
     "morphs": 0,
     "gazes": 0,
+    "rests": 0,
     "frames": 0,
     "frames_matched": 0,
     "frames_in_order": 0,
@@ -45,7 +46,7 @@ def setUpModule():
 def tearDownModule():
     line = (
         "python: %(checks)d checks (%(modes)d modes, %(morphs)d morphs, "
-        "%(gazes)d gazes), in-between morph frames matched: "
+        "%(gazes)d gazes, %(rests)d rests), in-between morph frames matched: "
         "%(frames_matched)d/%(frames)d (%(frames_in_order)d in the same "
         "drawing order)" % COUNTS
     )
@@ -205,6 +206,21 @@ class Conformance(unittest.TestCase):
                     same_in_order(player.rects(), gaze["end"], tolerance),
                     "%s: wrong once landed" % name,
                 )
+
+    def test_rests(self):
+        """Modes with the still time between passes scaled."""
+        tolerance = conformance["tolerance"]
+        for case in conformance.get("rests", []):
+            COUNTS["rests"] += 1
+            player = Player(pack, rest=case["rest"])
+            for seconds, want in case["times"].items():
+                with self.subTest(mode=case["mode"], rest=case["rest"], seconds=seconds):
+                    got = player.mode_rects(case["mode"], float(seconds))
+                    self.check(
+                        same_in_order(got, want, tolerance),
+                        "%s with rest %s at %s s is not what the pack draws"
+                        % (case["mode"], case["rest"], seconds),
+                    )
 
 
 if __name__ == "__main__":

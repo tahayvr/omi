@@ -63,6 +63,7 @@ class Animation(NamedTuple):
 
     name: str
     duration: float
+    rest: float
     ease: Optional[Tuple[float, float, float, float]]
     keys: Tuple[Tuple[float, Dict[str, Value]], ...]
     body: bool
@@ -167,9 +168,13 @@ def _animation(name, data):
     duration = _number(data.get("duration"), what + " duration")
     if duration <= 0:
         raise PackError("%s: duration must be above 0" % what)
+    rest = _number(data.get("rest", 0), what + " rest")
+    if rest < 0:
+        raise PackError("%s: rest must be 0 or more" % what)
     return Animation(
         name=name,
         duration=duration,
+        rest=rest,
         ease=_ease(data.get("ease", [0, 0, 1, 1]), what + " ease"),
         keys=tuple(keys),
         body=bool(data.get("body", False)),

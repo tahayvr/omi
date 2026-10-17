@@ -38,7 +38,9 @@ later and only the standard library.
             fill(r.x, r.y, r.w, r.h, r.opacity)   # r.role says what it is
 
 `Player(pack, speed=1.0, animate=True, body_motion=True, mode="mark",
-on_settled=None)` takes its options by name; `on_settled(mode)` is called
+on_settled=None, rest=1.0)` takes its options by name (`rest` scales the
+still time between passes of a loop: 1 as designed, 0 back to back, 2 twice
+as long); `on_settled(mode)` is called
 when a morph lands, and after a jump. Also there: `set(mode, instant=True)` to jump,
 `mode_rects(mode, seconds)` for stills, `look(dx, dy)`, `gaze()`, `gazing`,
 `loop_seconds(mode)`, `hold(mode)`, `kind(mode)`, `label(mode)` (what a

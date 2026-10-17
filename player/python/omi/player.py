@@ -22,20 +22,23 @@ def _unit(value):
 class Player:
     """Plays an Omi pack.
 
-    `speed` scales time (never less than 0.05), `animate=False` shows
+    `speed` scales time (never less than 0.05), `rest` scales the still
+    time between passes of a loop (1 as designed, 0 back to back, 2 twice
+    as long; never less than 0), `animate=False` shows
     every mode at rest (morphs and the gaze still play), `body_motion=False`
     leaves out the whole-body bobs, and `mode` is where Omi starts.
     `on_settled`, if given, is called with the mode's id when a morph
-    lands, and after a jump. All four can also be set later, as attributes;
+    lands, and after a jump. All of these can also be set later, as attributes;
     turning `animate` on or off puts the loop clock back to 0.
 
     Raises `UnknownMode` (a `KeyError`) if the pack has no such `mode`.
     """
 
     def __init__(self, pack, speed=1.0, animate=True, body_motion=True,
-                 mode="mark", on_settled=None):
+                 mode="mark", on_settled=None, rest=1.0):
         self.pack = pack
         self.speed = speed
+        self.rest = rest
         self._animate = bool(animate)
         self.body_motion = body_motion
         self.on_settled = on_settled
@@ -65,6 +68,10 @@ class Player:
 
         self._base = None         # this frame's rects, before the gaze
         self._drawn = None        # this frame's rects
+
+    @property
+    def _rest_scale(self):
+        return max(0.0, float(self.rest or 0.0))
 
     # Modes
 
@@ -144,7 +151,7 @@ class Player:
         # change made between two frames starts its morph at 0 and moves
         # from the next frame on.
         self._plan = plan_morph(
-            source, scene.rects(0.0, self.body_motion),
+            source, scene.rects(0.0, self.body_motion, self._rest_scale),
             self.pack.morph, self.pack.grid, self._logo,
         )
 
@@ -223,7 +230,7 @@ class Player:
             if self._plan is not None:
                 self._base = self._plan.rects(self._morph_time)
             else:
-                self._base = self._scene.rects(self._time, self.body_motion)
+                self._base = self._scene.rects(self._time, self.body_motion, self._rest_scale)
         return self._base
 
     def rects(self):
@@ -242,7 +249,7 @@ class Player:
         Looking straight ahead, with the body motion unless the player
         was made with `body_motion=False`.
         """
-        return self._scene_of(mode).rects(float(seconds), self.body_motion)
+        return self._scene_of(mode).rects(float(seconds), self.body_motion, self._rest_scale)
 
     # Gaze
 
@@ -320,10 +327,10 @@ class Player:
     def loop_seconds(self, mode):
         """How long a mode takes to play every piece's loop once.
 
-        The longest of (duration + delay) over its pieces, its body
-        animation and its window's. 0 for a still mode.
+        The longest of (rest x the rest scale + duration + delay) over its
+        pieces, its body animation and its window's. 0 for a still mode.
         """
-        return self._scene_of(mode).loop_seconds
+        return self._scene_of(mode).loop_seconds(self._rest_scale)
 
     def hold(self, mode):
         """How many seconds to show a reaction after its morph lands.
@@ -334,7 +341,7 @@ class Player:
         scene = self._scene_of(mode)
         if scene.mode.hold is not None:
             return scene.mode.hold
-        return min(max(scene.loop_seconds, 1.2), 2.5)
+        return min(max(scene.loop_seconds(self._rest_scale), 1.2), 2.5)
 
     def label(self, mode):
         """What a screen reader says for a mode ("Omi is thinking").

@@ -29,6 +29,9 @@ Item {
     property int colorFade: 350
     Behavior on color { ColorAnimation { duration: omi.colorFade } }
     property real speed: 1
+    // The wait between passes of a loop (between blinks): 1 as designed,
+    // 0 back to back, 2 twice as long.
+    property real rest: 1
     // false: each mode at rest, no loops (morphs still play).
     property bool animate: true
     // false: no whole-body bobs, hops and shakes. Calmer in small places.
@@ -90,6 +93,7 @@ Item {
         const p = new OmiJs.Omi(null, JSON.parse(packFile.text()), {
             color: String(omi.color),
             speed: omi.speed,
+            rest: omi.rest,
             animate: omi.animate,
             bodyMotion: omi.bodyMotion,
             mode: omi.showing
@@ -109,6 +113,7 @@ Item {
         player.set(showing);
     }
     onSpeedChanged: if (player) player.speed = speed
+    onRestChanged: if (player) player.rest = rest
     onAnimateChanged: if (player) player.animate = animate
     onBodyMotionChanged: if (player) player.bodyMotion = bodyMotion
     onLookChanged: if (player) {

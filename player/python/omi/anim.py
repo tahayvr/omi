@@ -82,11 +82,12 @@ class Track:
     sx, sy) and opacity (op), with the piece's own numbers filled in.
     """
 
-    __slots__ = ("duration", "delay", "ease", "move", "op", "_at", "_look")
+    __slots__ = ("duration", "rest", "delay", "ease", "move", "op", "_at", "_look")
 
     def __init__(self, animation, numbers=None, delay=0.0, duration=None):
         numbers = numbers or {}
         self.duration = animation.duration if duration is None else duration
+        self.rest = animation.rest
         self.delay = delay
         self.ease = make_ease(animation.ease)
         move = []
@@ -131,12 +132,19 @@ class Track:
             return v0, v1, 0.0
         return v0, v1, self.ease((p - p0) / (p1 - p0))
 
-    def look(self, t):
-        """The piece's (tx, ty, sx, sy, op) at time t, in seconds."""
-        if t == self._at:
+    def look(self, t, scale=1.0):
+        """The piece's (tx, ty, sx, sy, op) at time t, in seconds.
+
+        `scale` is the player's rest scale: every cycle holds still for
+        the animation's rest times it, then plays the keys.
+        """
+        if (t, scale) == self._at:
             return self._look
-        # progress p = ((t - delay) / duration) mod 1, kept in 0..1.
-        p = ((t - self.delay) / self.duration) % 1.0
+        # The rest r, then the keys over the duration: u = (t - delay)
+        # mod (r + duration), held at progress 0 while u < r.
+        rest = self.rest * scale
+        u = (t - self.delay) % (rest + self.duration)
+        p = 0.0 if u < rest else min(1.0, (u - rest) / self.duration)
         move = self.move
         if move is None:
             tx, ty, sx, sy = _MOVE_REST
@@ -157,7 +165,7 @@ class Track:
         elif type(op) is not float:
             v0, v1, e = self._blend(op, p)
             op = v0 + (v1 - v0) * e
-        self._at = t
+        self._at = (t, scale)
         self._look = (tx, ty, sx, sy, op)
         return self._look
 
@@ -190,12 +198,12 @@ class Scene:
         # with a window the pieces seen through it come first.
         self.windowed = []
         self.plain = []
-        loop = 0.0
+        loops = []  # (rest, duration + delay) of every loop
         for piece in mode.pieces:
             piece_track = None
             if piece.anim is not None:
                 piece_track = track(piece.anim, piece.numbers, piece.delay, piece.duration)
-                loop = max(loop, piece_track.duration + piece.delay)
+                loops.append((piece_track.rest, piece_track.duration + piece.delay))
                 if piece_track.still:
                     piece_track = None
             entry = (
@@ -214,21 +222,26 @@ class Scene:
             self.window = (clip.x, clip.y, clip.x + clip.w, clip.y + clip.h)
             if clip.anim is not None:
                 self.window_track = track(clip.anim, {}, 0.0, None)
-                loop = max(loop, self.window_track.duration)
+                loops.append((self.window_track.rest, self.window_track.duration))
 
         self.body = None
         if mode.anim is not None:
             self.body = track(mode.anim, {}, 0.0, None)
-            loop = max(loop, self.body.duration)
+            loops.append((self.body.rest, self.body.duration))
         bounds = mode.bounds
         self.center = (bounds[0] + bounds[2] / 2.0, bounds[1] + bounds[3] / 2.0)
 
-        # A mode's loop time: the longest of (duration + delay) over its
-        # pieces, its body animation and its window's. 0 for a still mode.
-        self.loop_seconds = loop
+        self._loops = loops
 
-    def rects(self, t, body_motion=True):
-        """The rects on screen at time t (seconds), in drawing order."""
+    def loop_seconds(self, rest=1.0):
+        """A mode's loop time: the longest of (rest x the rest scale +
+        duration + delay) over its pieces, its body animation and its
+        window's. 0 for a still mode."""
+        return max((r * rest + d for r, d in self._loops), default=0.0)
+
+    def rects(self, t, body_motion=True, rest=1.0):
+        """The rects on screen at time t (seconds), in drawing order, with
+        the rests between passes scaled by `rest`."""
         out = []
         if self.windowed:
             # Pieces seen through the window are moved by the window's
@@ -236,12 +249,12 @@ class Scene:
             # which stays put.
             wx = wy = 0.0
             if self.window_track is not None:
-                look = self.window_track.look(t)
+                look = self.window_track.look(t, rest)
                 wx, wy = look[0], look[1]
             left, top, right, bottom = self.window
             for x, y, w, h, opacity, role, track in self.windowed:
                 if track is not None:
-                    tx, ty, sx, sy, op = track.look(t)
+                    tx, ty, sx, sy, op = track.look(t, rest)
                     opacity *= op
                     if sx != 1.0:
                         x += w * (1.0 - sx) / 2.0
@@ -269,7 +282,7 @@ class Scene:
             if track is not None:
                 # Scale the piece about its center by sx, sy, move it by
                 # tx, ty, and multiply its opacity by op.
-                tx, ty, sx, sy, op = track.look(t)
+                tx, ty, sx, sy, op = track.look(t, rest)
                 opacity *= op
                 if sx != 1.0:
                     x += w * (1.0 - sx) / 2.0
@@ -285,7 +298,7 @@ class Scene:
         if body_motion and self.body is not None:
             # The body motion moves and scales the whole of Omi about the
             # center of the mode's bounds, after everything else.
-            tx, ty, sx, sy, _ = self.body.look(t)
+            tx, ty, sx, sy, _ = self.body.look(t, rest)
             if sx != 1.0 or sy != 1.0:
                 cx, cy = self.center
                 out = [

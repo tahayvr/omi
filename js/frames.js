@@ -17,15 +17,14 @@ const OUT_PATH = [
   ...range(280, 20, -20).map((y) => [0, y]),
 ];
 const tint = (rects, c) => rects.map((r) => ({ ...r, c }));
-/* transfer: a short dark gap runs along the frame, one cell after another,
-   and when it gets to the end the arrow is painted, row by row from the
-   frame out. The arrow erased itself as the gap set off, and stays whole
-   from its last row to the next pass. Every piece plays its animation late
-   by its place in line ("pass" the frame's dip, "paint" the arrow's), and
-   all of it fits in the first part of the loop: at rest (and in the
-   still) the logo and the arrow are whole. */
+/* transfer: the logo rests whole, then a pass: a short dark gap runs along
+   the frame, one cell after another, and when it gets to the end the arrow
+   is painted, row by row from the frame out (it erased itself as the gap
+   set off). Every piece plays its animation late by its place in line
+   ("pass" the frame's dip, "paint" the arrow's, see motion.js), and the
+   rest between passes is those animations' rest, which apps can scale. */
 const PASS_DT = 0.04,
-  PAINT_DT = 0.12;
+  PAINT_DT = 0.08;
 function flow(paths, arrow = []) {
   const out = [];
   paths.forEach((p) =>
@@ -33,12 +32,9 @@ function flow(paths, arrow = []) {
       out.push({ ...R(x, y, 20, 20, "pass"), dl: k * PASS_DT }),
     ),
   );
-  const start = Math.max(...paths.map((p) => p.length));
+  // the arrow's own timing (painted as the gap arrives) is in "paint"
   arrow.forEach(([x, y, w, h], k) =>
-    out.push({
-      ...R(x, y, w, h, "paint"),
-      dl: start * PASS_DT + k * PAINT_DT,
-    }),
+    out.push({ ...R(x, y, w, h, "paint"), dl: k * PAINT_DT }),
   );
   return out;
 }

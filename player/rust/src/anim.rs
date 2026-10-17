@@ -78,19 +78,24 @@ fn rest(prop: &str) -> f64 {
 }
 
 /// A piece's look `t` seconds into an animation. `delay` and `duration` are
-/// the piece's own (the duration overriding the animation's when set), and
-/// `var` gives the piece's numbers for [name, factor] values.
+/// the piece's own (the duration overriding the animation's when set),
+/// `rest_scale` is the player's (scaling the animation's rest), and `var`
+/// gives the piece's numbers for [name, factor] values.
 pub fn motion(
     anim: &Animation,
     t: f64,
     delay: f64,
     duration: Option<f64>,
+    rest_scale: f64,
     var: &dyn Fn(&str) -> f64,
 ) -> Motion {
     let dur = duration.unwrap_or(anim.duration);
-    // Progress wraps: a piece that lags behind shows the end of its loop
-    // before its first frame.
-    let p = ((t - delay) / dur).rem_euclid(1.0);
+    // Every cycle holds still for the rest, then plays the keys. The cycle
+    // wraps: a piece that lags behind shows the end of its loop before its
+    // first frame.
+    let still = anim.rest * rest_scale;
+    let u = (t - delay).rem_euclid(still + dur);
+    let p = if u < still { 0.0 } else { ((u - still) / dur).min(1.0) };
     let value = |v: Option<&Value>, prop: &str| match v {
         None => rest(prop),
         Some(Value::Number(n)) => *n,

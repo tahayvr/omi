@@ -90,6 +90,13 @@ TestCase {
         omi.even = true;
     }
 
+    function test_6b_rest() {
+        omi.rest = 0;
+        compare(omi.player.rest, 0, "the item's rest is the player's");
+        omi.rest = 1;
+        compare(omi.player.rest, 1);
+    }
+
     function test_6_rests_when_hidden() {
         omi.visible = false;
         verify(!omi.onScreen, "hidden: no frames");

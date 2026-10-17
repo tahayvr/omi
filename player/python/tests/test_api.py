@@ -33,19 +33,34 @@ def setUpModule():
     LAND = (RAW["morph"]["duration"] + RAW["morph"]["stagger"]) * 1000.0
 
 
-def loop_seconds(mode):
-    # "the longest of (duration + delay) over its pieces, its body `anim`
-    # and its window's, where duration is the piece's own if it sets one"
+def loop_seconds(mode, rest=1.0):
+    # "the longest of (rest x the rest scale + duration + delay) over its
+    # pieces, its body `anim` and its window's, where duration is the
+    # piece's own if it sets one"
     anims = RAW["animations"]
     times = [
-        p.get("duration", anims[p["anim"]]["duration"]) + p.get("delay", 0)
+        anims[p["anim"]].get("rest", 0) * rest
+        + p.get("duration", anims[p["anim"]]["duration"])
+        + p.get("delay", 0)
         for p in mode["pieces"]
         if p.get("anim")
     ]
     for anim in (mode.get("anim"), (mode.get("clip") or {}).get("anim")):
         if anim:
-            times.append(anims[anim]["duration"])
+            times.append(anims[anim].get("rest", 0) * rest + anims[anim]["duration"])
     return max(times, default=0)
+
+
+def resting():
+    # the modes with a rest somewhere, and the longest rest in each
+    anims = RAW["animations"]
+    out = {}
+    for mode in RAW["modes"]:
+        names = [p.get("anim") for p in mode["pieces"]] + [mode.get("anim")]
+        rests = [anims[n].get("rest", 0) for n in names if n]
+        if max(rests, default=0) > 0:
+            out[mode["id"]] = max(rests)
+    return out
 
 
 def body_mode():
@@ -147,6 +162,13 @@ class WhatAModeIsFor(unittest.TestCase):
             with self.subTest(mode=id):
                 self.assertAlmostEqual(player.loop_seconds(id), loop_seconds(mode))
 
+    def test_loop_seconds_with_the_rest_scaled(self):
+        for rest in (0.0, 0.5, 2.0):
+            player = Player(pack, rest=rest)
+            for id, mode in MODES.items():
+                with self.subTest(mode=id, rest=rest):
+                    self.assertAlmostEqual(player.loop_seconds(id), loop_seconds(mode, rest))
+
     def test_hold_and_kind(self):
         player = Player(pack)
         for id, mode in MODES.items():
@@ -157,6 +179,73 @@ class WhatAModeIsFor(unittest.TestCase):
                 if hold is None:
                     hold = min(max(loop_seconds(mode), 1.2), 2.5)
                 self.assertAlmostEqual(player.hold(id), hold)
+
+
+class Rest(unittest.TestCase):
+    """The still time between passes of a loop, scaled by the app."""
+
+    def test_the_still_is_the_same_at_any_rest(self):
+        # A rest holds the pose a mode rests in, so the still (time 0) is
+        # the same however the rest is scaled.
+        assert resting(), "no animation in the pack has a rest"
+        for scale in (0.0, 0.5, 3.0):
+            player = Player(pack, rest=scale)
+            for id in MODES:
+                with self.subTest(mode=id, rest=scale):
+                    self.assertEqual(player.mode_rects(id, 0), Player(pack).mode_rects(id, 0))
+
+    def test_a_rest_is_its_own_scale(self):
+        # A loop with a rest of r and a duration of d: at rest scale k a
+        # pass starts every k*r + d seconds.
+        anims = RAW["animations"]
+        name, anim = next((n, a) for n, a in anims.items() if a.get("rest") and not a.get("body"))
+        mode = next(
+            m["id"] for m in RAW["modes"]
+            if any(p.get("anim") == name and not p.get("delay") for p in m["pieces"])
+        )
+        index = next(
+            i for i, p in enumerate(MODES[mode]["pieces"])
+            if p.get("anim") == name and not p.get("delay")
+        )
+        # a moment inside the keys, where the piece is off its rest pose
+        rest, duration = anim["rest"], anim["duration"]
+        inside = None
+        base = Player(pack, body_motion=False)
+        for i in range(1, 100):
+            t = rest + duration * i / 100.0
+            if base.mode_rects(mode, t)[index] != base.mode_rects(mode, 0)[index]:
+                inside = t - rest
+                break
+        self.assertIsNotNone(inside, "%s never leaves its rest pose" % name)
+        for scale in (0.0, 1.0, 2.5):
+            player = Player(pack, rest=scale, body_motion=False)
+            at_rest = player.mode_rects(mode, 0)[index]
+            moved = player.mode_rects(mode, scale * rest + inside)[index]
+            with self.subTest(scale=scale):
+                self.assertNotEqual(moved, at_rest)
+                if scale:
+                    # still just before the rest ends
+                    self.assertEqual(
+                        player.mode_rects(mode, scale * rest * 0.99)[index], at_rest
+                    )
+                # and the same a cycle later
+                cycle = scale * rest + duration
+                again = player.mode_rects(mode, cycle + scale * rest + inside)[index]
+                for a, b in zip(again[:5], moved[:5]):
+                    self.assertAlmostEqual(a, b, places=6)
+
+    def test_never_below_zero(self):
+        player = Player(pack, rest=-1.0)
+        zero = Player(pack, rest=0.0)
+        for t in (0.1, 0.7, 1.9):
+            self.assertEqual(player.mode_rects("idle", t), zero.mode_rects("idle", t))
+
+    def test_it_can_change_later(self):
+        player = Player(pack)
+        player.rest = 0.0
+        self.assertEqual(
+            player.mode_rects("idle", 0.2), Player(pack, rest=0.0).mode_rects("idle", 0.2)
+        )
 
 
 class Labels(unittest.TestCase):

@@ -17,6 +17,15 @@ struct Conformance {
     morphs: Vec<MorphCase>,
     #[serde(default)]
     gazes: Vec<GazeCase>,
+    #[serde(default)]
+    rests: Vec<RestCase>,
+}
+
+#[derive(Deserialize)]
+struct RestCase {
+    mode: String,
+    rest: f64,
+    times: BTreeMap<String, Vec<Row>>,
 }
 
 #[derive(Deserialize)]
@@ -195,15 +204,33 @@ fn conformance() {
         }
     }
 
+    // Rests: modes drawn with the still time between passes scaled, in
+    // drawing order.
+    for c in &conf.rests {
+        omi.set_rest(c.rest);
+        for (t, want) in &c.times {
+            checks += 1;
+            let at: f64 = t.parse().expect("a time");
+            let ok = omi
+                .mode_rects(&c.mode, at)
+                .is_ok_and(|got| same_list(tol, &shown(got), want));
+            if !ok {
+                fails.push(format!("{} with rest {} at {t}s", c.mode, c.rest));
+            }
+        }
+        omi.set_rest(1.0);
+    }
+
     println!(
         "morph frames (reference player's, not required): {frames_set} of {frames_total} match as sets, {frames_ordered} in order"
     );
     if fails.is_empty() {
         println!(
-            "ok: rust: {checks} checks ({} modes, {} morphs, {} gazes)",
+            "ok: rust: {checks} checks ({} modes, {} morphs, {} gazes, {} rests)",
             pack.modes.len(),
             conf.morphs.len(),
-            conf.gazes.len()
+            conf.gazes.len(),
+            conf.rests.len()
         );
     } else {
         panic!(

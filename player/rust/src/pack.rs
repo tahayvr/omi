@@ -133,8 +133,12 @@ impl<'de> Deserialize<'de> for Ease {
 /// A looping animation: `keys` are [progress 0..1, values].
 #[derive(Debug, Clone, Deserialize)]
 pub struct Animation {
-    /// Seconds for one loop.
+    /// Seconds the keys play over.
     pub duration: f64,
+    /// Seconds it holds still before each pass, at its pose at progress 0
+    /// (0 when the pack gives none). The player's rest scale scales it.
+    #[serde(default)]
+    pub rest: f64,
     pub ease: Ease,
     /// True for an animation that moves the whole of Omi.
     #[serde(default)]
