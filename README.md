@@ -54,7 +54,9 @@ The rules it's drawn by, in short (the long form is in
   spec and checked against the same conformance data. They draw every morph
   as the reference player does, rect for rect.
 - **[examples/](examples/):** Omi in an Omarchy shell plugin, a web page, a Qt
-  Quick app and a terminal.
+  Quick app, a terminal (Node, or nothing but bash, jq and awk, with a
+  bashrc that makes the shared Omi follow your shell), and desktop windows
+  in Python and in Rust with their players.
 - **[docs/omarchy.md](docs/omarchy.md):** building Omi into Omarchy, and which
   mode to show when.
 - **[docs/modes.md](docs/modes.md):** every mode, with a still and what it's
