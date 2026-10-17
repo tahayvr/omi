@@ -283,11 +283,15 @@
             </div>
             <label class="field" id="lenField"
               ><span>Length</span>
-              <select id="vlen">
-                <option value="4">4 seconds</option>
-                <option value="8">8 seconds</option>
-                <option value="12">12 seconds</option>
+              <select id="loops">
+                <option value="1">1 loop</option>
+                <option value="2">2 loops</option>
+                <option value="3">3 loops</option>
+                <option value="4">4 loops</option>
+                <option value="6">6 loops</option>
+                <option value="8">8 loops</option>
               </select>
+              <span class="hint" id="lenNote"></span>
             </label>
             <label class="switch" id="clearField"
               ><span>Transparent background</span
@@ -386,7 +390,8 @@
         </div>
         <label class="field" id="xlenField"
           ><span>Video length</span
-          ><select id="xvlen"></select
+          ><select id="xloops"></select
+          ><span class="hint" id="xlenNote"></span
         ></label>
         <label class="switch"
           ><span>Transparent background</span

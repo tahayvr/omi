@@ -88,7 +88,7 @@ async function pickEncoderConfig(kind, width, height) {
 async function encodeVideo(d, kind) {
   const o = outSize(),
     even = (n) => Math.max(2, Math.round(n / 2) * 2),
-    secs = +X.vlen,
+    secs = videoLength(d),
     frames = Math.round(secs * VIDEO_FPS);
   // H.264 caps the frame area (square 4K is too big), so step down until
   // the encoder accepts it rather than dropping to the real-time recorder.
@@ -171,7 +171,7 @@ async function recordRealtime(d, kind) {
   const o = outSize(),
     size = o.w,
     hgt = o.h,
-    secs = +X.vlen,
+    secs = videoLength(d),
     fps = 30;
   const types =
     kind === "mp4"

@@ -12,7 +12,7 @@ const OVK = [
   "size",
   "pad",
   "clear",
-  "vlen",
+  "loops",
   "ratio",
 ];
 
@@ -52,7 +52,8 @@ function syncControls() {
   $("names").checked = S.names;
   $("tile").value = S.tile;
   $("fmt").value = S.fmt;
-  $("vlen").value = S.vlen;
+  $("loops").value = S.loops;
+  $("lenNote").textContent = loopsNote(inView() ? DESIGNS[vi] : null, S);
   $("ratio").value = S.ratio;
 
   $("speed").value = S.speed;
@@ -180,7 +181,7 @@ const keepForFormat = (k, v) => {
     fmtOpts: { ...S.fmtOpts, [fmt]: { ...(S.fmtOpts || {})[fmt], [k]: v } },
   });
 };
-["size", "pad", "vlen", "ratio"].forEach((k) =>
+["size", "pad", "loops", "ratio"].forEach((k) =>
   $(k).addEventListener("change", (e) => keepForFormat(k, e.target.value)),
 );
 $("rmPlay").addEventListener("click", () => set({ force: !S.force }));

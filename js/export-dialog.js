@@ -1,6 +1,6 @@
 /* ---------- export dialog (per-mode download button) ---------- */
 const xdlg = $("xdlg");
-const XKEYS = ["fmt", "ratio", "size", "pad", "vlen"];
+const XKEYS = ["fmt", "ratio", "size", "pad", "loops"];
 let xd = null;
 
 // Reuse the Controls panel's option lists so the two never drift apart.
@@ -14,11 +14,16 @@ function xsync() {
   $("xpad").closest(".field").hidden = fr.noPad;
   $("xclear").closest(".switch").hidden = fr.noClear;
   $("xlenField").hidden = !fr.video;
+  if (xd)
+    $("xlenNote").textContent = loopsNote(xd, {
+      ...eff(xd.id),
+      loops: $("xloops").value,
+    });
 }
 // a format brings its own options, as in the Controls
 function xload(fmt, from) {
   const o = fmtOpts(fmt, from);
-  ["ratio", "size", "pad", "vlen"].forEach((k) => {
+  ["ratio", "size", "pad", "loops"].forEach((k) => {
     if (o[k] != null) $("x" + k).value = o[k];
   });
   if (o.clear != null) $("xclear").checked = o.clear;
@@ -49,6 +54,7 @@ function openExport(d) {
 $("xfmt").addEventListener("change", () =>
   xload($("xfmt").value, xd ? eff(xd.id) : S),
 );
+$("xloops").addEventListener("change", xsync);
 
 xdlg.addEventListener("close", async () => {
   if (xdlg.returnValue !== "export" || !xd) return;

@@ -58,7 +58,7 @@ const DEF = {
   pad: "0.08",
   clear: true,
   side: false,
-  vlen: "8",
+  loops: "2", // a video's length, in whole loops of the mode
   filter: "all",
   speed: 1,
   body: true, // whole-body motion: bobs, hops, shakes
@@ -71,15 +71,15 @@ const DEF = {
 // What each export format starts with, until it is given others: a still
 // square with a little room, transparent where the format can be; a 1080p
 // landscape video; text and data as they are.
-const FMT_KEYS = ["ratio", "size", "pad", "clear", "vlen"];
+const FMT_KEYS = ["ratio", "size", "pad", "clear", "loops"];
 const FMT_DEFAULTS = {
   svg: { ratio: "1:1", pad: "0.08", clear: true },
   svga: { ratio: "1:1", pad: "0.08", clear: true },
   png: { ratio: "1:1", size: "1024", pad: "0.08", clear: true },
   jpg: { ratio: "1:1", size: "1024", pad: "0.16", clear: false },
   webp: { ratio: "1:1", size: "1024", pad: "0.08", clear: true },
-  mp4: { ratio: "16:9", size: "1920", pad: "0.16", vlen: "8" },
-  webm: { ratio: "16:9", size: "1920", pad: "0.16", vlen: "8" },
+  mp4: { ratio: "16:9", size: "1920", pad: "0.16", loops: "2" },
+  webm: { ratio: "16:9", size: "1920", pad: "0.16", loops: "2" },
   txt: { pad: "0" },
   json: { ratio: "1:1", pad: "0" },
 };

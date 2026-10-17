@@ -27,6 +27,91 @@ function playerRects(d, t, { body = true, rest = 1 } = {}) {
     .modeRects(pageSampler.modes[d.id] || packMode(d), t)
     .filter((r) => r.o > 0.001);
 }
+/* A video's length, in loops of the mode. One loop plays every piece's
+   animation through once (the player's loopSeconds, with the rest scaled as
+   picked, and the body's loop only when the body moves), then runs on to
+   the first moment Omi is back where the video started: the bob down, no
+   eye mid-blink. N loops run to the first such moment after N of those, so
+   a video set to repeat ends on the frame it began on and jumps nowhere.
+   Some modes have pieces on beats of their own (sleeping's z's drift on
+   2.6 s, its bob on 2.8 s) and come back only after many passes; past
+   LEN_MORE more seconds, a loop ends on the frame nearest the start, and
+   meets is false. */
+const LEN_STEP = 1 / 120,
+  LEN_MORE = 12,
+  lenCache = new Map();
+function videoLoop(d, o = X) {
+  const loops = Math.max(1, Math.round(+o.loops || 1)),
+    speed = Math.max(0.05, o.speed || 1),
+    rest = o.rest ?? 1,
+    body = o.body !== false,
+    key = [d.id, loops, rest, body].join(" ");
+  if (!lenCache.has(key)) lenCache.set(key, findLoop(d, loops, rest, body));
+  const L = lenCache.get(key);
+  return { secs: L.t / speed, meets: L.meets };
+}
+const videoLength = (d, o) => videoLoop(d, o).secs;
+function findLoop(d, loops, rest, body) {
+  if (!pageSampler) playerRects(d, 0);
+  const P = pageSampler,
+    mode = P.modes[d.id] || packMode(d);
+  P.rest = rest;
+  P.bodyMotion = body;
+  P.modes["\0len"] = body ? mode : { ...mode, anim: undefined };
+  const pass = P.loopSeconds("\0len");
+  delete P.modes["\0len"];
+  if (!pass) return { t: loops, meets: true }; // a still mode: a second a loop
+  const start = P.modeRects(mode, 0),
+    [, , bw, bh] = mode.bounds,
+    eps = Math.max(bw, bh) / 20000,
+    off = (t) => {
+      let m = 0;
+      P.modeRects(mode, t).forEach((r, i) => {
+        const q = start[i];
+        m = Math.max(
+          m,
+          Math.abs(r.x - q.x),
+          Math.abs(r.y - q.y),
+          Math.abs(r.w - q.w),
+          Math.abs(r.h - q.h),
+          Math.abs(r.o - q.o) * bw,
+        );
+      });
+      return m;
+    },
+    // the first moment from `t0` on that Omi is back at the start
+    back = (t0) => {
+      const from = Math.ceil(t0 / LEN_STEP - 1e-6);
+      let best = from,
+        bestOff = Infinity;
+      for (let i = from; i <= from + LEN_MORE / LEN_STEP; i++) {
+        const m = off(i * LEN_STEP);
+        if (m < eps) return { t: i * LEN_STEP, meets: true };
+        if (m < bestOff) {
+          best = i;
+          bestOff = m;
+        }
+      }
+      return { t: best * LEN_STEP, meets: false };
+    };
+  const one = back(pass);
+  if (loops === 1) return one;
+  return one.meets ? back(one.t * loops) : { t: one.t * loops, meets: false };
+}
+// what Length makes of a design (or of every design, with none)
+function loopsNote(d, o) {
+  if (!d)
+    return "Each design plays its own loop that many times, and ends where it began.";
+  const n = Math.max(1, Math.round(+o.loops || 1)),
+    { secs, meets } = videoLoop(d, o),
+    s = secs < 10 ? +secs.toFixed(2) : Math.round(secs * 10) / 10;
+  return (
+    `${n} ${n === 1 ? "loop" : "loops"} of ${d.name}: ${s} s.` +
+    (meets
+      ? ""
+      : ` Its pieces keep beats of their own, so the end won\u2019t quite meet the start.`)
+  );
+}
 // what the players should do under the current settings
 function pagePlayerOpts() {
   const still = RM.matches && !S.force;
