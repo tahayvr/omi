@@ -7,7 +7,7 @@
    The site is the repo as it stands (everything git tracks or would), so
    every address that works in a checkout works when published: the jig, the
    kit, the web example. Two things are added to the two pages, index.html
-   (the home page) and jig.html (the jig):
+   (the home page), jig.html (the jig) and docs.html (the docs):
 
    - which commit this is, as <meta name="omi-build">, so a published page
      can say what it was made from (jig.html?check shows it);
@@ -23,7 +23,7 @@ const fs = require("fs"),
   { execFileSync } = require("child_process");
 
 // the site's pages: the home page and the jig
-const PAGES = ["index.html", "jig.html"];
+const PAGES = ["index.html", "jig.html", "docs.html"];
 const root = path.join(__dirname, ".."),
   out = path.resolve(process.argv[2] || path.join(root, "_site")),
   git = (...args) =>

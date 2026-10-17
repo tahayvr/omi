@@ -79,7 +79,7 @@ Object.assign(files, {
   ),
 });
 // the site shows the release it's at, with a link to it
-for (const page of ["index.html", "jig.html"])
+for (const page of ["index.html", "jig.html", "docs.html"])
   files[page] = setVersion(
     read(page),
     /(releases\/tag\/v)[^"]+("[^]*?>v)[^<]+(<\/a)/,

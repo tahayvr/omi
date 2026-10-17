@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Docs — Omi</title>
+    <meta
+      name="description"
+      content="Omi, the Omarchy mascot: the Omarchy logo with a face, 30 modes and a morph between any two. On npm, PyPI and crates.io."
+    />
+    <!-- what a link to this page shows: assets/social.png, made by tools/social-card.js -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Omi" />
+    <meta property="og:title" content="Docs — Omi" />
+    <meta
+      property="og:description"
+      content="Omi, the Omarchy mascot: the Omarchy logo with a face, 30 modes and a morph between any two. On npm, PyPI and crates.io."
+    />
+    <meta property="og:url" content="https://tahayvr.github.io/omi/docs.html" />
+    <meta
+      property="og:image"
+      content="https://tahayvr.github.io/omi/assets/social.png"
+    />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta
+      property="og:image:alt"
+      content="Omi, the Omarchy logo with a face, and five of its modes"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/docs.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="bar">
+        <a class="brand" href="index.html" aria-label="Omi, home"
+          ><svg
+            viewBox="0 0 500 300"
+            aria-hidden="true"
+            shape-rendering="crispEdges"
+          >
+            <path
+              fill="currentColor"
+              d="M0 0h300v20h-300zM0 20h20v260h-20zM280 20h20v260h-20zM0 280h160v20h-160zM180 280h120v20h-120zM140 20h20v20h-20zM40 40h120v20h-120zM220 40h40v20h-40zM40 60h20v180h-20zM240 60h20v180h-20zM40 240h220v20h-220zM20 140h20v20h-20zM140 260h20v20h-20zM100 110h20v40h-20zM180 110h20v40h-20zM320 120h140v20h-140zM320 140h20v160h-20zM380 140h20v160h-20zM440 140h20v160h-20zM480 120h20v20h-20zM480 160h20v140h-20z"
+            /></svg
+        ></a>
+        <nav class="nav" aria-label="Pages">
+          <a href="index.html">Showcase</a><a href="jig.html">Jig</a
+          ><a href="docs.html" aria-current="page">Docs</a>
+        </nav>
+        <span class="spacer"></span>
+        <a
+          class="pill"
+          href="https://github.com/tahayvr/omi/releases/tag/v1.0.0"
+          title="Latest release: what's new"
+          >v1.0.0</a
+        >
+      </header>
+      <div class="main">
+        <div class="docs" id="docs">
+          <!-- every doc, by kind; on a phone, a row that scrolls sideways -->
+          <nav class="dnav" id="dnav" aria-label="Docs"></nav>
+          <article class="doc" id="doc" aria-live="polite">
+            <p class="dnote">Loading…</p>
+          </article>
+          <!-- the sections of the doc that's open, on a wide screen -->
+          <aside class="toc" id="toc" aria-label="On this page"></aside>
+        </div>
+      </div>
+    </div>
+    <script src="js/vendor/marked.js"></script>
+    <script src="js/docs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,276 @@
+/* The docs page: every doc on the left, the one that's open in the middle,
+   its sections on the right. On a phone, the docs are a row that scrolls
+   sideways under the header, and the sections are left out. */
+/* the page's one column never grows past the screen: a wide code block or
+   table scrolls inside the doc instead */
+.app:has(.docs) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.docs {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 760px) 200px;
+  justify-content: center;
+  align-items: start;
+  gap: 48px;
+  padding: 0 32px;
+  background: var(--chrome);
+}
+@media (prefers-reduced-motion: reduce) {
+  .docs {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---- every doc */
+.dnav,
+.toc {
+  position: sticky;
+  top: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 36px 0 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.dkind {
+  display: flex;
+  flex-direction: column;
+}
+.dnav h2,
+.toc h2 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.dnav a,
+.toc a {
+  display: block;
+  padding: 6px 10px;
+  border-left: 2px solid var(--line);
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.dnav a:hover,
+.toc a:hover {
+  color: var(--text);
+  border-left-color: var(--dim);
+}
+.dnav a[aria-current="page"] {
+  color: var(--text);
+  border-left-color: var(--focus);
+  font-weight: 600;
+}
+.toc {
+  gap: 0;
+}
+.toc a {
+  font-size: 12px;
+}
+
+/* ---- the doc */
+.doc {
+  padding: 36px 0 96px;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.dnote {
+  color: var(--dim);
+}
+.doc h1,
+.doc h2,
+.doc h3,
+.doc h4 {
+  line-height: 1.25;
+  color: var(--text);
+}
+.doc h1 {
+  margin: 0 0 24px;
+  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  letter-spacing: -0.01em;
+}
+.doc h2 {
+  margin: 48px 0 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 1.4rem;
+}
+.doc h3 {
+  margin: 32px 0 12px;
+  font-size: 1.1rem;
+}
+.doc h4 {
+  margin: 24px 0 8px;
+  font-size: 1rem;
+}
+.doc p,
+.doc ul,
+.doc ol,
+.doc table,
+.doc pre,
+.doc blockquote {
+  margin: 0 0 16px;
+}
+.doc ul,
+.doc ol {
+  padding-left: 1.4em;
+}
+.doc li {
+  margin: 4px 0;
+}
+.doc li > ul,
+.doc li > ol {
+  margin: 4px 0 0;
+}
+.doc a {
+  color: var(--focus);
+  text-underline-offset: 3px;
+}
+.doc a:hover {
+  color: var(--text);
+}
+.doc strong {
+  color: var(--text);
+}
+.doc img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 8px 0;
+}
+.doc hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 32px 0;
+}
+
+/* code: inline, and blocks that scroll sideways rather than wrap */
+.doc code {
+  font-family: inherit;
+  font-size: 0.9em;
+  padding: 1px 5px;
+  background: var(--hover);
+}
+.doc pre {
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.doc pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+/* tables scroll sideways on their own, never the page */
+.doc table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.doc th,
+.doc td {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.doc th {
+  background: var(--panel);
+}
+
+.doc blockquote {
+  padding: 4px 16px;
+  border-left: 3px solid var(--line);
+  color: var(--dim);
+}
+.doc blockquote.alert {
+  border-left-color: var(--focus);
+  background: var(--panel);
+  color: var(--text);
+}
+.doc blockquote.alert p:last-child {
+  margin-bottom: 8px;
+}
+.dsource {
+  margin-top: 64px !important;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+.dsource a {
+  color: var(--dim);
+}
+
+/* ---- narrower: no sections column */
+@media (max-width: 1100px) {
+  .docs {
+    grid-template-columns: 200px minmax(0, 760px);
+    gap: 40px;
+  }
+  .toc {
+    display: none;
+  }
+}
+/* ---- phones: the docs in a row under the header, the doc full width */
+@media (max-width: 760px) {
+  .docs {
+    display: block;
+    padding: 0;
+  }
+  .dnav {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    max-height: none;
+    flex-direction: row;
+    gap: 0;
+    padding: 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .dnav::-webkit-scrollbar {
+    display: none;
+  }
+  .dkind {
+    flex-direction: row;
+  }
+  .dkind h2 {
+    display: none;
+  }
+  .dnav a {
+    flex: none;
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+    padding: 12px 10px;
+    white-space: nowrap;
+  }
+  .dnav a[aria-current="page"] {
+    border-bottom-color: var(--focus);
+  }
+  .doc {
+    padding: 24px 16px 72px;
+    font-size: 14px;
+  }
+  .docs {
+    scroll-padding-top: 60px;
+  }
+}
