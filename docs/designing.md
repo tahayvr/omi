@@ -109,7 +109,8 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
    `npm run check:site`: the jig itself, in Chrome (see below).
    `npm run check:rust` and `npm run check:python`: the other two
    players. `npm run check:morphs`: both of them against the reference
-   player on every morph. `npm run check:qt`: the Qt item.
+   player on every morph. `npm run check:qt` and `npm run check:bash`:
+   the Qt item and the bash player, from the examples.
    In an Omarchy session, `npm run check:quickshell`: the player inside
    the shell itself. A new mode is only data,
    so all of them should pass unchanged; if a player fails, the mode uses

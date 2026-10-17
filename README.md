@@ -74,12 +74,13 @@ site, in Chrome: it shows the pack in pack/, and its CSS draws what the
 player draws), `npm run check:rust` and `npm run check:python` (the Rust
 and the Python player, on the conformance data), `npm run check:morphs`
 (both of them against the reference player on every morph there is),
-`npm run check:qt` (the Qt Quick item) and, in a Wayland session,
+`npm run check:qt` (the Qt Quick example's item), `npm run check:bash` (the
+bash example's player, on the conformance data) and, in a Wayland session,
 `npm run check:quickshell`.
-`npm run build` rebuilds pack/ and docs/modes. All but the site's and the
-Quickshell one run on every push
-([.github/workflows/check.yml](.github/workflows/check.yml)); those two need
-a browser and a Wayland session, so they are run by hand.
+`npm run build` rebuilds pack/ and docs/modes. All but the site's, the
+examples' and the Quickshell one run on every push
+([.github/workflows/check.yml](.github/workflows/check.yml)); those are run
+by hand.
 
 None of that needs anything installed. `pnpm install` brings in the two
 tools the code is kept tidy with: `pnpm fmt` formats it (oxfmt) and

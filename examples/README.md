@@ -89,7 +89,7 @@ state instead of calling `set` yourself: see the
   stops or starts the tour, `q` quits. `--once warning` prints a still and
   `--say "Hello"` puts text beside it; `--size`, `--fg`, `--bg` and
   `--bounce` are as in the Node one. It plays every animation exactly
-  (`node tools/check-bash.js` holds it to the conformance data) but pairs
+  (`npm run check:bash` holds it to the conformance data) but pairs
   pieces in a morph more simply than the reference player, which the pack
   allows. Bash 4 or later keeps exact time; macOS's bash 3.2 counts each
   frame as 1/30 s.
