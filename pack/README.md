@@ -108,8 +108,8 @@ What a mode is for:
   same way in every app. Variations of one mode say the same thing (every
   thinking is "Omi is thinking"). The reference player's
   `omi.label(mode)` gives it.
-- `family`: modes that mean the same thing ("thinking", "offline",
-  "transfer"). Pick one per family for a situation; the rest are variations.
+- `family`: modes that mean the same thing ("thinking", "download",
+  "upload"). Pick one per family for a situation; the rest are variations.
 - `easter`: true on the jokes (vim, glitch, code-rain). Leave them out of a
   generic picker.
 - `group`: where the jig files it. For people, not for apps.

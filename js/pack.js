@@ -39,13 +39,11 @@ const REACTIONS = {
   glitch: 1.8,
   hello: 1.6,
   goodbye: 1.4,
-  attention: 1.2,
   nod: 0.9,
   shake: 0.9,
 };
 const FAMILIES = {
   thinking: ["thinking", "thinking-dots"],
-  offline: ["offline-standby", "offline-searching"],
   download: ["download", "download-falling"],
   upload: ["upload", "upload-rising"],
 };
@@ -66,13 +64,8 @@ const LABELS = {
   working: "Omi is working",
   success: "Omi succeeded",
   warning: "Omi has a warning",
-  "offline-standby": "Omi is offline",
-  "offline-searching": "Omi is offline, looking for a network",
   "low-battery": "Omi is low on battery",
   sleeping: "Omi is asleep",
-  asking: "Omi has a question",
-  attention: "Omi wants your attention",
-  recording: "Omi is recording the screen",
   typing: "Omi is typing",
   listening: "Omi is listening",
   hello: "Omi says hello",
@@ -726,8 +719,8 @@ What a mode is for:
   same way in every app. Variations of one mode say the same thing (every
   thinking is "Omi is thinking"). The reference player's
   \`omi.label(mode)\` gives it.
-- \`family\`: modes that mean the same thing ("thinking", "offline",
-  "transfer"). Pick one per family for a situation; the rest are variations.
+- \`family\`: modes that mean the same thing ("thinking", "download",
+  "upload"). Pick one per family for a situation; the rest are variations.
 - \`easter\`: true on the jokes (vim, glitch, code-rain). Leave them out of a
   generic picker.
 - \`group\`: where the jig files it. For people, not for apps.

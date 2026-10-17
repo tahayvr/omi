@@ -38,8 +38,6 @@ const USE = {
   working: "Busy doing it for the user",
   success: "Done, then back",
   warning: "Something needs a look, but nothing is broken",
-  "offline-standby": "Offline and not trying",
-  "offline-searching": "Offline, looking for a network",
   "low-battery": "The battery is low",
   sleeping: "Paused, put off until later, or the night light",
   typing: "The user is typing, or something is being written for them",
@@ -70,11 +68,6 @@ const USE = {
   hello: "A greeting: first boot, a first open, then back",
   goodbye:
     "Logout, shutdown, reboot: a tilt and the eyes close, then the host shows the plain logo",
-  asking:
-    "Waiting for the user to decide: an agent wants approval, a dialog needs an answer",
-  attention:
-    "A ping: a notification arrived, a background job finished, then back",
-  recording: "The screen is being shared or recorded, as long as it lasts",
   nod: "Yes: a small agreement, lighter than success, then back",
   shake: "No: a gentle no, then back",
 };

@@ -1,6 +1,6 @@
 # Every Omi mode
 
-Omi has 46 modes, each a set of rectangles with a looping
+Omi has 41 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
 `node tools/modes-doc.js` from the pack, so it always matches
 `pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
@@ -37,13 +37,8 @@ drawn by the reference player.
 | ![Omi is working](modes/working.svg) | `working` | Working | state | 1.5 s | Omi is working | Busy doing it for the user |
 | ![Omi succeeded](modes/success.svg) | `success` | Success | reaction, 1.2 s | 1.6 s | Omi succeeded | Done, then back |
 | ![Omi has a warning](modes/warning.svg) | `warning` | Warning | state | 4 s | Omi has a warning | Something needs a look, but nothing is broken |
-| ![Omi is offline](modes/offline-standby.svg) | `offline-standby` | Offline, standby | state | 3 s | Omi is offline | Offline and not trying (family: offline) |
-| ![Omi is offline, looking for a network](modes/offline-searching.svg) | `offline-searching` | Offline, searching | state | 7.9 s | Omi is offline, looking for a network | Offline, looking for a network (family: offline) |
 | ![Omi is low on battery](modes/low-battery.svg) | `low-battery` | Low battery | state | 5 s | Omi is low on battery | The battery is low |
-| ![Omi is asleep](modes/sleeping.svg) | `sleeping` | Sleeping | state | 4.3 s | Omi is asleep | Paused, put off until later, or the night light |
-| ![Omi has a question](modes/asking.svg) | `asking` | Asking | state | 3 s | Omi has a question | Waiting for the user to decide: an agent wants approval, a dialog needs an answer |
-| ![Omi wants your attention](modes/attention.svg) | `attention` | Attention | reaction, 1.2 s | 1.2 s | Omi wants your attention | A ping: a notification arrived, a background job finished, then back |
-| ![Omi is recording the screen](modes/recording.svg) | `recording` | Recording | state | 4 s | Omi is recording the screen | The screen is being shared or recorded, as long as it lasts |
+| ![Omi is asleep](modes/sleeping.svg) | `sleeping` | Sleeping | state | 4 s | Omi is asleep | Paused, put off until later, or the night light |
 | ![Omi is typing](modes/typing.svg) | `typing` | Typing | state | 3.1 s | Omi is typing | The user is typing, or something is being written for them |
 | ![Omi is listening](modes/listening.svg) | `listening` | Listening | state | 1 s | Omi is listening | Waiting for the user to press a key |
 | ![Omi says hello](modes/hello.svg) | `hello` | Hello | reaction, 1.6 s | 1.6 s | Omi says hello | A greeting: first boot, a first open, then back |

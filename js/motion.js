@@ -64,7 +64,7 @@ const ANIM = {
     ease: "ease-in-out",
     keys: [
       [0, { ty: 0 }],
-      [0.5, { ty: -12 }],
+      [0.5, { ty: -10 }],
       [1, { ty: 0 }],
     ],
   },
@@ -158,15 +158,6 @@ const ANIM = {
       [0, { sx: 1 }],
       [0.5, { sx: 1.5 }],
       [1, { sx: 1 }],
-    ],
-  },
-  led: {
-    dur: 3,
-    ease: "ease-in-out",
-    keys: [
-      [0, { op: 0.15 }],
-      [0.5, { op: 1 }],
-      [1, { op: 0.15 }],
     ],
   },
   z: {
@@ -414,16 +405,6 @@ const ANIM = {
       [1, { op: 0.15 }],
     ],
   },
-  hole: {
-    // offline: frame cells drop out and come back one by one
-    dur: 4,
-    ease: "linear",
-    keys: [
-      [0, { op: 0 }],
-      [0.05, { op: 1 }],
-      [1, { op: 1 }],
-    ],
-  },
   ripple: {
     dur: 0.8,
     ease: "ease-in-out",
@@ -555,64 +536,7 @@ const ANIM = {
       [1, { ty: 0, sy: 0.1 }],
     ],
   },
-  // asking: the eyes glance up at the question mark, then back
-  glance: emo(3, [
-    [0, {}],
-    [0.3, {}],
-    [0.4, { tx: 20, ty: -20 }],
-    [0.7, { tx: 20, ty: -20 }],
-    [0.8, {}],
-    [1, {}],
-  ]),
-  // asking: one brow lifts with the glance
-  liftb: emo(3, [
-    [0, {}],
-    [0.3, {}],
-    [0.4, { ty: -10 }],
-    [0.7, { ty: -10 }],
-    [0.8, {}],
-    [1, {}],
-  ]),
-  // attention: the eyes go to the corner where the ping is
-  peekup: emo(1.2, [
-    [0, {}],
-    [0.15, { tx: 20, ty: -20 }],
-    [0.85, { tx: 20, ty: -20 }],
-    [1, {}],
-  ]),
-  // attention: a dot pops in at the corner (rest is the dot, popped)
-  ping: {
-    dur: 1.2,
-    ease: "ease-out",
-    keys: [
-      [0, { sx: 0.2, sy: 0.2, op: 0 }],
-      [0.15, { sx: 1.4, sy: 1.4, op: 1 }],
-      [0.3, { sx: 1, sy: 1 }],
-      [1, { sx: 1, sy: 1, op: 1 }],
-    ],
-  },
-  // attention: four sparks fly out from the ping and fade (mx, my: how far)
-  ring: {
-    dur: 1.2,
-    ease: "ease-out",
-    vars: ["mx", "my"],
-    keys: [
-      [0, { tx: 0, ty: 0, op: 0 }],
-      [0.15, { op: 1 }],
-      [0.6, { tx: ["mx", 1], ty: ["my", 1], op: 0 }],
-      [1, { tx: ["mx", 1], ty: ["my", 1], op: 0 }],
-    ],
-  },
-  // recording: a light that blinks like a camera's
-  rec: {
-    dur: 1.6,
-    ease: "steps",
-    keys: [
-      [0, { op: 1 }],
-      [0.5, { op: 0.15 }],
-      [1, { op: 1 }],
-    ],
-  },
+
   // nod: yes; shake: no. The eyes alone, a whole cell each way so it reads
   // at any size, the frame still.
   nod: emo(0.7, [
@@ -749,10 +673,7 @@ const START = {
   dot: 0.3, // lit
   pop: 0.2, // bright
   breathe: 0.5,
-  led: 0.5,
   ripple: 0.2,
-  ping: 0.3, // popped
-  ring: 0.15, // the sparks just lit, still at the ping
 };
 for (const [k, by] of Object.entries(START))
   ANIM[k] = prep(rotate(ANIM[k], by));

@@ -75,11 +75,12 @@ const F = {
     ]),
   ],
   sleeping: [
-    R(80, 144, 40, 12, "breathe"),
-    R(160, 144, 40, 12, "breathe"),
-    ...Z(318, -20, 16),
-    ...Z(340, -62, 24, 0.87),
-    ...Z(370, -114, 32, 1.73),
+    // shut: half a cell tall, on the half-cell grid
+    R(80, 140, 40, 10, "breathe"),
+    R(160, 140, 40, 10, "breathe"),
+    // two z's of 10-unit pixels, half a loop apart, rising off the corner
+    ...Z(310, 10, 40),
+    ...Z(330, -50, 40, 1.3),
   ],
   wink: [
     ...blk(90, 100, [
@@ -139,8 +140,6 @@ Object.assign(F, {
       R(310, 40, 40, 20, "placard"),
     ]),
   ],
-  offline: [R(80, 140, 40, 10), R(160, 140, 40, 10)],
-  standby: [R(140, 140, 20, 20, "led")],
   hollow: [
     R(100, 110, 20, 5),
     R(100, 145, 20, 5),

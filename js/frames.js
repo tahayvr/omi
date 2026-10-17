@@ -117,14 +117,6 @@ const FRAMES = {
     c: "burst",
     ...outward(r, INNER_RECTS.includes(r) ? 10 : 20),
   })),
-  "offline-searching": [
-    ...MISC,
-    ...INNER_RECTS,
-    ...cellsOf(OUT_PATH, (i) => ({
-      c: "hole",
-      dl: (i / OUT_PATH.length) * 4,
-    })),
-  ],
   // the variations: the gap climbs (or drops down) the frame's four sides,
   // the inner ones a little behind the outer ones
   "upload-rising": sides(-1),
@@ -133,7 +125,8 @@ const FRAMES = {
     ...MISC.map((r) => (r.y >= 260 ? r : { ...r, o: 0.2 })),
     ...INNER_RECTS,
     ...cellsOf(OUT_PATH, (i, x, y) =>
-      y >= 260 ? (y === 260 ? { c: "pulseop" } : {}) : { o: 0.2 },
+      // the battery's last bit pulses, slowly
+      y >= 260 ? (y === 260 ? { c: "pulseop", dur: 2.4 } : {}) : { o: 0.2 },
     ),
   ],
   sleeping: [
