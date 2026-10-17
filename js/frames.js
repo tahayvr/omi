@@ -134,20 +134,6 @@ const FRAMES = {
     ...tint(INNER_RECTS, "breathe"),
     ...tint(OUTER_RECTS, "breathe"),
   ],
-  typing: [
-    ...MISC,
-    ...INNER_RECTS,
-    ...cellsOf([
-      ...range(0, 280).map((x) => [x, 0]),
-      ...range(20, 260).map((y) => [280, y]),
-      ...range(20, 260).map((y) => [0, y]),
-    ]),
-    ...chase(
-      [...range(0, 140), ...range(180, 280)].map((x) => [x, 280]),
-      1.6,
-      0.3,
-    ),
-  ],
 };
 
 /* mouths: the inner frame's bottom becomes the mouth. Same geometry: the

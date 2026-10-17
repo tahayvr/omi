@@ -288,7 +288,6 @@ const ANIM = {
 
   /* frame */
   // chase: a lit cell fading to a floor; pieces carry their own dur and dl
-  t30: fade(0.3, 0.2),
   t40: fade(0.4, 0.2),
   t60: fade(0.6, 0.2),
   // transfer (frames.js flow()): a pass is 1.6 s, the frame's cells each

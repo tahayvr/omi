@@ -87,8 +87,9 @@ const F = {
     R(140, 110, 20, 20, "shades"),
     R(160, 110, 60, 40, "shades"),
   ],
+  // a prompt and a blinking cursor, > ▌, centred
   typing: [
-    ...blk(90, 100, [
+    ...blk(100, 100, [
       [0, 0],
       [1, 1],
       [0, 2],
