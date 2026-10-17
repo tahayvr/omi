@@ -226,10 +226,6 @@
 .fig figcaption b {
   font-size: 15px;
 }
-.fig figcaption span {
-  font-size: 13px;
-  opacity: 0.75;
-}
 .asciis figure {
   margin: 0;
   flex: 1 1 260px;
