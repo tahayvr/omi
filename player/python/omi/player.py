@@ -20,7 +20,7 @@ def _unit(value):
 
 
 class Player:
-    """Plays an Omi pack.
+    """Plays an Omi kit.
 
     `speed` scales time (never less than 0.05), `rest` scales the still
     time between passes of a loop (1 as designed, 0 back to back, 2 twice
@@ -31,12 +31,12 @@ class Player:
     lands, and after a jump. All of these can also be set later, as attributes;
     turning `animate` on or off puts the loop clock back to 0.
 
-    Raises `UnknownMode` (a `KeyError`) if the pack has no such `mode`.
+    Raises `UnknownMode` (a `KeyError`) if the kit has no such `mode`.
     """
 
-    def __init__(self, pack, speed=1.0, animate=True, body_motion=True,
+    def __init__(self, kit, speed=1.0, animate=True, body_motion=True,
                  mode="logo", on_settled=None, rest=1.0):
-        self.pack = pack
+        self.kit = kit
         self.speed = speed
         self.rest = rest
         self._animate = bool(animate)
@@ -46,7 +46,7 @@ class Player:
         self._scenes = {}
         # The logo: a rect that overlaps any piece of "logo" is cut into
         # cells for a morph.
-        plain = pack.modes.get("logo")
+        plain = kit.modes.get("logo")
         self._logo = [(p.x, p.y, p.w, p.h) for p in plain.pieces] if plain else []
 
         self._scene = self._scene_of(mode)
@@ -59,7 +59,7 @@ class Player:
         # it has one, kept after the landing).
         self._sync = None
 
-        gaze = pack.gaze
+        gaze = kit.gaze
         self._gaze_ease = make_ease(gaze.ease) if gaze else None
         self._gaze_roles = frozenset(gaze.roles) if gaze else frozenset()
         self._look_from = (0.0, 0.0)
@@ -79,7 +79,7 @@ class Player:
     def _scene_of(self, mode):
         scene = self._scenes.get(mode)
         if scene is None:
-            scene = Scene(self.pack, self.pack.mode(mode))
+            scene = Scene(self.kit, self.kit.mode(mode))
             self._scenes[mode] = scene
         return scene
 
@@ -127,10 +127,10 @@ class Player:
         time now: give `frame` Unix time in milliseconds too
         (`time.time() * 1000`).
 
-        Raises `UnknownMode` (a `KeyError`) if the pack has no such mode.
+        Raises `UnknownMode` (a `KeyError`) if the kit has no such mode.
         """
         scene = self._scene_of(mode)
-        seconds = self.pack.morph.duration + self.pack.morph.stagger
+        seconds = self.kit.morph.duration + self.kit.morph.stagger
         # A shared change in the middle of another starts from what the
         # clock had on screen at `since`, the same in every app, not from
         # this player's last frame, which its own frame timing put a little
@@ -159,7 +159,7 @@ class Player:
         # from the next frame on.
         self._plan = plan_morph(
             source, scene.rects(0.0, self.body_motion, self._rest_scale),
-            self.pack.morph, self.pack.grid, self._logo,
+            self.kit.morph, self.kit.grid, self._logo,
         )
         if self._sync is not None:
             self._sync = self._sync[:2] + (self._plan,)
@@ -232,7 +232,7 @@ class Player:
 
         if self._look_progress < 1.0:
             # The gaze has its own clock, advanced like the others.
-            gaze = self.pack.gaze
+            gaze = self.kit.gaze
             p = min(1.0, self._look_progress + dt / gaze.duration)
             self._look_progress = p
             if p >= 1.0:
@@ -267,7 +267,7 @@ class Player:
         """The rects to fill now, in drawing order.
 
         Each is a `Rect`: x, y, w, h in grid units, opacity (always above
-        0.001) and role. Map the pack's `view` onto the drawing area.
+        0.001) and role. Map the kit's `view` onto the drawing area.
         """
         if self._drawn is None:
             self._drawn = self._with_gaze(self._base_rects())
@@ -288,9 +288,9 @@ class Player:
 
         (0, 0) is straight ahead. The eyes ease there from wherever they
         are. Asking for the direction already set does nothing, and so
-        does a pack without gaze.
+        does a kit without gaze.
         """
-        if self.pack.gaze is None:
+        if self.kit.gaze is None:
             return
         target = (_unit(dx), _unit(dy))
         if target == self._look_to:
@@ -315,7 +315,7 @@ class Player:
         gx, gy = self._look_now
         if gx == 0.0 and gy == 0.0:
             return rects
-        gaze = self.pack.gaze
+        gaze = self.kit.gaze
         roles = self._gaze_roles
         eyes = [r for r in rects if r[5] in roles]
         if not eyes:
@@ -379,8 +379,8 @@ class Player:
         Give it to your toolkit as the picture's accessible name, so Omi
         is announced the same way in every app.
         """
-        return self.pack.mode(mode).label
+        return self.kit.mode(mode).label
 
     def kind(self, mode):
-        """What the pack calls a mode: "state" or "reaction"."""
-        return self.pack.mode(mode).kind
+        """What the kit calls a mode: "state" or "reaction"."""
+        return self.kit.mode(mode).kind

@@ -2,7 +2,9 @@
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "printWidth": 80,
   "ignorePatterns": [
-    "pack/",
+    "kit/",
+    "player/python/omi/omi.json",
+    "player/rust/omi.json",
     "docs/modes.md",
     "docs/modes/",
     "js/vendor/",

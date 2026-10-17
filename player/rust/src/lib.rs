@@ -1,13 +1,13 @@
-//! A player for Omi, the Omarchy mascot, written from the Omi pack's README
-//! (pack/README.md) and checked against pack/conformance.json. It draws
+//! A player for Omi, the Omarchy mascot, written from the Omi kit's README
+//! (kit/README.md) and checked against kit/conformance.json. It draws
 //! nothing itself: a host calls [`Player::frame`] on every display frame and
 //! fills the rects from [`Player::rects`] in its accent colour.
 //!
 //! ```no_run
-//! use omi::{Pack, Player};
+//! use omi::{Kit, Player};
 //!
-//! let pack = Pack::parse(&std::fs::read_to_string("omi.json")?)?;
-//! let mut omi = Player::new(&pack);
+//! let kit = Kit::bundled();      // the kit that ships in this crate
+//! let mut omi = Player::new(&kit);
 //! omi.set("thinking")?;          // morphs there from wherever Omi is
 //! omi.frame(16.0);               // milliseconds, on every display frame
 //! for r in omi.rects() {
@@ -18,10 +18,10 @@
 
 mod anim;
 mod morph;
-mod pack;
+mod kit;
 
-pub use pack::{
-    Animation, Clip, Ease, Error, GazeSettings, Key, Mode, MorphSettings, Pack, Piece, Value,
+pub use kit::{
+    Animation, Clip, Ease, Error, GazeSettings, Key, Mode, MorphSettings, Kit, Piece, Value,
 };
 
 use anim::{Motion, REST};
@@ -98,12 +98,12 @@ struct Gaze {
 
 /// Plays one Omi: its mode, its loops, morphs between modes, and the gaze.
 pub struct Player {
-    pack: Pack,
+    kit: Kit,
     speed: f64,
     rest: f64,
     animate: bool,
     body_motion: bool,
-    /// Index into `pack.modes`.
+    /// Index into `kit.modes`.
     mode: usize,
     /// Seconds into the current mode's loops.
     t: f64,
@@ -114,22 +114,22 @@ pub struct Player {
 }
 
 impl Player {
-    /// A player on this pack with default options, starting at "logo".
-    pub fn new(pack: &Pack) -> Player {
-        Player::with_options(pack, Options::default())
+    /// A player on this kit with default options, starting at "logo".
+    pub fn new(kit: &Kit) -> Player {
+        Player::with_options(kit, Options::default())
     }
 
-    pub fn with_options(pack: &Pack, opts: Options) -> Player {
-        let pack = pack.clone();
+    pub fn with_options(kit: &Kit, opts: Options) -> Player {
+        let kit = kit.clone();
         let start = opts.mode.as_deref().unwrap_or("logo");
-        let mode = pack
+        let mode = kit
             .modes
             .iter()
             .position(|m| m.id == start)
-            .or_else(|| pack.modes.iter().position(|m| m.id == "logo"))
+            .or_else(|| kit.modes.iter().position(|m| m.id == "logo"))
             .unwrap_or(0);
         Player {
-            pack,
+            kit,
             speed: opts.speed,
             rest: opts.rest,
             animate: opts.animate,
@@ -146,14 +146,14 @@ impl Player {
         }
     }
 
-    /// The pack this player plays.
-    pub fn pack(&self) -> &Pack {
-        &self.pack
+    /// The kit this player plays.
+    pub fn kit(&self) -> &Kit {
+        &self.kit
     }
 
     /// The id of the mode Omi is in, or morphing to.
     pub fn mode(&self) -> &str {
-        &self.pack.modes[self.mode].id
+        &self.kit.modes[self.mode].id
     }
 
     pub fn speed(&self) -> f64 {
@@ -207,7 +207,7 @@ impl Player {
     }
 
     fn index(&self, id: &str) -> Result<usize, Error> {
-        self.pack
+        self.kit
             .modes
             .iter()
             .position(|m| m.id == id)
@@ -233,14 +233,14 @@ impl Player {
         // The pieces as they are on screen now, before the gaze is laid on
         // top, and the new mode's pieces at rest.
         let from = self.screen_rects();
-        let to = self.rest_rects(&self.pack.modes[next]);
+        let to = self.rest_rects(&self.kit.modes[next]);
         self.mode = next;
         self.t = 0.0;
         if instant || from.is_empty() {
             self.morph = None;
             return Ok(());
         }
-        let steps = morph::plan(&self.pack, &from, &to);
+        let steps = morph::plan(&self.kit, &from, &to);
         self.morph = Some(Morph { steps, t: 0.0 });
         Ok(())
     }
@@ -260,7 +260,7 @@ impl Player {
             self.t += dt;
         }
         // The gaze eases on its own clock, whatever the mode is doing.
-        if let Some(g) = &self.pack.gaze {
+        if let Some(g) = &self.kit.gaze {
             if self.gaze.p < 1.0 {
                 self.gaze.p = (self.gaze.p + dt / g.duration).min(1.0);
             }
@@ -271,7 +271,7 @@ impl Player {
     /// step is done, starting the new mode's loops at t = 0.
     fn step_morph(&mut self, dt: f64) {
         let Some(m) = &mut self.morph else { return };
-        let settings = &self.pack.morph;
+        let settings = &self.kit.morph;
         m.t += dt;
         for s in &mut m.steps {
             let p = ((m.t - s.delay) / settings.duration).clamp(0.0, 1.0);
@@ -320,7 +320,7 @@ impl Player {
                 .collect(),
             None => {
                 let t = if self.animate { self.t } else { 0.0 };
-                self.rest_or_at(&self.pack.modes[self.mode], t)
+                self.rest_or_at(&self.kit.modes[self.mode], t)
             }
         }
     }
@@ -339,7 +339,7 @@ impl Player {
     /// order, with body motion as the player is set. Rects with an opacity
     /// of 0.001 or less are left out.
     pub fn mode_rects(&self, id: &str, t: f64) -> Result<Vec<Rect>, Error> {
-        let mode = &self.pack.modes[self.index(id)?];
+        let mode = &self.kit.modes[self.index(id)?];
         Ok(self.rest_or_at(mode, t))
     }
 
@@ -351,7 +351,7 @@ impl Player {
         duration: Option<f64>,
         piece: Option<&Piece>,
     ) -> Motion {
-        let Some(a) = anim.and_then(|n| self.pack.animations.get(n)) else {
+        let Some(a) = anim.and_then(|n| self.kit.animations.get(n)) else {
             return REST;
         };
         let var = |name: &str| piece.map_or(0.0, |p| p.var(name));
@@ -419,9 +419,9 @@ impl Player {
 
     /// Turns the eyes toward a direction, each axis -1..1 (x right, y down),
     /// eased from wherever they are. (0, 0) looks straight ahead. Does
-    /// nothing without `gaze` in the pack.
+    /// nothing without `gaze` in the kit.
     pub fn look(&mut self, dx: f64, dy: f64) {
-        if self.pack.gaze.is_none() {
+        if self.kit.gaze.is_none() {
             return;
         }
         let clamp = |v: f64| if v.is_nan() { 0.0 } else { v.clamp(-1.0, 1.0) };
@@ -442,7 +442,7 @@ impl Player {
         if g.p >= 1.0 {
             return g.to;
         }
-        let e = match &self.pack.gaze {
+        let e = match &self.kit.gaze {
             Some(spec) => anim::ease(&spec.ease, g.p),
             None => 1.0,
         };
@@ -455,11 +455,11 @@ impl Player {
     }
 
     /// Moves the gazing roles' rects by the current gaze, kept inside the
-    /// pack's `inside` box: on each axis the move is limited over the gazing
+    /// kit's `inside` box: on each axis the move is limited over the gazing
     /// rects that fit in the box, to the smallest room on the far side and
     /// the largest on the near side. Limits that cross mean no room.
     fn with_gaze(&self, list: Vec<Rect>) -> Vec<Rect> {
-        let Some(spec) = &self.pack.gaze else {
+        let Some(spec) = &self.kit.gaze else {
             return list;
         };
         let [gx, gy] = self.gaze();
@@ -511,13 +511,13 @@ impl Player {
     /// animations included. 0 for a still mode or
     /// an unknown one.
     pub fn loop_seconds(&self, id: &str) -> f64 {
-        let Some(mode) = self.pack.mode(id) else {
+        let Some(mode) = self.kit.mode(id) else {
             return 0.0;
         };
         let mut t: f64 = 0.0;
         let scale = self.rest_scale();
         let mut use_anim = |name: Option<&String>, delay: f64, duration: Option<f64>| {
-            if let Some(a) = name.and_then(|n| self.pack.animations.get(n)) {
+            if let Some(a) = name.and_then(|n| self.kit.animations.get(n)) {
                 t = t.max(a.rest * scale + duration.unwrap_or(a.duration) + delay);
             }
         };
@@ -534,25 +534,25 @@ impl Player {
     /// How long to show a mode as a reaction after its morph lands, in
     /// seconds: its `hold`, or its loop time kept between 1.2 and 2.5 s.
     pub fn hold(&self, id: &str) -> f64 {
-        match self.pack.mode(id).and_then(|m| m.hold) {
+        match self.kit.mode(id).and_then(|m| m.hold) {
             Some(h) => h,
             None => self.loop_seconds(id).clamp(1.2, 2.5),
         }
     }
 
     /// What a screen reader says for a mode ("Omi is thinking"): its label,
-    /// or its name in a pack without labels. Give it to your toolkit as the
-    /// picture's accessible name. Empty for a mode the pack doesn't have.
+    /// or its name in a kit without labels. Give it to your toolkit as the
+    /// picture's accessible name. Empty for a mode the kit doesn't have.
     pub fn label(&self, id: &str) -> &str {
-        match self.pack.mode(id) {
+        match self.kit.mode(id) {
             Some(m) => m.label.as_deref().or(m.name.as_deref()).unwrap_or(&m.id),
             None => "",
         }
     }
 
-    /// A mode's kind; "state" unless the pack says "reaction".
+    /// A mode's kind; "state" unless the kit says "reaction".
     pub fn kind(&self, id: &str) -> Kind {
-        match self.pack.mode(id).and_then(|m| m.kind.as_deref()) {
+        match self.kit.mode(id).and_then(|m| m.kind.as_deref()) {
             Some("reaction") => Kind::Reaction,
             _ => Kind::State,
         }
@@ -560,7 +560,7 @@ impl Player {
 
     /// How long a morph takes from start to landing, in seconds.
     pub fn morph_seconds(&self) -> f64 {
-        self.pack.morph.duration + self.pack.morph.stagger
+        self.kit.morph.duration + self.kit.morph.stagger
     }
 }
 

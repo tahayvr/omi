@@ -1,7 +1,7 @@
 name: Publish
 
-# Publishes the site, https://tahayvr.github.io/meet-omi/, from master, and
-# only a build whose pack and player pass their checks. The site's own
+# Publishes the site, https://tahayvr.github.io/omi/, from master, and
+# only a build whose kit and player pass their checks. The site's own
 # check runs in a browser, so it is run by hand: npm run check:site, or
 # ?check on the live address.
 #
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # pack/ is built from what's committed, and the player plays it right
+      # kit/ is built from what's committed, and the player plays it right
       - run: npm run check
       # the site as it goes up: every file, stamped with this commit
       - run: node tools/publish-site.js _site

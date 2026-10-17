@@ -6,7 +6,7 @@
 
    The site is the repo as it stands (everything git tracks or would), so
    every address that works in a checkout works when published: the jig, the
-   pack, the web example. Two things are added to the two pages, index.html
+   kit, the web example. Two things are added to the two pages, index.html
    (the home page) and jig.html (the jig):
 
    - which commit this is, as <meta name="omi-build">, so a published page

@@ -13,10 +13,10 @@
 //! Omi's color. Colors default to the Omarchy theme's accent and background.
 
 use minifb::{Key, KeyRepeat, MouseButton, MouseMode, Window, WindowOptions};
-use omi::{Kind, Pack, Player};
+use omi::{Kind, Kit, Player};
 use std::time::Instant;
 
-/// Room around the pack's view, in grid units, for props that go past it
+/// Room around the kit's view, in grid units, for props that go past it
 /// (the z's, the confetti, the download arrow).
 const BLEED: f64 = 90.0;
 /// Pixels under Omi for the row of modes.
@@ -37,9 +37,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .or_else(|| themed("background"))
         .unwrap_or(0x1a1b26);
 
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../pack/omi.json");
-    let pack = Pack::parse(&std::fs::read_to_string(path)?)?;
-    let mut app = App::new(&pack, accent, bg);
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../kit/omi.json");
+    let kit = Kit::parse(&std::fs::read_to_string(path)?)?;
+    let mut app = App::new(&kit, accent, bg);
 
     let mut window = Window::new(
         "Omi",
@@ -77,7 +77,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 _ => {}
             }
         }
-        let stage = Stage::new(&pack, w, h);
+        let stage = Stage::new(&kit, w, h);
         if let Some((mx, my)) = window.get_mouse_pos(MouseMode::Discard) {
             app.look_at(&stage, mx as f64, my as f64, now);
             let down = window.get_mouse_down(MouseButton::Left);
@@ -101,7 +101,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 /// Where Omi goes in a window of w × h pixels: one logo cell a whole number
-/// of pixels (see "Drawing Omi crisp" in the pack's README), with the view
+/// of pixels (see "Drawing Omi crisp" in the kit's README), with the view
 /// and its bleed inside, centered above the strip of modes.
 struct Stage {
     scale: f64,
@@ -113,13 +113,13 @@ struct Stage {
 }
 
 impl Stage {
-    fn new(pack: &Pack, w: usize, h: usize) -> Stage {
-        let [vx, vy, vw, vh] = pack.view;
+    fn new(kit: &Kit, w: usize, h: usize) -> Stage {
+        let [vx, vy, vw, vh] = kit.view;
         let side = (w.saturating_sub(16))
             .min(h.saturating_sub(STRIP + 16))
             .max(22) as f64;
-        let cells = (side / (vw + 2.0 * BLEED) * pack.grid).floor().max(1.0);
-        let scale = cells / pack.grid;
+        let cells = (side / (vw + 2.0 * BLEED) * kit.grid).floor().max(1.0);
+        let scale = cells / kit.grid;
         let (cx, cy) = (w as f64 / 2.0, (h - STRIP.min(h)) as f64 / 2.0);
         Stage {
             scale,
@@ -153,9 +153,9 @@ struct App {
 }
 
 impl App {
-    fn new(pack: &Pack, accent: u32, bg: u32) -> App {
-        let omi = Player::new(pack);
-        let names = pack
+    fn new(kit: &Kit, accent: u32, bg: u32) -> App {
+        let omi = Player::new(kit);
+        let names = kit
             .modes
             .iter()
             .filter(|m| m.id != "logo")
@@ -167,7 +167,7 @@ impl App {
                 )
             })
             .collect();
-        let reactions = pack
+        let reactions = kit
             .modes
             .iter()
             .filter(|m| omi.kind(&m.id) == Kind::Reaction)
@@ -273,7 +273,7 @@ impl App {
         let id = self.omi.mode();
         let name = self
             .omi
-            .pack()
+            .kit()
             .mode(id)
             .and_then(|m| m.name.clone())
             .unwrap_or_else(|| id.to_string());

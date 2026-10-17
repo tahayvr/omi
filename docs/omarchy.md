@@ -10,8 +10,8 @@ and keeping it in step with the rest of the system.
 Copy three files into your plugin:
 
 - `examples/omarchy/Omi.qml`: the Omi item.
-- `pack/omi.js`: the player.
-- `pack/omi.json`: every mode, animation and morph setting.
+- `kit/omi.js`: the player.
+- `kit/omi.json`: every mode, animation and morph setting.
 
 Then use the item:
 
@@ -36,13 +36,13 @@ Omi {
   smaller than the item: size the item so its width in device pixels is a
   multiple of 22 for no loss, or lay out around `drawn`, the size Omi is
   really drawn at. Below about 44 device pixels the face gets hard to read.
-  See "Drawing Omi crisp" in the pack README.
+  See "Drawing Omi crisp" in the kit README.
 - **Cost.** Omi only animates while its window is on screen. Hidden, it costs
   nothing.
 - **Calmer motion.** In small places, such as next to a title or in the bar,
   set `bodyMotion: false` to keep the face's motion and drop the whole-body
   bobs and hops. `animate: false` shows each mode at rest.
-- **Screen readers.** The item is a picture named by the pack's `label` for
+- **Screen readers.** The item is a picture named by the kit's `label` for
   what it shows ("Omi is thinking", "Omi succeeded"), so Omi is announced
   the same way in every app. That is `label` on the item; bind
   `Accessible.name` to something else when your app has better words for
@@ -59,10 +59,10 @@ Omi has two layers:
   there as long as that state lasts: checking for updates, downloading, waiting
   for a key press.
 - **`react(mode)` is something that just happened.** It morphs to a mode,
-  holds it for the time the pack gives that mode (`hold`, 1.2 to 2.5 s;
+  holds it for the time the kit gives that mode (`hold`, 1.2 to 2.5 s;
   the player's `hold(mode)`), then goes back to `mode`. Every app that uses
-  the pack's hold reacts alike. Use it for events: a step done, a file
-  saved, a command failed. The pack says which modes are reactions
+  the kit's hold reacts alike. Use it for events: a step done, a file
+  saved, a command failed. The kit says which modes are reactions
   (`kind`); a state used as a reaction works too.
 
 So that Omi means the same thing in every Omarchy app, use the same modes for
@@ -113,7 +113,7 @@ Omi {
 
 Use it to draw the eye to what the user should look at next: the bar, a
 window that just opened, a panel. Keep it to something that's really there,
-and look ahead again once it's gone. A full look is always safe: the pack
+and look ahead again once it's gone. A full look is always safe: the kit
 keeps the eyes inside the logo, so wide eyes (success) turn less far
 by themselves. Modes without eyes (`logo`, `tiling`, `confused`) ignore it.
 

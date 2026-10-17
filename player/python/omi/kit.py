@@ -1,7 +1,7 @@
-"""Loading the Omi pack: omi.json as plain Python types.
+"""Loading the Omi kit: omi.json as plain Python types.
 
 Nothing here works out a frame. This module only reads the data and checks
-that it is a pack this player understands (format version 1).
+that it is a kit this player understands (format version 1).
 """
 
 import json
@@ -13,8 +13,8 @@ __all__ = [
     "GazeSettings",
     "Mode",
     "MorphSettings",
-    "Pack",
-    "PackError",
+    "Kit",
+    "KitError",
     "Piece",
     "Rect",
     "UnknownMode",
@@ -28,12 +28,12 @@ FACE_ROLES = frozenset(("eye", "brow", "mouth", "tear"))
 Value = Union[float, Tuple[str, float]]
 
 
-class PackError(ValueError):
-    """The text is not an Omi pack this player can read."""
+class KitError(ValueError):
+    """The text is not an Omi kit this player can read."""
 
 
 class UnknownMode(KeyError):
-    """The pack has no mode with that id."""
+    """The kit has no mode with that id."""
 
     def __init__(self, mode):
         KeyError.__init__(self, mode)
@@ -131,13 +131,13 @@ class GazeSettings(NamedTuple):
 
 def _number(value, what):
     if isinstance(value, bool) or not isinstance(value, (int, float)):
-        raise PackError("%s must be a number, got %r" % (what, value))
+        raise KitError("%s must be a number, got %r" % (what, value))
     return float(value)
 
 
 def _numbers(value, count, what):
     if not isinstance(value, (list, tuple)) or len(value) != count:
-        raise PackError("%s must be a list of %d numbers" % (what, count))
+        raise KitError("%s must be a list of %d numbers" % (what, count))
     return tuple(_number(v, what) for v in value)
 
 
@@ -150,16 +150,16 @@ def _ease(value, what):
 def _animation(name, data):
     what = 'animation "%s"' % name
     if not isinstance(data, dict):
-        raise PackError("%s must be an object" % what)
+        raise KitError("%s must be an object" % what)
     keys = []
     for key in data.get("keys", ()):
         if not isinstance(key, (list, tuple)) or len(key) != 2 or not isinstance(key[1], dict):
-            raise PackError("%s: a key must be [progress, values]" % what)
+            raise KitError("%s: a key must be [progress, values]" % what)
         values = {}
         for prop, value in key[1].items():
             if isinstance(value, (list, tuple)):
                 if len(value) != 2 or not isinstance(value[0], str):
-                    raise PackError("%s: %s must be a number or [name, factor]" % (what, prop))
+                    raise KitError("%s: %s must be a number or [name, factor]" % (what, prop))
                 values[prop] = (value[0], _number(value[1], what + " " + prop))
             else:
                 values[prop] = _number(value, what + " " + prop)
@@ -167,10 +167,10 @@ def _animation(name, data):
     keys.sort(key=lambda k: k[0])
     duration = _number(data.get("duration"), what + " duration")
     if duration <= 0:
-        raise PackError("%s: duration must be above 0" % what)
+        raise KitError("%s: duration must be above 0" % what)
     rest = _number(data.get("rest", 0), what + " rest")
     if rest < 0:
-        raise PackError("%s: rest must be 0 or more" % what)
+        raise KitError("%s: rest must be 0 or more" % what)
     return Animation(
         name=name,
         duration=duration,
@@ -188,15 +188,15 @@ _PIECE_KEYS = frozenset(
 
 def _piece(data, what, animations):
     if not isinstance(data, dict):
-        raise PackError("%s must be an object" % what)
+        raise KitError("%s must be an object" % what)
     anim = data.get("anim")
     if anim is not None and anim not in animations:
-        raise PackError('%s plays "%s", which is not in animations' % (what, anim))
+        raise KitError('%s plays "%s", which is not in animations' % (what, anim))
     duration = data.get("duration")
     if duration is not None:
         duration = _number(duration, what + " duration")
         if duration <= 0:
-            raise PackError("%s: duration must be above 0" % what)
+            raise KitError("%s: duration must be above 0" % what)
     # Any other number on a piece is one an animation may read by name
     # (mx, my, dx, dy).
     numbers = {}
@@ -220,19 +220,19 @@ def _piece(data, what, animations):
 
 def _mode(data, animations):
     if not isinstance(data, dict) or not isinstance(data.get("id"), str):
-        raise PackError("a mode must be an object with an id")
+        raise KitError("a mode must be an object with an id")
     mode_id = data["id"]
     what = 'mode "%s"' % mode_id
     anim = data.get("anim")
     if anim is not None and anim not in animations:
-        raise PackError('%s plays "%s", which is not in animations' % (what, anim))
+        raise KitError('%s plays "%s", which is not in animations' % (what, anim))
     clip = data.get("clip")
     if clip is not None:
         if not isinstance(clip, dict):
-            raise PackError("%s: clip must be an object" % what)
+            raise KitError("%s: clip must be an object" % what)
         clip_anim = clip.get("anim")
         if clip_anim is not None and clip_anim not in animations:
-            raise PackError('%s: its window plays "%s", which is not in animations' % (what, clip_anim))
+            raise KitError('%s: its window plays "%s", which is not in animations' % (what, clip_anim))
         clip = Clip(
             x=_number(clip.get("x"), what + " clip x"),
             y=_number(clip.get("y"), what + " clip y"),
@@ -242,7 +242,7 @@ def _mode(data, animations):
         )
     pieces = data.get("pieces")
     if not isinstance(pieces, list):
-        raise PackError("%s: pieces must be a list" % what)
+        raise KitError("%s: pieces must be a list" % what)
     pieces = tuple(
         _piece(piece, "%s piece %d" % (what, index), animations)
         for index, piece in enumerate(pieces)
@@ -255,7 +255,7 @@ def _mode(data, animations):
     return Mode(
         id=mode_id,
         name=str(data.get("name", mode_id)),
-        # What a screen reader says: the label, or the name in a pack
+        # What a screen reader says: the label, or the name in a kit
         # without labels.
         label=str(data.get("label") or data.get("name", mode_id)),
         kind=str(data.get("kind", "state")),
@@ -281,46 +281,47 @@ def _bounds(pieces):
     return (x0, y0, x1 - x0, y1 - y0)
 
 
-class Pack:
+class Kit:
     """Everything in omi.json.
 
     `grid` is the size of one logo cell and `view` the square (x, y, w, h)
     to map onto the drawing area. `modes` maps a mode id to its `Mode`, in
-    the pack's order, and `animations` an animation's name to its
+    the kit's order, and `animations` an animation's name to its
     `Animation`. `morph` holds the morph settings and `gaze` the gaze
-    settings (None for a pack without gaze).
+    settings (None for a kit without gaze).
 
-    Make one with `Pack.load(path)` or `Pack.parse(text)`; `Pack(data)`
-    takes the JSON already parsed. All three raise `PackError` for
-    anything that is not a version 1 pack.
+    `Kit.bundled()` is the kit that ships in this package. Make one from
+    elsewhere with `Kit.load(path)` or `Kit.parse(text)`; `Kit(data)`
+    takes the JSON already parsed. Those three raise `KitError` for
+    anything that is not a version 1 kit.
     """
 
     def __init__(self, data):
         if not isinstance(data, dict):
-            raise PackError("an Omi pack is a JSON object")
-        if data.get("format", "omi-pack") != "omi-pack":
-            raise PackError('not an Omi pack: format is %r' % (data.get("format"),))
+            raise KitError("an Omi kit is a JSON object")
+        if data.get("format", "omi-kit") != "omi-kit":
+            raise KitError('not an Omi kit: format is %r' % (data.get("format"),))
         if data.get("version", 1) != 1:
-            raise PackError(
-                "this player reads pack version 1, not %r" % (data.get("version"),)
+            raise KitError(
+                "this player reads kit version 1, not %r" % (data.get("version"),)
             )
         self.version = 1
         self.grid = _number(data.get("grid"), "grid")
         if self.grid <= 0:
-            raise PackError("grid must be above 0")
+            raise KitError("grid must be above 0")
         self.view = _numbers(data.get("view"), 4, "view")
         self.roles = tuple(data.get("roles", ()))
 
         animations = data.get("animations", {})
         if not isinstance(animations, dict):
-            raise PackError("animations must be an object")
+            raise KitError("animations must be an object")
         self.animations = {}  # type: Dict[str, Animation]
         for name, anim in animations.items():
             self.animations[name] = _animation(name, anim)
 
         modes = data.get("modes")
         if not isinstance(modes, list):
-            raise PackError("modes must be a list")
+            raise KitError("modes must be a list")
         self.modes = {}  # type: Dict[str, Mode]
         for mode in modes:
             mode = _mode(mode, self.animations)
@@ -328,7 +329,7 @@ class Pack:
 
         morph = data.get("morph")
         if not isinstance(morph, dict):
-            raise PackError("morph must be an object")
+            raise KitError("morph must be an object")
         self.morph = MorphSettings(
             duration=_number(morph.get("duration"), "morph duration"),
             stagger=_number(morph.get("stagger"), "morph stagger"),
@@ -338,13 +339,13 @@ class Pack:
             role_penalty=_number(morph.get("rolePenalty"), "morph rolePenalty"),
         )
         if self.morph.duration <= 0:
-            raise PackError("morph duration must be above 0")
+            raise KitError("morph duration must be above 0")
 
         gaze = data.get("gaze")
         self.gaze = None  # type: Optional[GazeSettings]
         if gaze is not None:
             if not isinstance(gaze, dict):
-                raise PackError("gaze must be an object")
+                raise KitError("gaze must be an object")
             inside = gaze.get("inside")
             self.gaze = GazeSettings(
                 reach=_numbers(gaze.get("reach"), 2, "gaze reach"),
@@ -356,30 +357,38 @@ class Pack:
 
     @classmethod
     def parse(cls, text):
-        """Read a pack from the text of omi.json.
+        """Read a kit from the text of omi.json.
 
-        Raises `PackError` (a `ValueError`) if it is not valid JSON or not
-        a version 1 pack.
+        Raises `KitError` (a `ValueError`) if it is not valid JSON or not
+        a version 1 kit.
         """
         try:
             data = json.loads(text)
         except ValueError as error:
-            raise PackError("omi.json is not valid JSON: %s" % error) from None
+            raise KitError("omi.json is not valid JSON: %s" % error) from None
         return cls(data)
 
     @classmethod
     def load(cls, path):
-        """Read a pack from the file omi.json at `path`."""
+        """Read a kit from the file omi.json at `path`."""
         with open(path, "r", encoding="utf-8") as file:
             return cls.parse(file.read())
 
+    @classmethod
+    def bundled(cls):
+        """The kit that ships in this package: omi.json from the same
+        omi-kit release as the player, so the two always agree."""
+        from importlib.resources import files
+
+        return cls.parse(files("omi").joinpath("omi.json").read_text(encoding="utf-8"))
+
     @property
     def mode_ids(self):
-        """Every mode's id, in the pack's order."""
+        """Every mode's id, in the kit's order."""
         return list(self.modes)
 
     def has(self, mode):
-        """Whether the pack has a mode with this id."""
+        """Whether the kit has a mode with this id."""
         return mode in self.modes
 
     def mode(self, mode):
@@ -390,7 +399,7 @@ class Pack:
             raise UnknownMode(mode)
 
     def __repr__(self):
-        return "<Pack version %d, %d modes, %d animations>" % (
+        return "<Kit version %d, %d modes, %d animations>" % (
             self.version,
             len(self.modes),
             len(self.animations),

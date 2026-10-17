@@ -1,29 +1,29 @@
 #!/usr/bin/env node
-/* Writes docs/modes.md, the gallery of every mode in the pack, and a still
+/* Writes docs/modes.md, the gallery of every mode in the kit, and a still
    of each one as an SVG in docs/modes/ (plus docs/modes/sheet.svg, all of
-   them on one sheet), from pack/omi.json through the reference player.
+   them on one sheet), from kit/omi.json through the reference player.
 
      node tools/modes-doc.js           write them
      node tools/modes-doc.js --check   fail if they aren't what it would write
 
-   Run it after tools/build-pack.js whenever a mode changes, and commit
+   Run it after tools/build-kit.js whenever a mode changes, and commit
    docs/ with it. The "Use it for" column is written here, by hand: it is
-   what a mode means to an app, which the pack can't say. */
+   what a mode means to an app, which the kit can't say. */
 const fs = require("fs"),
   path = require("path"),
   vm = require("vm");
 
 const root = path.join(__dirname, ".."),
-  pack = JSON.parse(fs.readFileSync(path.join(root, "pack/omi.json"), "utf8")),
+  kit = JSON.parse(fs.readFileSync(path.join(root, "kit/omi.json"), "utf8")),
   outDir = path.join(root, "docs/modes");
 
 // the reference player, without a browser
 const ctx = vm.createContext({});
 vm.runInContext(
-  fs.readFileSync(path.join(root, "pack/omi.js"), "utf8") + ";this.Omi = Omi;",
+  fs.readFileSync(path.join(root, "kit/omi.js"), "utf8") + ";this.Omi = Omi;",
   ctx,
 );
-const omi = new ctx.Omi(null, pack, { color: "#000" });
+const omi = new ctx.Omi(null, kit, { color: "#000" });
 
 // What each mode is for, in an app. Reactions say "then back".
 const USE = {
@@ -61,7 +61,7 @@ const USE = {
 };
 
 // --- stills
-const [vx, vy, vw, vh] = pack.view,
+const [vx, vy, vw, vh] = kit.view,
   COLOR = "#33a1ff",
   STILL = 88; // 4 device pixels per logo cell: even, so every bar is alike
 // A rect cut to the view, or null: props can reach past it, and a renderer
@@ -104,10 +104,10 @@ function sheet() {
   const cols = 7,
     cell = vw,
     label = 70,
-    rows = Math.ceil(pack.modes.length / cols),
+    rows = Math.ceil(kit.modes.length / cols),
     W = cols * cell,
     H = rows * (cell + label);
-  const parts = pack.modes.map((m, i) => {
+  const parts = kit.modes.map((m, i) => {
     const ox = (i % cols) * cell,
       oy = Math.floor(i / cols) * (cell + label);
     return (
@@ -124,12 +124,12 @@ function sheet() {
 
 // every file this writes, by its path from the repo's root
 const files = {};
-for (const m of pack.modes) files[`docs/modes/${m.id}.svg`] = still(m);
+for (const m of kit.modes) files[`docs/modes/${m.id}.svg`] = still(m);
 files["docs/modes/sheet.svg"] = sheet();
 
 // --- the gallery
 const secs = (s) => (s % 1 ? s.toFixed(1) : String(s)) + " s";
-const rows = pack.modes.map((m) => {
+const rows = kit.modes.map((m) => {
   const what =
     m.kind === "reaction" ? `reaction, ${secs(omi.hold(m.id))}` : "state";
   const tags = [
@@ -142,22 +142,22 @@ const rows = pack.modes.map((m) => {
   return `| ![${m.label}](modes/${m.id}.svg) | \`${m.id}\` | ${m.name} | ${what} | ${loop ? secs(loop) : "still"} | ${m.label} | ${USE[m.id] || ""}${tags ? ` (${tags})` : ""} |`;
 });
 const unknown = Object.keys(USE).filter(
-  (id) => !pack.modes.some((m) => m.id === id),
+  (id) => !kit.modes.some((m) => m.id === id),
 );
 if (unknown.length)
-  throw new Error("USE names modes not in the pack: " + unknown.join(", "));
+  throw new Error("USE names modes not in the kit: " + unknown.join(", "));
 
 const md = `# Every Omi mode
 
-Omi has ${pack.modes.length} modes, each a set of rectangles with a looping
+Omi has ${kit.modes.length} modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
-\`node tools/modes-doc.js\` from the pack, so it always matches
-\`pack/omi.json\`; the stills are each mode at rest (time 0 of its loops),
+\`node tools/modes-doc.js\` from the kit, so it always matches
+\`kit/omi.json\`; the stills are each mode at rest (time 0 of its loops),
 drawn by the reference player.
 
 ![Every mode](modes/sheet.svg)
 
-- **state or reaction** is what the mode is for (\`kind\` in the pack). A
+- **state or reaction** is what the mode is for (\`kind\` in the kit). A
   state stays as long as what it stands for lasts. A reaction is shown for
   its hold after its morph lands, then Omi goes back: \`react("success")\`
   in Omi.qml, or \`omi.hold(mode)\` in your own host.
@@ -166,7 +166,7 @@ drawn by the reference player.
 - A **family** groups modes that mean the same thing: pick one per
   situation and treat the rest as variations. A mode marked \`easter\` is a
   joke: leave it out of anything generic.
-- **A screen reader says** is the mode's \`label\` in the pack: the
+- **A screen reader says** is the mode's \`label\` in the kit: the
   accessible name every app gives the picture, so Omi is announced the same
   way everywhere. It is each still's own name on this page.
 - "Use it for" is advice for app authors; [docs/omarchy.md](omarchy.md)
@@ -179,7 +179,7 @@ ${rows.join("\n")}
 `;
 files["docs/modes.md"] = md;
 
-// stills of modes the pack no longer has
+// stills of modes the kit no longer has
 const gone = fs.existsSync(outDir)
   ? fs
       .readdirSync(outDir)
@@ -195,13 +195,13 @@ if (process.argv.includes("--check")) {
   });
   for (const name of stale) console.log(`FAIL ${name} is out of date`);
   for (const f of gone)
-    console.log(`FAIL docs/modes/${f} is for a mode the pack doesn't have`);
+    console.log(`FAIL docs/modes/${f} is for a mode the kit doesn't have`);
   if (stale.length || gone.length) {
     console.log("run node tools/modes-doc.js and commit docs/");
     process.exit(1);
   }
   console.log(
-    `ok: docs/modes.md and ${pack.modes.length} stills are up to date`,
+    `ok: docs/modes.md and ${kit.modes.length} stills are up to date`,
   );
   process.exit(0);
 }
@@ -211,5 +211,5 @@ for (const f of gone) fs.unlinkSync(path.join(outDir, f));
 for (const [name, text] of Object.entries(files))
   fs.writeFileSync(path.join(root, name), text);
 console.log(
-  `docs/modes.md: ${pack.modes.length} modes; docs/modes/: ${pack.modes.length} stills and sheet.svg`,
+  `docs/modes.md: ${kit.modes.length} modes; docs/modes/: ${kit.modes.length} stills and sheet.svg`,
 );

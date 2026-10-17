@@ -14,17 +14,17 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from omi import Pack, Player  # noqa: E402
+from omi import Kit, Player  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# The pack's tolerance, and the half a digit the file's numbers are
+# The kit's tolerance, and the half a digit the file's numbers are
 # rounded by.
 POSITION = 0.01 + 0.00005
 OPACITY = 0.001 + 0.00005
 
 
-def play(pack, how, before, old, new):
-    omi = Player(pack)
+def play(kit, how, before, old, new):
+    omi = Player(kit)
     clock = [1000]
 
     def run(seconds):
@@ -63,14 +63,14 @@ def same(rects, wanted):
 
 
 def main(path):
-    pack = Pack.load(os.path.join(HERE, "..", "..", "..", "pack", "omi.json"))
+    kit = Kit.load(os.path.join(HERE, "..", "..", "..", "kit", "omi.json"))
     total = 0
     off = []
     with open(path) as lines:
         for line in lines:
             how, before, old, new, wanted = json.loads(line)
             total += 1
-            if not same(play(pack, how, before, old, new), wanted):
+            if not same(play(kit, how, before, old, new), wanted):
                 off.append("%s to %s (%s)" % (old, new, how))
     if off:
         print("FAIL python: %d of %d morphs are not the reference player's: %s%s" % (

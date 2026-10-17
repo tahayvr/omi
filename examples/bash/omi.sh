@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Omi in a terminal, with nothing but bash, jq and awk: no Node, no Python.
-# omi.awk is the player; this script reads the pack, sets up the terminal
+# omi.awk is the player; this script reads the kit, sets up the terminal
 # and feeds the player its clock, keys and mouse.
 #
 #   examples/bash/omi.sh                  Omi, live: a tour of every mode, the
@@ -29,7 +29,7 @@ set -u
 export LC_ALL=C # bytes in, bytes out, and a dot in the clock's decimals
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-pack=${OMI_PACK:-$here/../../pack/omi.json}
+kit=${OMI_KIT:-$here/../../kit/omi.json}
 for tool in jq awk; do
   command -v "$tool" >/dev/null || { echo "omi.sh needs $tool." >&2; exit 1; }
 done
@@ -63,7 +63,7 @@ themed() {
 fg=$(rgb "$fg" || rgb "$(themed accent)" || true)
 bg=$(rgb "$bg" || rgb "$(themed background)" || true)
 
-# ------------------------------------------------------------------ the pack
+# ------------------------------------------------------------------ the kit
 # Flattened to one tab-separated line per thing, for awk (see omi.awk).
 flat=$(mktemp)
 fifos=()
@@ -82,9 +82,9 @@ jq -r '
   (.modes[] | . as $m |
     "O\t\(.id)\t\(.kind // "state")\t\(.hold // "")\t\(.name)\t\(.label // .name)\t\(.group // "")\t\(.bounds | j)\t\(.anim // "")\t\(if .clip then ([.clip.x, .clip.y, .clip.w, .clip.h, (.clip.anim // "")] | j) else "" end)",
     (.pieces[] | "P\t\($m.id)\t\(.x)\t\(.y)\t\(.w)\t\(.h)\t\(.role)\t\(.opacity // 1)\t\(.anim // "")\t\(.delay // 0)\t\(.duration // "")\t\(if .clip then 1 else 0 end)\t\(.mx // 0)\t\(.my // 0)\t\(.dx // 0)\t\(.dy // 0)"))
-' "$pack" >"$flat" || exit 1
+' "$kit" >"$flat" || exit 1
 
-player() { awk -v packfile="$flat" -v size="$size" -v fg="$fg" -v bg="$bg" -v bounce="$bounce" "$@" -f "$here/omi.awk"; }
+player() { awk -v kitfile="$flat" -v size="$size" -v fg="$fg" -v bg="$bg" -v bounce="$bounce" "$@" -f "$here/omi.awk"; }
 
 if ((rects)); then
   player -v rects=1

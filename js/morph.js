@@ -1,30 +1,30 @@
-/* ---------- Omi on the page: the reference player, fed the Omi pack ----------
-   The page shows exactly what an app gets: the pack built by pack.js, as
+/* ---------- Omi on the page: the reference player, fed the Omi kit ----------
+   The page shows exactly what an app gets: the kit built by kit.js, as
    JSON, played by player/omi.js. The hero and the Modes section are players
    on a canvas; stills and video frames (and so every export of them) are the
    player's rects, from playerRects(). If it looks right here, it looks right
-   in any app that uses the pack.
+   in any app that uses the kit.
 
    The one thing the player doesn't draw is a mode looping as CSS: the
    tiles, the single view and the animated SVG export, which have to run
    without a script. jig.html?check (check.js) holds those to the player. */
-let pagePackCache = null,
+let pageKitCache = null,
   pageSampler = null;
 // round-trip through JSON: the players get exactly what omi.json holds
-const pagePack = () =>
-  pagePackCache || (pagePackCache = JSON.parse(JSON.stringify(buildPack())));
-// What a screen reader says for a design: the pack's label for it.
+const pageKit = () =>
+  pageKitCache || (pageKitCache = JSON.parse(JSON.stringify(buildKit())));
+// What a screen reader says for a design: the kit's label for it.
 const labelOf = (d) =>
-  (pagePack().modes.find((m) => m.id === d.id) || {}).label || "Omi, " + d.name;
+  (pageKit().modes.find((m) => m.id === d.id) || {}).label || "Omi, " + d.name;
 /* What the player draws of a design, t seconds into its loops (0: at rest),
-   body motion and all. A design the pack doesn't have (the anatomy's bare
-   logo) is packed on the spot. */
+   body motion and all. A design the kit doesn't have (the anatomy's bare
+   logo) is made into one on the spot. */
 function playerRects(d, t, { body = true, rest = 1 } = {}) {
-  if (!pageSampler) pageSampler = new Omi(null, pagePack(), { animate: false });
+  if (!pageSampler) pageSampler = new Omi(null, pageKit(), { animate: false });
   pageSampler.bodyMotion = body;
   pageSampler.rest = rest;
   return pageSampler
-    .modeRects(pageSampler.modes[d.id] || packMode(d), t)
+    .modeRects(pageSampler.modes[d.id] || kitMode(d), t)
     .filter((r) => r.o > 0.001);
 }
 /* A video's length, in loops of the mode. One loop plays every piece's
@@ -54,7 +54,7 @@ const videoLength = (d, o) => videoLoop(d, o).secs;
 function findLoop(d, loops, rest, body) {
   if (!pageSampler) playerRects(d, 0);
   const P = pageSampler,
-    mode = P.modes[d.id] || packMode(d);
+    mode = P.modes[d.id] || kitMode(d);
   P.rest = rest;
   P.bodyMotion = body;
   P.modes["\0len"] = body ? mode : { ...mode, anim: undefined };
@@ -123,14 +123,14 @@ function pagePlayerOpts() {
   };
 }
 /* A player on a canvas inside an .omi-stage. `margin` is the room around the
-   logo inside the stage, in pack units; the canvas bleeds `bleed` units
+   logo inside the stage, in kit units; the canvas bleeds `bleed` units
    further on every side, so props like the z's can drift outside the stage.
    The body stays put (no bob, hop or shake), so every morph starts and ends
    at the same spot. */
 function mountOmi(canvas, { margin = 70, bleed = 90, mode } = {}) {
   const side = 300 + 2 * margin;
   canvas.style.setProperty("--bleed", `${(bleed / side) * 100}%`);
-  return new Omi(canvas, pagePack(), {
+  return new Omi(canvas, pageKit(), {
     view: [
       -margin - bleed,
       -margin - bleed,
@@ -173,7 +173,7 @@ function showFor(player, id) {
   const loop = player.loopSeconds(id),
     loops = loop > 0 ? loop * Math.ceil(2.4 / loop - 1e-9) : 2.4;
   return (
-    (player.pack.morph.duration + player.pack.morph.stagger + loops) /
+    (player.kit.morph.duration + player.kit.morph.stagger + loops) /
     Math.max(0.25, S.speed || 1)
   );
 }
@@ -242,7 +242,7 @@ function syncMorphUI() {
   $("mplayText").textContent = playing ? "Pause" : "Play";
 }
 
-// a still of each mode, all in the pack's view so Omi is one size in all
+// a still of each mode, all in the kit's view so Omi is one size in all
 let thumbsKey = "";
 function drawThumbs() {
   const key = S.fg;

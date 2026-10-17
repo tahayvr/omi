@@ -1,11 +1,11 @@
-//! Checks the player against pack/conformance.json the way tools/conformance.js
+//! Checks the player against kit/conformance.json the way tools/conformance.js
 //! checks the reference player (see "Checking your own player" in
-//! pack/README.md): every mode at every listed time in drawing order, every
+//! kit/README.md): every mode at every listed time in drawing order, every
 //! morph's start and end as sets, every gaze halfway and landed in drawing
 //! order. The morph frames at 0.2 and 0.4 s are the reference player's and
 //! are reported, not required.
 
-use omi::{Options, Pack, Player, Rect};
+use omi::{Options, Kit, Player, Rect};
 use serde::Deserialize;
 use std::collections::BTreeMap;
 
@@ -96,26 +96,26 @@ fn same_set(t: &Tolerance, got: &[Rect], want: &[Row]) -> bool {
         })
 }
 
-fn load() -> (Pack, Conformance) {
-    let dir = concat!(env!("CARGO_MANIFEST_DIR"), "/../../pack/");
+fn load() -> (Kit, Conformance) {
+    let dir = concat!(env!("CARGO_MANIFEST_DIR"), "/../../kit/");
     let read = |f: &str| {
         std::fs::read_to_string(format!("{dir}{f}")).unwrap_or_else(|e| panic!("{dir}{f}: {e}"))
     };
-    let pack = Pack::parse(&read("omi.json")).expect("pack");
+    let kit = Kit::parse(&read("omi.json")).expect("kit");
     let conf: Conformance = serde_json::from_str(&read("conformance.json")).expect("conformance");
-    (pack, conf)
+    (kit, conf)
 }
 
 #[test]
 fn conformance() {
-    let (pack, conf) = load();
+    let (kit, conf) = load();
     let tol = &conf.tolerance;
-    let mut omi = Player::new(&pack);
+    let mut omi = Player::new(&kit);
     let mut checks = 0;
     let mut fails: Vec<String> = Vec::new();
 
     // Modes: every listed time, in drawing order.
-    for m in &pack.modes {
+    for m in &kit.modes {
         let Some(times) = conf.modes.get(&m.id) else {
             continue;
         };
@@ -227,7 +227,7 @@ fn conformance() {
     if fails.is_empty() {
         println!(
             "ok: rust: {checks} checks ({} modes, {} morphs, {} gazes, {} rests)",
-            pack.modes.len(),
+            kit.modes.len(),
             conf.morphs.len(),
             conf.gazes.len(),
             conf.rests.len()
@@ -243,9 +243,9 @@ fn conformance() {
 
 #[test]
 fn options_and_lookups() {
-    let (pack, _) = load();
+    let (kit, _) = load();
     let omi = Player::with_options(
-        &pack,
+        &kit,
         Options {
             mode: Some("idle".into()),
             animate: false,
@@ -255,8 +255,8 @@ fn options_and_lookups() {
     assert_eq!(omi.mode(), "idle");
     assert_eq!(omi.kind("success"), omi::Kind::Reaction);
     assert_eq!(omi.kind("idle"), omi::Kind::State);
-    // what a mode says and how long a reaction shows are the pack's
-    for mode in &pack.modes {
+    // what a mode says and how long a reaction shows are the kit's
+    for mode in &kit.modes {
         assert_eq!(omi.label(&mode.id), mode.label.as_deref().unwrap_or(""), "{}", mode.id);
         if let Some(hold) = mode.hold {
             assert!((omi.hold(&mode.id) - hold).abs() < 1e-9, "{}", mode.id);
@@ -274,9 +274,9 @@ fn options_and_lookups() {
 
 #[test]
 fn body_motion_off_keeps_omi_still() {
-    let (pack, _) = load();
+    let (kit, _) = load();
     let omi = Player::with_options(
-        &pack,
+        &kit,
         Options {
             body_motion: false,
             ..Options::default()
@@ -286,4 +286,13 @@ fn body_motion_off_keeps_omi_still() {
     let a = omi.mode_rects("idle", 0.0).unwrap();
     let b = omi.mode_rects("idle", 1.4).unwrap();
     assert_eq!(a[0], b[0]);
+}
+
+#[test]
+fn bundled_is_the_kit() {
+    // the crate's own copy of omi.json is the kit's, as built
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../kit/omi.json");
+    assert_eq!(Kit::JSON, std::fs::read_to_string(path).expect("kit"));
+    let kit = Kit::bundled();
+    assert!(kit.mode("idle").is_some());
 }

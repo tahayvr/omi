@@ -1,13 +1,13 @@
-/* Checks an Omi player against pack/conformance.json (see "Checking your own
-   player" in pack/README.md). Plain JavaScript that runs in Node and in Qt
+/* Checks an Omi player against kit/conformance.json (see "Checking your own
+   player" in kit/README.md). Plain JavaScript that runs in Node and in Qt
    Quick's engine alike, so the same check runs in both:
 
-     checkConformance(Omi, pack, conformance)
+     checkConformance(Omi, kit, conformance)
        -> { checks: number, fails: [string] }
 
    tools/check-player.js runs it in Node, tools/check-quickshell.js inside the
    Omarchy shell's Quickshell. */
-var checkConformance = function (Omi, pack, conf) {
+var checkConformance = function (Omi, kit, conf) {
   "use strict";
   const tp = conf.tolerance.position,
     to = conf.tolerance.opacity;
@@ -17,7 +17,7 @@ var checkConformance = function (Omi, pack, conf) {
       height: 1,
       getContext: () => ({ setTransform() {}, clearRect() {}, fillRect() {} }),
     },
-    omi = new Omi(canvas, pack, { color: "#000" }),
+    omi = new Omi(canvas, kit, { color: "#000" }),
     row = (r) => [r.x, r.y, r.w, r.h, r.o, r.role],
     shown = (list) => list.filter((r) => r.o > 0.001).map(row);
 
@@ -43,7 +43,7 @@ var checkConformance = function (Omi, pack, conf) {
 
   const fails = [];
   let checks = 0;
-  for (const m of pack.modes) {
+  for (const m of kit.modes) {
     const times = conf.modes[m.id] || {};
     for (const t of Object.keys(times)) {
       checks++;
@@ -65,7 +65,7 @@ var checkConformance = function (Omi, pack, conf) {
     if (!sameSet(shown(omi.rects()), c.end))
       fails.push(`${c.from} > ${c.to}: end`);
   }
-  // The gaze (optional in the pack): a mode at rest, looking ahead, turned to
+  // The gaze (optional in the kit): a mode at rest, looking ahead, turned to
   // a direction; checked halfway and landed.
   for (const g of conf.gazes || []) {
     omi.set(g.mode, { instant: true });
@@ -89,7 +89,7 @@ var checkConformance = function (Omi, pack, conf) {
   // Rests: modes drawn with the still time between passes scaled.
   for (const c of conf.rests || []) {
     omi.rest = c.rest;
-    const m = pack.modes.find((x) => x.id === c.mode);
+    const m = kit.modes.find((x) => x.id === c.mode);
     for (const t of Object.keys(c.times)) {
       checks++;
       if (!m || !sameList(shown(omi.modeRects(m, +t)), c.times[t]))

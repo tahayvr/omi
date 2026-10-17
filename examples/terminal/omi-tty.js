@@ -20,7 +20,7 @@
 
    Options:
      --size 44      pixels across, rounded down to a multiple of 22 (see
-                    "Drawing Omi crisp" in the pack's README); default: as
+                    "Drawing Omi crisp" in the kit's README); default: as
                     big as fits the terminal (22 beside a command)
      --fg #9ece6a   Omi's color; default: the Omarchy theme's accent (and it
                     follows a theme change), or the terminal's own foreground
@@ -39,10 +39,10 @@ const fs = require("fs"),
   os = require("os"),
   path = require("path"),
   { spawn } = require("child_process"),
-  Omi = require("../../pack/omi.js");
+  Omi = require("../../kit/omi.js");
 
-const pack = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "../../pack/omi.json"), "utf8"),
+const kit = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../../kit/omi.json"), "utf8"),
 );
 const out = process.stdout,
   tty = out.isTTY && process.stdin.isTTY;
@@ -75,14 +75,14 @@ const once = flag("--once"),
   askedFg = rgb(opt("fg", null)),
   askedBg = rgb(opt("bg", null));
 let bounce = flag("--bounce");
-const ids = pack.modes.map((m) => m.id),
+const ids = kit.modes.map((m) => m.id),
   modes = args.length ? args : ids.filter((id) => id !== "logo");
 for (const m of [...modes, busy])
   if (!ids.includes(m)) {
     console.error(`No mode "${m}". Modes: ${ids.join(", ")}`);
     process.exit(1);
   }
-const named = (id) => pack.modes.find((m) => m.id === id).name;
+const named = (id) => kit.modes.find((m) => m.id === id).name;
 
 // ---------------------------------------------------------------- colors
 /* Omi's color and the background faded pixels blend into, each [r, g, b]
@@ -175,19 +175,19 @@ function followTheme(onChange) {
 }
 
 // ---------------------------------------------------------------- drawing
-// Crisp when one logo cell (pack.grid units) is a whole number of pixels: the
+// Crisp when one logo cell (kit.grid units) is a whole number of pixels: the
 // view is 22 cells across, so the width is a multiple of 22.
-const cells = pack.view[2] / pack.grid,
+const cells = kit.view[2] / kit.grid,
   crisp = (n) => Math.max(cells, Math.floor(n / cells) * cells);
 
-/* How far Omi's pieces reach, in pack units: the view, and past it where a
+/* How far Omi's pieces reach, in kit units: the view, and past it where a
    mode's pieces go (the download arrow's tip, sleeping's z's, the party's
    confetti), over a few seconds of every mode with the body moving. */
 const reach = (() => {
-  const [vx, vy, vw, vh] = pack.view,
-    probe = new Omi(null, pack, { color: "#fff", bodyMotion: true }),
+  const [vx, vy, vw, vh] = kit.view,
+    probe = new Omi(null, kit, { color: "#fff", bodyMotion: true }),
     box = [vx, vy, vx + vw, vy + vh];
-  for (const m of pack.modes)
+  for (const m of kit.modes)
     for (let t = 0; t < 8; t += 1 / 20)
       for (const r of probe.modeRects(probe.modes[m.id], t)) {
         if (r.o <= 0.01) continue;
@@ -202,7 +202,7 @@ const reach = (() => {
    whole logo cells around it out to the reach, so Omi stays crisp. The
    height is a whole number of rows; cx, cy is the view's center. */
 function area(size) {
-  const [vx, vy, vw, vh] = pack.view,
+  const [vx, vy, vw, vh] = kit.view,
     s = size / vw,
     cell = size / cells,
     pad = (units) => Math.ceil((units * s) / cell - 1e-9) * cell,
@@ -307,7 +307,7 @@ const seconds = (ms) => {
     : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 };
 
-const omi = new Omi(null, pack, { color: "#fff", bodyMotion: bounce });
+const omi = new Omi(null, kit, { color: "#fff", bodyMotion: bounce });
 if (look[0] || look[1]) omi.look(look[0] || 0, look[1] || 0);
 
 if (once) still();
@@ -418,8 +418,8 @@ function runCommand(cmd) {
     omi.set(mode);
     // let the reaction land and play, then leave its last frame
     const hold =
-      pack.morph.duration +
-      pack.morph.stagger +
+      kit.morph.duration +
+      kit.morph.stagger +
       (result.ok ? omi.hold(mode) : 1.2);
     setTimeout(() => {
       clearInterval(timer);
@@ -462,7 +462,7 @@ function live() {
   const reactions = ids.filter((id) => omi.kind(id) === "reaction"),
     groups = [];
   for (const id of modes) {
-    const g = pack.modes.find((m) => m.id === id).group || "";
+    const g = kit.modes.find((m) => m.id === id).group || "";
     if (!groups.length || groups[groups.length - 1].name !== g)
       groups.push({ name: g, ids: [] });
     groups[groups.length - 1].ids.push(id);
@@ -533,7 +533,7 @@ function live() {
     poked = {
       timer: setTimeout(
         () => ((poked = null), omi.set(current)),
-        (pack.morph.duration + pack.morph.stagger + omi.hold(id)) * 1000,
+        (kit.morph.duration + kit.morph.stagger + omi.hold(id)) * 1000,
       ),
     };
   };
@@ -548,7 +548,7 @@ function live() {
   const lookAt = (col, row) => {
     const dx = col - (ox + A.cx),
       dy = (row - (oy + A.cy / 2)) * 2, // a row is two pixels
-      far = A.s * pack.view[2] * 1.2; // full tilt this far from Omi's center
+      far = A.s * kit.view[2] * 1.2; // full tilt this far from Omi's center
     omi.look(
       Math.max(-1, Math.min(1, dx / far)),
       Math.max(-1, Math.min(1, dy / far)),

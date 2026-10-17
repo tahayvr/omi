@@ -1,4 +1,4 @@
-# Omi's player in awk, for omi.sh: it reads the Omi pack (flattened to tab-
+# Omi's player in awk, for omi.sh: it reads the Omi kit (flattened to tab-
 # separated lines by jq, see omi.sh), then events on stdin, one a line:
 #
 #   tick <seconds>   draw a frame (seconds: the clock, or - for "about 1/30 s
@@ -11,9 +11,9 @@
 # frames are drawn. With -v once=<mode> it prints that mode at rest and ends.
 # With -v rects=1 it reads "<mode> <seconds>" lines instead and prints the
 # rects there (x, y, w, h, opacity, role, tab-separated, then a blank line),
-# body motion on: tools/check-bash.js holds those to pack/conformance.json.
+# body motion on: tools/check-bash.js holds those to kit/conformance.json.
 #
-# It follows pack/README.md: animations (rests, delays, eases, the body and
+# It follows kit/README.md: animations (rests, delays, eases, the body and
 # a clip window), the gaze, the crisp sizes. The one thing it does its own
 # way is the morph: pieces that stay put stay, the rest pair with their
 # nearest partner in order, new ones split off or grow and old ones slide
@@ -26,7 +26,7 @@
 BEGIN {
   FS = "\t"
   ESC = sprintf("%c", 27)
-  load(packfile)
+  load(kitfile)
   FACE["eye"] = FACE["brow"] = FACE["mouth"] = FACE["tear"] = 1
   bounce = bounce + 0
   if (fg != "") split(fg, FG, " ")
@@ -63,7 +63,7 @@ BEGIN {
   exit
 }
 
-# ------------------------------------------------------------------ the pack
+# ------------------------------------------------------------------ the kit
 function load(file,    line, f, n, k, a, i, m, c, j, props, q, ks, hasAny) {
   while ((getline line < file) > 0) {
     n = split(line, f, "\t")

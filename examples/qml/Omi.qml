@@ -1,6 +1,6 @@
 // Omi for Qt Quick apps (Qt 6.4+): the reference player in QML's own
 // JavaScript engine, no native code. The same item as the Omarchy example
-// (examples/omarchy/Omi.qml), but it reads the pack with XMLHttpRequest
+// (examples/omarchy/Omi.qml), but it reads the kit with XMLHttpRequest
 // instead of Quickshell's FileView.
 //
 //     Omi {
@@ -14,10 +14,10 @@
 //
 // Omi is drawn as Rectangles snapped to device pixels, so it stays crisp at
 // any scale, fractional ones included. In your app, ship omi.js and
-// omi.json in your resources and point `pack` and the import at them;
+// omi.json in your resources and point `kit` and the import at them;
 // reading a local file over XMLHttpRequest needs QML_XHR_ALLOW_FILE_READ=1.
 import QtQuick
-import "../../pack/omi.js" as OmiJs
+import "../../kit/omi.js" as OmiJs
 
 Item {
     id: omi
@@ -43,14 +43,14 @@ Item {
     // true: each logo cell is a whole number of device pixels, so every bar
     // has the same thickness. Omi may then draw a little smaller than the item.
     property bool even: true
-    // The pack's omi.json.
-    property url pack: Qt.resolvedUrl("../../pack/omi.json")
+    // The kit's omi.json.
+    property url kit: Qt.resolvedUrl("../../kit/omi.json")
 
-    // Every mode in the pack: [{ id, name, ... }].
-    readonly property var modes: player ? player.pack.modes : []
+    // Every mode in the kit: [{ id, name, ... }].
+    readonly property var modes: player ? player.kit.modes : []
     // The mode on screen: `mode`, or a reaction playing over it.
     readonly property string showing: reaction !== "" ? reaction : mode
-    // What a screen reader says for it, from the pack ("Omi is thinking").
+    // What a screen reader says for it, from the kit ("Omi is thinking").
     // The item is a picture by that name; bind Accessible.name to something
     // else if your app has better words for the moment.
     readonly property string label: player ? player.label(showing) : ""
@@ -67,13 +67,13 @@ Item {
     property var rects: []
 
     // Plays `reactionMode`, then morphs back to `omi.mode`: for `seconds`
-    // after its morph lands, or the pack's hold for that mode (omi.hold(),
+    // after its morph lands, or the kit's hold for that mode (omi.hold(),
     // 1.2 to 2.5 s) so every app reacts alike. A new reaction replaces one
     // still playing.
     function react(reactionMode, seconds) {
         reaction = reactionMode;
         const hold = seconds || (player ? player.hold(reactionMode) : 1.4),
-              morph = player ? player.pack.morph.duration + player.pack.morph.stagger : 0.84;
+              morph = player ? player.kit.morph.duration + player.kit.morph.stagger : 0.84;
         reactionTimer.interval = Math.round(1000 * (hold + morph));
         reactionTimer.restart();
     }
@@ -88,7 +88,7 @@ Item {
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== XMLHttpRequest.DONE) return;
             if (!xhr.responseText) {
-                console.warn("Omi: couldn't read " + omi.pack + " (local files need QML_XHR_ALLOW_FILE_READ=1)");
+                console.warn("Omi: couldn't read " + omi.kit + " (local files need QML_XHR_ALLOW_FILE_READ=1)");
                 return;
             }
             const p = new OmiJs.Omi(null, JSON.parse(xhr.responseText), {
@@ -108,7 +108,7 @@ Item {
             omi.step();
             omi.loaded();
         };
-        xhr.open("GET", omi.pack);
+        xhr.open("GET", omi.kit);
         xhr.send();
     }
     Component.onDestruction: if (player) player.destroy()
@@ -140,11 +140,11 @@ Item {
         onTriggered: omi.step()
     }
 
-    // The pack's `view` square, fitted into this item and centered.
+    // The kit's `view` square, fitted into this item and centered.
     readonly property var view: player ? player.view : [0, 0, 1, 1]
     readonly property real dpr: Window.window ? Window.window.devicePixelRatio : 1
     readonly property real fit: Math.min(width / view[2], height / view[3])
-    readonly property real grid: player ? player.pack.grid : 20
+    readonly property real grid: player ? player.kit.grid : 20
     readonly property real unit: even && fit * dpr * grid >= 1
         ? Math.floor(fit * dpr * grid + 1e-6) / (dpr * grid) : fit
     // The size Omi is drawn at, in this item's units: the view square's side.

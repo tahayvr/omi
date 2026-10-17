@@ -1,27 +1,27 @@
-"""A player for the Omi pack.
+"""A player for the Omi kit.
 
 Omi is the Omarchy mascot, drawn as filled rectangles. This package reads
 omi.json and works out, for any moment, which rects to fill: every mode
 with its loops, the morph from one mode to another, and the gaze. It draws
 nothing itself.
 
-    from omi import Pack, Player
+    from omi import Kit, Player
 
-    omi = Player(Pack.load("omi.json"))
+    omi = Player(Kit.load("omi.json"))
     omi.set("thinking")
     omi.frame(now_ms)
     for r in omi.rects():
         fill(r.x, r.y, r.w, r.h, r.opacity)
 """
 
-from .pack import (
+from .kit import (
     Animation,
     Clip,
     GazeSettings,
     Mode,
     MorphSettings,
-    Pack,
-    PackError,
+    Kit,
+    KitError,
     Piece,
     Rect,
     UnknownMode,
@@ -36,8 +36,8 @@ __all__ = [
     "GazeSettings",
     "Mode",
     "MorphSettings",
-    "Pack",
-    "PackError",
+    "Kit",
+    "KitError",
     "Piece",
     "Player",
     "Rect",

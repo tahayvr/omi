@@ -1,7 +1,7 @@
-# Omi pack
+# Omi kit
 
 Everything an app needs to draw Omi, animate every mode, and morph between
-modes. Made by the Meet Omi design jig. This file describes format version
+modes. Made by the Omi design jig. This file describes format version
 1.
 
 ## Files
@@ -12,6 +12,17 @@ modes. Made by the Meet Omi design jig. This file describes format version
 - conformance.json: what a correct player draws, to test your own.
 - omi.schema.json: omi.json's shape as a JSON Schema, for an editor or a
   validator.
+- omi.d.ts (in the npm package): TypeScript types for omi.js and omi.json.
+
+## Getting it
+
+    npm install omi-kit    # these files: omi.js, omi.json, the types
+    pip install omi-kit    # the Python player, with omi.json inside
+    cargo add omi          # the Rust player, with omi.json inside
+
+Each release also has omi-kit-<version>.zip on GitHub
+(github.com/tahayvr/omi/releases), and every package of one release
+carries the same omi.json.
 
 Nothing here is tied to one language or toolkit. omi.json is plain JSON and
 this file describes every rule, so any app can read it and draw Omi itself:
@@ -26,8 +37,8 @@ for players in other languages:
     <canvas id="omi" style="width: 240px; height: 240px; color: #9ece6a"></canvas>
     <script src="omi.js"></script>
     <script>
-      const pack = await (await fetch("omi.json")).json();
-      const omi = new Omi(document.getElementById("omi"), pack);
+      const kit = await (await fetch("omi.json")).json();
+      const omi = new Omi(document.getElementById("omi"), kit);
       omi.set("thinking"); // morphs from wherever Omi is
     </script>
 
@@ -35,14 +46,14 @@ Options: color (null follows the canvas's CSS color), speed, rest (scales
 the still time between passes of a loop: 1 as designed, 0 back to back, 2
 twice as long), animate (false shows every mode at rest; morphs and the
 gaze still play), bodyMotion (false leaves out whole-body bobs), mode (where to start), view (an [x, y, w, h]
-to show instead of the pack's view), label (false leaves the canvas's
+to show instead of the kit's view), label (false leaves the canvas's
 accessible name alone: otherwise the player keeps its aria-label on the
 mode's `label`, and gives it role="img" if it has no role).
 omi.set(mode, { instant: true }) jumps instead of morphing. omi.on("settled", fn) runs fn when a morph lands, and
 after a jump. omi.loopSeconds(mode) is how long a mode takes
 to play every piece's loop once: show it at least that long in a tour.
 omi.hold(mode) is how long to show a reaction after its morph lands, and
-omi.kind(mode) whether the pack calls it one.
+omi.kind(mode) whether the kit calls it one.
 omi.set(mode, { since }) plays a change that
 happened at `since` (Unix ms), for apps sharing one Omi through the Omi
 state protocol: every app then shows the same frame at the same moment. Outside a browser (QML, GJS, Node, tests), pass
@@ -51,7 +62,7 @@ display frame, and fill the rects in omi.rects() yourself.
 
 omi.js runs in Qt Quick's JavaScript (Qt 6), the engine behind the Omarchy
 shell, so Omarchy shell plugins use it as is: see examples/omarchy in the
-Meet Omi repo for a ready Omi.qml.
+Omi repo for a ready Omi.qml.
 
 ## Units
 
@@ -172,7 +183,7 @@ the transfer modes between one pass of the frame and the next. It comes
 first in every cycle, holding the pose the mode rests in, so an app can
 scale it without changing what a pass looks like: at 1 a mode plays as
 designed, at 0 its passes run back to back, at 2 they wait twice as long.
-The pack keeps to two rules for it: an animation with a rest ends where it
+The kit keeps to two rules for it: an animation with a rest ends where it
 starts (its keys at 0 and 1 give the same values, so nothing jumps into the
 rest), and a piece that plays one doesn't set its own duration. A row of
 pieces in step (a delay each) shares the one rest: the animation's
@@ -394,5 +405,5 @@ listed, in drawing order.
 
 omi.js is MIT licensed. The Omi design in omi.json and conformance.json is
 not: it is a derivative of the Omarchy logo, owned by the Omacom Foundation,
-and the MIT license does not apply to it. See LICENSE in the meet-omi
+and the MIT license does not apply to it. See LICENSE in the omi
 repository.

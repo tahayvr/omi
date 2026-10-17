@@ -3,7 +3,7 @@
 A reference implementation of the [Omi state protocol](../protocol/README.md)
 in Node, with no dependencies: one Omi, shared by every app on the machine.
 
-    node service/omi-service.js --pack pack/omi.json      # start it
+    node service/omi-service.js --kit kit/omi.json      # start it
     node service/omictl.js set thinking                   # change Omi
     node service/omictl.js set success --for 3 --then idle
     node service/omictl.js get

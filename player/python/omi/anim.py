@@ -4,7 +4,7 @@
 once is worked out when it is built, so asking for a frame only blends.
 """
 
-from .pack import Rect
+from .kit import Rect
 
 __all__ = ["Scene", "Track", "cubic_bezier", "make_ease", "VISIBLE"]
 
@@ -16,7 +16,7 @@ def cubic_bezier(x1, y1, x2, y2):
     """The CSS cubic-bezier(x1, y1, x2, y2) timing function.
 
     Returns a function from input progress to output progress. The curve
-    is solved the way the pack README spells out, 24 halvings and no
+    is solved the way the kit README spells out, 24 halvings and no
     shortcuts: any other way lands within the tolerance, but a morph's
     pairing is only the same in every player when their numbers agree far
     closer than that.
@@ -42,7 +42,7 @@ def cubic_bezier(x1, y1, x2, y2):
 
 
 def make_ease(spec):
-    """An ease from the pack: a cubic-bezier, or None for "steps"."""
+    """An ease from the kit: a cubic-bezier, or None for "steps"."""
     if spec is None:
         return None
     return cubic_bezier(spec[0], spec[1], spec[2], spec[3])
@@ -173,9 +173,9 @@ class Track:
 class Scene:
     """A mode, ready to give its rects at any time."""
 
-    def __init__(self, pack, mode):
+    def __init__(self, kit, mode):
         self.mode = mode
-        animations = pack.animations
+        animations = kit.animations
         # Tracks are shared between pieces that play the same animation
         # the same way, so a row of pieces in step is worked out once.
         shared = {}

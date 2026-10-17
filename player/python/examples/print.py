@@ -11,20 +11,20 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 
-from omi import Pack, Player, UnknownMode  # noqa: E402
+from omi import Kit, Player, UnknownMode  # noqa: E402
 
 
 def main(argv):
     mode = argv[1] if len(argv) > 1 else "idle"
     path = argv[2] if len(argv) > 2 else os.path.join(
-        HERE, "..", "..", "..", "pack", "omi.json"
+        HERE, "..", "..", "..", "kit", "omi.json"
     )
-    pack = Pack.load(path)
-    omi = Player(pack)  # starts at "logo", the plain logo
+    kit = Kit.load(path)
+    omi = Player(kit)   # starts at "logo", the plain logo
     try:
         omi.set(mode)   # morphs there from wherever Omi is
     except UnknownMode as error:
-        print("%s. The pack has: %s" % (error, ", ".join(pack.mode_ids)))
+        print("%s. The kit has: %s" % (error, ", ".join(kit.mode_ids)))
         return 1
 
     print("%s: a %s, loop %g s, hold %g s" % (

@@ -2,8 +2,8 @@
 
 One Omi, shared by every app on a machine. A small service holds what Omi is
 doing; any app or script can change it; every app showing Omi follows along,
-in sync. Each app still draws Omi itself, with its own player and the Omi pack
-(see [`../pack/README.md`](../pack/README.md)): the service only shares the
+in sync. Each app still draws Omi itself, with its own player and the Omi kit
+(see [`../kit/README.md`](../kit/README.md)): the service only shares the
 state, never pixels.
 
 This file describes protocol version 1. Any language can implement either
@@ -15,7 +15,7 @@ The service holds one state:
 
     { "mode": "thinking", "from": "idle", "since": 1767225600000, "instant": false }
 
-- `mode`: the mode Omi is in, or morphing to. An id from the pack.
+- `mode`: the mode Omi is in, or morphing to. An id from the kit.
 - `from`: the mode before it (null at the start).
 - `since`: when the change happened, in Unix time milliseconds.
 - `instant`: true if Omi jumped instead of morphing.
@@ -78,7 +78,7 @@ change, and in answer to `get` and `set`.
 
     { "type": "error", "message": "no mode \"thinkng\"" }
 
-A service that knows the pack rejects modes the pack doesn't have. One that
+A service that knows the kit rejects modes the kit doesn't have. One that
 doesn't accepts any mode id, and players skip ids they don't know.
 
 ## Following the state in an app
@@ -104,7 +104,7 @@ When a `state` arrives, hand it to the player as a change that happened at
 Work that out from the clock on every frame, not once and then by counting
 frames: an app that stalls for a moment is back in step on its next frame.
 
-All apps share the pack's morph timing, so all land at the same moment and
+All apps share the kit's morph timing, so all land at the same moment and
 their loops stay together. For the same reason, apps that want to stay in
 sync play at speed 1.
 

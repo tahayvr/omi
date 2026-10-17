@@ -20,13 +20,13 @@ if (!has("quickshell") || !process.env.WAYLAND_DISPLAY) {
   process.exit(0);
 }
 
-// A throwaway Quickshell config: the player, the check and the pack side by side.
+// A throwaway Quickshell config: the player, the check and the kit side by side.
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "omi-qs-"));
 for (const [from, to] of [
   ["player/omi.js", "omi.js"],
   ["tools/conformance.js", "conformance.js"],
-  ["pack/omi.json", "omi.json"],
-  ["pack/conformance.json", "conformance.json"],
+  ["kit/omi.json", "omi.json"],
+  ["kit/conformance.json", "conformance.json"],
 ])
   fs.copyFileSync(path.join(root, from), path.join(dir, to));
 fs.writeFileSync(
@@ -38,7 +38,7 @@ import "omi.js" as OmiJs
 import "conformance.js" as Check
 
 ShellRoot {
-    FileView { id: pack; path: "${dir}/omi.json"; blockLoading: true }
+    FileView { id: kit; path: "${dir}/omi.json"; blockLoading: true }
     FileView { id: conf; path: "${dir}/conformance.json"; blockLoading: true }
     Timer {
         interval: 1
@@ -46,7 +46,7 @@ ShellRoot {
         onTriggered: {
             let out;
             try {
-                out = Check.checkConformance(OmiJs.Omi, JSON.parse(pack.text()), JSON.parse(conf.text()));
+                out = Check.checkConformance(OmiJs.Omi, JSON.parse(kit.text()), JSON.parse(conf.text()));
             } catch (e) {
                 out = { checks: 0, fails: [String(e)] };
             }

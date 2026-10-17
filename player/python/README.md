@@ -1,15 +1,15 @@
 # Omi player in Python
 
-A third player for the Omi pack, as a Python package (`omi`). Like the Rust
-crate, it is there to show that the pack is a language-neutral contract, and
-it was written to find out how complete the pack's README is:
+A third player for the Omi kit, as a Python package (`omi`). Like the Rust
+crate, it is there to show that the kit is a language-neutral contract, and
+it was written to find out how complete the kit's README is:
 
-1. First from `pack/README.md` alone, without opening the reference player
+1. First from `kit/README.md` alone, without opening the reference player
    (`player/omi.js`) or the Rust crate: where the README left something
-   open, the readings it allows were tried against `pack/conformance.json`.
+   open, the readings it allows were tried against `kit/conformance.json`.
    That version passed every conformance check.
 2. It was then compared with the reference player on every morph in the
-   pack (`tools/check-morphs.js`), and drew about one in ten differently.
+   kit (`tools/check-morphs.js`), and drew about one in ten differently.
    The README's steps for pairing pieces were not as exact as it said, a
    few were not what the reference player did, and some pairings turned on
    the last digits of an ease.
@@ -27,17 +27,17 @@ later and only the standard library.
 ## Using it
 
     import time
-    from omi import Pack, Player
+    from omi import Kit, Player
 
-    pack = Pack.load("omi.json")
-    omi = Player(pack)                  # starts at "logo", the plain logo
+    kit = Kit.bundled()                 # the kit that ships in the package
+    omi = Player(kit)                   # starts at "logo", the plain logo
     omi.set("thinking")                 # morphs there from wherever Omi is
     while True:
         omi.frame(time.time() * 1000)   # wall clock, milliseconds
         for r in omi.rects():           # grid units, in drawing order
             fill(r.x, r.y, r.w, r.h, r.opacity)   # r.role says what it is
 
-`Player(pack, speed=1.0, animate=True, body_motion=True, mode="logo",
+`Player(kit, speed=1.0, animate=True, body_motion=True, mode="logo",
 on_settled=None, rest=1.0)` takes its options by name (`rest` scales the
 still time between passes of a loop: 1 as designed, 0 back to back, 2 twice
 as long); `on_settled(mode)` is called
@@ -45,9 +45,9 @@ when a morph lands, and after a jump. Also there: `set(mode, instant=True)` to j
 `mode_rects(mode, seconds)` for stills, `look(dx, dy)`, `gaze()`, `gazing`,
 `loop_seconds(mode)`, `hold(mode)`, `kind(mode)`, `label(mode)` (what a
 screen reader says for a mode: your toolkit's accessible name), `mode`,
-`morphing` and `settled`. A mode the pack doesn't have raises `omi.UnknownMode`, a
-`KeyError`; a file that isn't a version 1 pack raises `omi.PackError`, a
-`ValueError`. See "Drawing Omi crisp" in the pack README for how to snap
+`morphing` and `settled`. A mode the kit doesn't have raises `omi.UnknownMode`, a
+`KeyError`; a file that isn't a version 1 kit raises `omi.KitError`, a
+`ValueError`. See "Drawing Omi crisp" in the kit README for how to snap
 the rects to device pixels.
 
 To show the shared Omi of the [state protocol](../../protocol/README.md),
@@ -59,15 +59,15 @@ The change is played as if it had started at `since`: part of the way
 along, or landed, with its loops that much further on. For this the player
 takes the clock given to `frame` as the time now, so give `frame` Unix time
 in milliseconds, as above, and play at speed 1. A service that doesn't know
-the pack may name a mode it doesn't have: check `pack.has(mode)` first.
+the kit may name a mode it doesn't have: check `kit.has(mode)` first.
 
 ## Checking it
 
-    python3 -m unittest discover -s tests -v   # conformance against ../../pack
+    python3 -m unittest discover -s tests -v   # conformance against ../../kit
     node ../../tools/check-morphs.js python    # every morph, against the reference player
     python3 examples/print.py idle             # prints a few frames of rects
 
-`tests/test_conformance.py` follows "Checking your own player" in the pack
+`tests/test_conformance.py` follows "Checking your own player" in the kit
 README and ends with one line of counts, with how many of the reference
 player's in-between morph frames it matches. `tests/test_api.py` holds the
 player to rules the conformance data has no cases for: the clocks, jumps, a
@@ -76,7 +76,7 @@ change in the middle of a morph, the gaze meeting a morph, `since`.
 pair of modes, from rest, from the middle of a loop and from the middle of
 another morph, 7056 morphs in all.
 
-## What the pack README gained
+## What the kit README gained
 
 Rules it left open, now written down:
 

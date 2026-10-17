@@ -1,6 +1,6 @@
 """Morphing from one mode to another: planning the pairs, playing them.
 
-`plan` follows "Morphing from one mode to another" in the pack README step
+`plan` follows "Morphing from one mode to another" in the kit README step
 by step. It runs once per mode change; `Plan.rects` then gives the morph's
 rects at any time.
 
@@ -12,7 +12,7 @@ in order, and a morph is drawn in the order its pairs were made.
 import math
 
 from .anim import VISIBLE, make_ease
-from .pack import FACE_ROLES, Rect
+from .kit import FACE_ROLES, Rect
 
 __all__ = ["Plan", "assign", "cut", "plan"]
 
@@ -85,7 +85,7 @@ def assign(cost):
     every row, the column it is given.
 
     This is the Hungarian method with row and column potentials, as the
-    pack README writes it out, taking the rows in order: O(rows² ×
+    kit README writes it out, taking the rows in order: O(rows² ×
     columns). Several assignments can cost the same, and which one comes
     out depends on the method: here every "less than" is strict, so a
     column is reached from the first column that gets there cheapest, and
@@ -469,7 +469,7 @@ def plan(source, target, settings, grid, logo):
     """Plan the morph from the rects on screen to a mode's rects at rest.
 
     `source` and `target` are rects (x, y, w, h, opacity, role), `source`
-    before the gaze is applied. `settings` is the pack's `morph`, `grid`
+    before the gaze is applied. `settings` is the kit's `morph`, `grid`
     its `grid`, and `logo` the (x, y, w, h) of every piece of "logo".
     Returns a `Plan`.
     """

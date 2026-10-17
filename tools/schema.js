@@ -1,5 +1,5 @@
 /* A JSON Schema validator for the part of JSON Schema (2020-12) that
-   pack/omi.schema.json is written in, and no more: it throws on a keyword
+   kit/omi.schema.json is written in, and no more: it throws on a keyword
    it doesn't know, so the schema can't say something this doesn't check.
 
      const problems = validate(schema, value);   // [] when the value fits
@@ -36,7 +36,7 @@ const isObject = (v) =>
   show = (v) => JSON.stringify(v);
 
 function validate(schema, value, root = schema, at = "", out = []) {
-  const say = (message) => out.push({ at: at || "the pack", message });
+  const say = (message) => out.push({ at: at || "the kit", message });
   if (schema === true) return out;
   if (schema === false) {
     say("must not be there");

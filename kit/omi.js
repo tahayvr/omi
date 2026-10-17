@@ -1,9 +1,9 @@
-/* Omi player: draws Omi from an Omi pack (omi.json), plays every mode's
+/* Omi player: draws Omi from an Omi kit (omi.json), plays every mode's
    animations and morphs from any mode into any other. No dependencies, and
    no browser needed: it runs in web pages, Node, and other JavaScript
    engines such as QML's and GJS's.
 
-     const omi = new Omi(canvas, pack);   // pack = the parsed omi.json
+     const omi = new Omi(canvas, kit);    // kit = the parsed omi.json
      omi.set("thinking");                 // morph there from wherever Omi is
      omi.set("idle", { instant: true });  // or jump
      omi.set("idle", { since: 1767225600000 });  // a change made at that
@@ -31,7 +31,7 @@
                   device pixels, so every bar is the same thickness; Omi may
                   be a little smaller than the canvas. Drawing only.
      mode         the mode to start in (default "logo", the plain logo)
-     view         [x, y, w, h] to show, instead of the pack's view
+     view         [x, y, w, h] to show, instead of the kit's view
      label        true (default) keeps the canvas's aria-label on the mode's
                   label, and gives it role="img" if it has no role, so a
                   screen reader says what Omi is doing; false leaves the
@@ -43,7 +43,7 @@
    and fill omi.rects() yourself; pass a color, and null for the canvas if
    there is none.
 
-   README.md in the pack describes the format and the morph step by step;
+   README.md in the kit describes the format and the morph step by step;
    this file follows it.
 
    Written for the JavaScript Qt Quick runs (Qt 6, the engine behind the
@@ -194,13 +194,13 @@ var Omi = (function () {
   }
 
   class Planner {
-    constructor(pack) {
-      const m = pack.morph;
+    constructor(kit) {
+      const m = kit.morph;
       this.reach2 = m.splitReach ** 2;
       this.penalty = m.rolePenalty ** 2;
-      this.roleIx = fromEntries(pack.roles.map((r, i) => [r, i]));
+      this.roleIx = fromEntries(kit.roles.map((r, i) => [r, i]));
       // the logo itself: the plain "logo" mode
-      const plain = pack.modes.find((d) => d.id === "logo");
+      const plain = kit.modes.find((d) => d.id === "logo");
       this.logo = plain ? plain.pieces : [];
     }
     rolePenalty(a, b) {
@@ -415,28 +415,28 @@ var Omi = (function () {
     easeBack = (p) => 1 + 2.70158 * (p - 1) ** 3 + 1.70158 * (p - 1) ** 2;
 
   class Omi {
-    constructor(canvas, pack, opts = {}) {
+    constructor(canvas, kit, opts = {}) {
       this._listeners = {};
-      if (!pack || pack.format !== "omi-pack" || pack.version !== 1)
-        throw new Error("Omi: expected an Omi pack, format version 1");
+      if (!kit || kit.format !== "omi-kit" || kit.version !== 1)
+        throw new Error("Omi: expected an Omi kit, format version 1");
       this.canvas = canvas;
       this.ctx = canvas && canvas.getContext ? canvas.getContext("2d") : null;
-      this.pack = pack;
+      this.kit = kit;
       this.anims = {};
-      for (const [k, a] of Object.entries(pack.animations))
+      for (const [k, a] of Object.entries(kit.animations))
         this.anims[k] = prepare(Object.assign({}, a));
-      this.modes = fromEntries(pack.modes.map((m) => [m.id, m]));
-      this.planner = new Planner(pack);
-      this.morphEase = bezier(pack.morph.ease);
+      this.modes = fromEntries(kit.modes.map((m) => [m.id, m]));
+      this.planner = new Planner(kit);
+      this.morphEase = bezier(kit.morph.ease);
       // Gaze: where the eyes look, on top of the mode (look()). Optional in
-      // the pack; without it look() does nothing.
-      this.gazeSpec = pack.gaze || null;
+      // the kit; without it look() does nothing.
+      this.gazeSpec = kit.gaze || null;
       this.gazeEase = this.gazeSpec ? bezier(this.gazeSpec.ease) : null;
       this._gaze = { from: [0, 0], to: [0, 0], p: 1 };
       this.color = opts.color ?? null;
       this.speed = opts.speed ?? 1;
       this.rest = opts.rest ?? 1;
-      this.view = opts.view || pack.view;
+      this.view = opts.view || kit.view;
       this._animate = opts.animate ?? true;
       this._bodyMotion = opts.bodyMotion ?? true;
       this.even = opts.even ?? true;
@@ -515,7 +515,7 @@ var Omi = (function () {
             ? 0
             : (Math.max(0, Date.now() - since) / 1000) *
               Math.max(0.05, this.speed),
-        total = this.pack.morph.duration + this.pack.morph.stagger;
+        total = this.kit.morph.duration + this.kit.morph.stagger;
       // a shared change in the middle of another starts from what the clock
       // had on screen at `since`, the same in every app, not from this
       // player's last frame, which its own frame timing put a little off
@@ -562,7 +562,7 @@ var Omi = (function () {
         {
           stagger,
           center: [cx, cy],
-        } = this.pack.morph;
+        } = this.kit.morph;
       for (const s of steps) {
         const c = center(s.b.w || s.b.h ? s.b : s.a);
         s.delay = s.rigid
@@ -590,7 +590,7 @@ var Omi = (function () {
     loopSeconds(id) {
       const mode = this.modes[id];
       if (!mode) return 0;
-      const A = this.pack.animations,
+      const A = this.kit.animations,
         scale = this._restScale();
       let t = 0;
       const use = (name, delay, duration) => {
@@ -609,7 +609,7 @@ var Omi = (function () {
     }
 
     /* Gaze. look(dx, dy) turns the eyes toward a direction, each axis -1..1
-       (dx right, dy down), eased over the pack's gaze.duration from wherever
+       (dx right, dy down), eased over the kit's gaze.duration from wherever
        they are. It moves the pieces whose role is in gaze.roles by
        gaze.reach grid units at full tilt, on top of any mode, its loops and
        morphs included. look(0, 0) looks straight ahead again. */
@@ -667,8 +667,8 @@ var Omi = (function () {
       );
     }
 
-    /* What a screen reader says for a mode, from the pack ("Omi is
-       thinking"): its label, or its name in a pack without labels. Give it
+    /* What a screen reader says for a mode, from the kit ("Omi is
+       thinking"): its label, or its name in a kit without labels. Give it
        to your toolkit as the picture's accessible name. */
     label(id) {
       const mode = this.modes[id];
@@ -682,7 +682,7 @@ var Omi = (function () {
       cv.setAttribute("aria-label", this.label(this.mode));
     }
 
-    /* A mode's kind, "state" or "reaction", from the pack. */
+    /* A mode's kind, "state" or "reaction", from the kit. */
     kind(id) {
       const mode = this.modes[id];
       return mode && mode.kind === "reaction" ? "reaction" : "state";
@@ -814,7 +814,7 @@ var Omi = (function () {
     }
     stepMorph(dt) {
       const M = this.morph,
-        { duration, stagger } = this.pack.morph;
+        { duration, stagger } = this.kit.morph;
       M.t += dt;
       for (const s of M.steps) {
         const p = Math.min(1, Math.max(0, (M.t - s.delay) / duration)),
@@ -860,7 +860,7 @@ var Omi = (function () {
       if (cv.width !== W || cv.height !== H) ((cv.width = W), (cv.height = H));
       const ctx = this.ctx,
         [vx, vy, vw, vh] = this.view,
-        g = this.pack.grid,
+        g = this.kit.grid,
         fit = Math.min(W / vw, H / vh),
         // even: the largest scale at which one grid cell is whole pixels
         s = this.even && fit * g >= 1 ? Math.floor(fit * g + 1e-6) / g : fit,

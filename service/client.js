@@ -101,12 +101,12 @@ function connect({
    every app following it shows the same frame at the same moment. */
 function follow(player, opts = {}) {
   const known = (id) => !!player.modes[id],
-    { duration, stagger } = player.pack.morph;
+    { duration, stagger } = player.kit.morph;
   let first = true;
   return connect({
     ...opts,
     onState(st) {
-      if (!known(st.mode)) return; // a mode this pack doesn't have
+      if (!known(st.mode)) return; // a mode this kit doesn't have
       const midMorph =
         !st.instant && Date.now() - st.since < (duration + stagger) * 1000;
       if (first && midMorph && st.from && known(st.from))

@@ -3,20 +3,30 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "omi-player"
-version = "0.1.0"
-description = "Plays Omi, the Omarchy mascot, from an Omi pack: modes, loops, morphs and gaze, as a list of rects to fill"
+name = "omi-kit"
+version = "1.0.0"
+description = "Omi, the Omarchy mascot: its kit (every mode, as data) and a player that plays it, as a list of rects to fill"
 readme = "README.md"
-license = "MIT"
+# The player's code is MIT; the Omi design in omi.json is not (see LICENSE).
+license = "MIT AND LicenseRef-Omi-Design"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
 dependencies = []
+keywords = ["omi", "omarchy", "mascot", "pixel-art", "animation"]
 classifiers = [
-  # Not on PyPI yet: this keeps an upload from going through by accident.
-  "Private :: Do Not Upload",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Multimedia :: Graphics",
 ]
 
+[project.urls]
+Homepage = "https://tahayvr.github.io/omi/"
+Source = "https://github.com/tahayvr/omi"
+Changelog = "https://github.com/tahayvr/omi/blob/master/CHANGELOG.md"
+
 [tool.setuptools]
 packages = ["omi"]
+
+# the kit this package was built with: Kit.bundled() reads it
+[tool.setuptools.package-data]
+omi = ["omi.json"]

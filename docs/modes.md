@@ -2,13 +2,13 @@
 
 Omi has 30 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
-`node tools/modes-doc.js` from the pack, so it always matches
-`pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
+`node tools/modes-doc.js` from the kit, so it always matches
+`kit/omi.json`; the stills are each mode at rest (time 0 of its loops),
 drawn by the reference player.
 
 ![Every mode](modes/sheet.svg)
 
-- **state or reaction** is what the mode is for (`kind` in the pack). A
+- **state or reaction** is what the mode is for (`kind` in the kit). A
   state stays as long as what it stands for lasts. A reaction is shown for
   its hold after its morph lands, then Omi goes back: `react("success")`
   in Omi.qml, or `omi.hold(mode)` in your own host.
@@ -17,7 +17,7 @@ drawn by the reference player.
 - A **family** groups modes that mean the same thing: pick one per
   situation and treat the rest as variations. A mode marked `easter` is a
   joke: leave it out of anything generic.
-- **A screen reader says** is the mode's `label` in the pack: the
+- **A screen reader says** is the mode's `label` in the kit: the
   accessible name every app gives the picture, so Omi is announced the same
   way everywhere. It is each still's own name on this page.
 - "Use it for" is advice for app authors; [docs/omarchy.md](omarchy.md)

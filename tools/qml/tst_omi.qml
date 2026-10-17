@@ -26,20 +26,20 @@ TestCase {
     SignalSpy { id: loaded; target: omi; signalName: "loaded" }
     SignalSpy { id: settled; target: omi; signalName: "settled" }
 
-    // the pack as JSON, for what its modes are and say
-    property var pack: null
+    // the kit as JSON, for what its modes are and say
+    property var kit: null
     function mode(id) {
-        return pack.modes.find(function (m) { return m.id === id; });
+        return kit.modes.find(function (m) { return m.id === id; });
     }
 
     function initTestCase() {
         if (!omi.player) loaded.wait(5000);
-        verify(omi.player !== null, "the pack loads");
+        verify(omi.player !== null, "the kit loads");
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", omi.pack, false);
+        xhr.open("GET", omi.kit, false);
         xhr.send();
-        pack = JSON.parse(xhr.responseText);
-        compare(omi.modes.length, pack.modes.length);
+        kit = JSON.parse(xhr.responseText);
+        compare(omi.modes.length, kit.modes.length);
     }
 
     function test_1_draws() {

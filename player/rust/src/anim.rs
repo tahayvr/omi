@@ -2,7 +2,7 @@
 //! "Animations" section describes. Values come in two channels, move (tx, ty,
 //! sx, sy) and opacity (op), each worked out on its own.
 
-use crate::pack::{Animation, Ease, Key, Value};
+use crate::kit::{Animation, Ease, Key, Value};
 use std::collections::BTreeMap;
 
 /// What an animation does to a piece at one moment, on top of its rest
@@ -45,7 +45,7 @@ pub fn ease(e: &Ease, p: f64) -> f64 {
 
 /// CSS cubic-bezier(x1, y1, x2, y2): find the curve parameter whose x is p by
 /// bisection (x is monotonic for x1, x2 in 0..1), and return its y. Halved
-/// 24 times, as the pack README has it: every player solves the curve the
+/// 24 times, as the kit README has it: every player solves the curve the
 /// same way, so their numbers agree to the last digits and a morph pairs the
 /// same in all of them.
 pub fn bezier(c: &[f64; 4], p: f64) -> f64 {

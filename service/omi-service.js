@@ -2,9 +2,9 @@
 /* The reference Omi state service (../protocol/README.md): holds what Omi is
    doing and shares it with every app on the machine.
 
-     node service/omi-service.js [--pack pack/omi.json] [--socket path]
+     node service/omi-service.js [--kit kit/omi.json] [--socket path]
 
-   With --pack it only accepts modes the pack has. One per user: it refuses
+   With --kit it only accepts modes the kit has. One per user: it refuses
    to start if another is already answering on the socket. */
 const fs = require("fs"),
   net = require("net"),
@@ -16,10 +16,10 @@ const args = process.argv.slice(2),
     return i >= 0 ? args[i + 1] : undefined;
   },
   socket = opt("socket") || socketPath(),
-  packPath = opt("pack"),
-  modes = packPath
+  kitPath = opt("kit"),
+  modes = kitPath
     ? new Set(
-        JSON.parse(fs.readFileSync(packPath, "utf8")).modes.map((m) => m.id),
+        JSON.parse(fs.readFileSync(kitPath, "utf8")).modes.map((m) => m.id),
       )
     : null;
 

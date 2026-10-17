@@ -1,0 +1,147 @@
+name: Release
+
+# Pushing a tag vX.Y.Z publishes that version of every package: omi-kit on
+# npm and on PyPI, omi on crates.io, and a GitHub release with the kit as a
+# zip. Nothing goes out unless the tag is the version every package has,
+# CHANGELOG.md has a section for it, and every player passes its checks.
+#
+# The registries are reached by trusted publishing (OpenID Connect), with no
+# token kept anywhere: each registry trusts this workflow, by name. npm
+# and crates.io only trust a package that already exists, so for the very
+# first release the npm and crates jobs use the NPM_TOKEN and
+# CARGO_REGISTRY_TOKEN secrets if they are set. A version that is already
+# up is skipped, so a release that failed halfway can be run again.
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: version
+        name: The tag is the version every package has
+        run: |
+          v=$(node -p 'require("./package.json").version')
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::the tag is $GITHUB_REF_NAME, the packages are at $v"
+            exit 1
+          fi
+          if ! grep -qx "## $v" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## $v' section"
+            exit 1
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      # kit/ and every package's copy of it are built from what's
+      # committed, at this version, and the reference player plays it
+      - run: npm run check
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m unittest discover -s tests
+        working-directory: player/python
+      - run: cargo test --locked
+        working-directory: player/rust
+      - run: npm run check:morphs
+
+  npm:
+    needs: check
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest # trusted publishing needs npm 11.5+
+      - id: up
+        run: |
+          if npm view "omi-kit@${{ needs.check.outputs.version }}" version >/dev/null 2>&1
+          then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.up.outputs.skip != 'true'
+        run: npm publish --provenance --access public
+        working-directory: kit
+        env:
+          # empty once trusted publishing is set up: npm then uses OIDC
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  pypi:
+    needs: check
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m pip install build
+      - run: python3 -m build player/python --outdir dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+          skip-existing: true
+
+  crates:
+    needs: check
+    runs-on: ubuntu-latest
+    environment: crates
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: up
+        run: |
+          if curl -sf -A "omi release" \
+            "https://crates.io/api/v1/crates/omi/${{ needs.check.outputs.version }}" >/dev/null
+          then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+      - id: auth
+        if: steps.up.outputs.skip != 'true' && env.CARGO_REGISTRY_TOKEN == ''
+        uses: rust-lang/crates-io-auth-action@v1
+      - if: steps.up.outputs.skip != 'true'
+        run: cargo publish --locked
+        working-directory: player/rust
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || steps.auth.outputs.token }}
+
+  github:
+    needs: [check, npm, pypi, crates]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: The kit as a zip, and this version's changelog as the notes
+        run: |
+          v=${{ needs.check.outputs.version }}
+          (cd kit && zip -q "../omi-kit-$v.zip" omi.js omi.d.ts omi.json \
+            omi.schema.json conformance.json README.md LICENSE)
+          awk -v h="## $v" '$0 == h { on = 1; next } /^## / { on = 0 } on' \
+            CHANGELOG.md > notes.md
+      - run: |
+          gh release create "$GITHUB_REF_NAME" "omi-kit-${{ needs.check.outputs.version }}.zip" \
+            --title "Omi ${{ needs.check.outputs.version }}" --notes-file notes.md --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -1,5 +1,5 @@
 // Omi for Omarchy shell plugins (Quickshell, Qt 6). Copy this file with
-// omi.js and omi.json from the pack into your plugin:
+// omi.js and omi.json from the kit into your plugin:
 //
 //     Omi {
 //         width: 96; height: 96
@@ -11,7 +11,7 @@
 //     look: [0, -1]                // the eyes look up, on top of any mode
 //
 // Omi is drawn as Rectangles snapped to device pixels, so it stays crisp at
-// any scale, fractional ones included. The pack is read with FileView
+// any scale, fractional ones included. The kit is read with FileView
 // (Quickshell.Io), which needs nothing from the environment.
 import QtQuick
 import Quickshell.Io
@@ -40,17 +40,17 @@ Item {
     // something on screen, on top of any mode. [0, 0] is straight ahead.
     property var look: [0, 0]
     // true: each logo cell is a whole number of device pixels, so every bar
-    // has the same thickness ("Drawing Omi crisp" in the pack README). Omi
+    // has the same thickness ("Drawing Omi crisp" in the kit README). Omi
     // may then draw a little smaller than this item.
     property bool even: true
-    // The pack's omi.json; by default the one next to this file.
-    property string packPath: decodeURIComponent(Qt.resolvedUrl("omi.json").toString().replace(/^file:\/\//, ""))
+    // The kit's omi.json; by default the one next to this file.
+    property string kitPath: decodeURIComponent(Qt.resolvedUrl("omi.json").toString().replace(/^file:\/\//, ""))
 
-    // Every mode in the pack: [{ id, name, ... }].
-    readonly property var modes: player ? player.pack.modes : []
+    // Every mode in the kit: [{ id, name, ... }].
+    readonly property var modes: player ? player.kit.modes : []
     // The mode on screen: `mode`, or a reaction playing over it.
     readonly property string showing: reaction !== "" ? reaction : mode
-    // What a screen reader says for it, from the pack ("Omi is thinking").
+    // What a screen reader says for it, from the kit ("Omi is thinking").
     // The item is a picture by that name; bind Accessible.name to something
     // else if your app has better words for the moment.
     readonly property string label: player ? player.label(showing) : ""
@@ -67,13 +67,13 @@ Item {
     property var rects: []
 
     // Plays `reactionMode`, then morphs back to `omi.mode`: for `seconds`
-    // after its morph lands, or the pack's hold for that mode (omi.hold(),
+    // after its morph lands, or the kit's hold for that mode (omi.hold(),
     // 1.2 to 2.5 s) so every app reacts alike. A new reaction replaces one
     // still playing.
     function react(reactionMode, seconds) {
         reaction = reactionMode;
         const hold = seconds || (player ? player.hold(reactionMode) : 1.4),
-              morph = player ? player.pack.morph.duration + player.pack.morph.stagger : 0.84;
+              morph = player ? player.kit.morph.duration + player.kit.morph.stagger : 0.84;
         reactionTimer.interval = Math.round(1000 * (hold + morph));
         reactionTimer.restart();
     }
@@ -84,13 +84,13 @@ Item {
     }
 
     FileView {
-        id: packFile
-        path: omi.packPath
+        id: kitFile
+        path: omi.kitPath
         blockLoading: true
     }
 
     Component.onCompleted: {
-        const p = new OmiJs.Omi(null, JSON.parse(packFile.text()), {
+        const p = new OmiJs.Omi(null, JSON.parse(kitFile.text()), {
             color: String(omi.color),
             speed: omi.speed,
             rest: omi.rest,
@@ -136,10 +136,10 @@ Item {
         onTriggered: omi.step()
     }
 
-    // The pack's `view` square, fitted into this item and centered.
+    // The kit's `view` square, fitted into this item and centered.
     readonly property var view: player ? player.view : [0, 0, 1, 1]
     readonly property real fit: Math.min(width / view[2], height / view[3])
-    readonly property real grid: player ? player.pack.grid : 20
+    readonly property real grid: player ? player.kit.grid : 20
     // (+ 1e-6: a width meant to be exact, like 88 device pixels, can come out
     // 87.99999 after the scale.)
     readonly property real unit: even && fit * dpr * grid >= 1

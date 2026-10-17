@@ -10,7 +10,7 @@
    Only the pages go through Vite, which adds its reload script to them.
    Every other file is sent exactly as it is on disk: the jig's scripts are
    plain scripts, not modules Vite knows, and the page checks that the
-   player it runs is the one in pack/ byte for byte, which a source map
+   player it runs is the one in kit/ byte for byte, which a source map
    added by Vite would break. */
 import fs from "node:fs";
 import path from "node:path";

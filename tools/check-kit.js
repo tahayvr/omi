@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-/* Checks the pack itself: that pack/omi.json has the shape
-   pack/omi.schema.json gives it, that it hangs together, and that it keeps
+/* Checks the kit itself: that kit/omi.json has the shape
+   kit/omi.schema.json gives it, that it hangs together, and that it keeps
    the rules Omi is drawn by (docs/designing.md), as far as a program can
    tell.
 
-     node tools/check-pack.js
+     node tools/check-kit.js
 
    A rule a mode breaks on purpose is argued for here, in ARGUED, with the
    reason: one line, where the next person will look. An argument nothing
@@ -14,9 +14,9 @@ const fs = require("fs"),
   vm = require("vm"),
   { validate } = require("./schema.js");
 
-const dir = path.join(__dirname, "..", "pack"),
+const dir = path.join(__dirname, "..", "kit"),
   read = (f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")),
-  pack = read("omi.json"),
+  kit = read("omi.json"),
   schema = read("omi.schema.json");
 
 // mode: why it may
@@ -50,20 +50,20 @@ function rule(name, problems) {
    for a mode that keeps the rule is a problem too. */
 function argued(name, table, breaks) {
   const problems = [];
-  for (const m of pack.modes) {
+  for (const m of kit.modes) {
     const found = breaks(m);
     if (m.id in table) {
       if (!found.length)
         problems.push(
-          `${m.id} keeps this rule now: take it out of ARGUED in tools/check-pack.js`,
+          `${m.id} keeps this rule now: take it out of ARGUED in tools/check-kit.js`,
         );
     } else for (const f of found) problems.push(`${m.id}: ${f}`);
   }
   for (const id of Object.keys(table))
-    if (!pack.modes.some((m) => m.id === id))
-      problems.push(`ARGUED names "${id}", which the pack doesn't have`);
+    if (!kit.modes.some((m) => m.id === id))
+      problems.push(`ARGUED names "${id}", which the kit doesn't have`);
   const let_off = Object.keys(table).filter((id) =>
-    pack.modes.some((m) => m.id === id),
+    kit.modes.some((m) => m.id === id),
   );
   rule(
     name +
@@ -79,22 +79,22 @@ const piece = (p) => `the ${p.role} piece at ${p.x}, ${p.y} (${p.w} × ${p.h})`;
 // modes[3].pieces[2] reads better with the mode's name on it
 const named = (at) =>
   at.replace(/^modes\[(\d+)\]/, (all, i) =>
-    pack.modes[i] && pack.modes[i].id ? `${all} (${pack.modes[i].id})` : all,
+    kit.modes[i] && kit.modes[i].id ? `${all} (${kit.modes[i].id})` : all,
   );
 rule(
   "omi.json has the shape omi.schema.json gives it: every mode has a kind and a label, every reaction a hold",
-  validate(schema, pack).map((p) => `${named(p.at)} ${p.message}`),
+  validate(schema, kit).map((p) => `${named(p.at)} ${p.message}`),
 );
 if (failed) {
-  // the rest reads the pack as if it had its shape
+  // the rest reads the kit as if it had its shape
   console.log("FAIL: fix the shape first");
   process.exit(1);
 }
 
 /* ---------- it hangs together ---------- */
-const A = pack.animations,
+const A = kit.animations,
   problems = [];
-const ids = pack.modes.map((m) => m.id);
+const ids = kit.modes.map((m) => m.id);
 ids.forEach(
   (id, i) =>
     ids.indexOf(id) !== i && problems.push(`two modes are called "${id}"`),
@@ -103,11 +103,11 @@ if (!ids.includes("logo"))
   problems.push(
     `there is no "logo", the plain logo every morph is cut against`,
   );
-for (const r of (pack.gaze || {}).roles || [])
-  if (!pack.roles.includes(r))
+for (const r of (kit.gaze || {}).roles || [])
+  if (!kit.roles.includes(r))
     problems.push(`gaze.roles has "${r}", which isn't one of the roles`);
 const played = new Set();
-for (const m of pack.modes) {
+for (const m of kit.modes) {
   const play = (name, what, body) => {
     if (name == null) return;
     played.add(name);
@@ -127,7 +127,7 @@ for (const m of pack.modes) {
       `${m.id}: a piece is seen through a window (clip), and the mode has none`,
     );
   for (const p of m.pieces) {
-    if (!pack.roles.includes(p.role))
+    if (!kit.roles.includes(p.role))
       problems.push(
         `${m.id}: ${piece(p)} has a role that isn't one of the roles`,
       );
@@ -182,7 +182,7 @@ for (const [name, a] of Object.entries(A)) {
         );
 }
 const families = {};
-for (const m of pack.modes)
+for (const m of kit.modes)
   if (m.family) (families[m.family] = families[m.family] || []).push(m.id);
 for (const [f, of] of Object.entries(families))
   if (of.length < 2)
@@ -218,7 +218,7 @@ for (const [name, a] of Object.entries(A)) {
       );
   }
 }
-for (const m of pack.modes)
+for (const m of kit.modes)
   for (const p of m.pieces)
     if (p.duration != null && A[p.anim] && A[p.anim].rest)
       restProblems.push(
@@ -236,17 +236,17 @@ vm.runInContext(
   fs.readFileSync(path.join(dir, "omi.js"), "utf8") + ";this.Omi = Omi;",
   ctx,
 );
-const omi = new ctx.Omi(null, pack, { color: "#000" }),
+const omi = new ctx.Omi(null, kit, { color: "#000" }),
   shown = (m, t) => omi.modeRects(m, t).filter((r) => r.o > 0.001),
   inside = (r, [x, y, w, h]) =>
     r.x >= x - 1e-6 &&
     r.y >= y - 1e-6 &&
     r.x + r.w <= x + w + 1e-6 &&
     r.y + r.h <= y + h + 1e-6,
-  grid = pack.grid,
+  grid = kit.grid,
   on = (v, step) => Math.abs(v / step - Math.round(v / step)) < 1e-9;
 
-const logo = pack.modes.find((m) => m.id === "logo");
+const logo = kit.modes.find((m) => m.id === "logo");
 rule(
   "Omi is the Omarchy logo: logo is the frame alone, at rest",
   logo.pieces
@@ -256,7 +256,7 @@ rule(
 
 rule(
   "the grid: every piece sits on whole units",
-  pack.modes.flatMap((m) =>
+  kit.modes.flatMap((m) =>
     m.pieces
       .filter((p) => ![p.x, p.y, p.w, p.h].every(Number.isInteger))
       .map((p) => `${m.id}: ${piece(p)}`),
@@ -274,14 +274,14 @@ argued(
       )
       .map((p) => `${piece(p)} is off the grid`),
 );
-const off = pack.modes
+const off = kit.modes
     .flatMap((m) => m.pieces)
     .filter(
       (p) =>
         p.role !== "frame" &&
         ![p.x, p.y, p.x + p.w, p.y + p.h].every((v) => on(v, grid)),
     ).length,
-  rest = pack.modes
+  rest = kit.modes
     .flatMap((m) => m.pieces)
     .filter((p) => p.role !== "frame").length;
 
@@ -297,27 +297,26 @@ argued(
 // through every loop, a few hundred moments of it
 rule(
   "stays inside the view: the frame and the face never leave it, at rest or in any loop (props may drift off)",
-  pack.modes.flatMap((m) => {
+  kit.modes.flatMap((m) => {
     const loop = omi.loopSeconds(m.id),
       out = new Set();
     for (let k = 0; k <= 240; k++)
       for (const r of shown(m, (loop * k) / 240))
-        if (r.role !== "extra" && !inside(r, pack.view))
+        if (r.role !== "extra" && !inside(r, kit.view))
           out.add(
             `${m.id}: a piece of the ${r.role === "frame" ? "frame" : "face"} (${r.role}) leaves the view`,
           );
     return [...out];
   }),
 );
-if (pack.gaze && pack.gaze.inside)
+if (kit.gaze && kit.gaze.inside)
   argued(
     "the eyes are inside the inner square at rest, so a look keeps them there (gaze.inside)",
     ARGUED.eyes,
     (m) =>
       shown(m, 0)
         .filter(
-          (r) =>
-            pack.gaze.roles.includes(r.role) && !inside(r, pack.gaze.inside),
+          (r) => kit.gaze.roles.includes(r.role) && !inside(r, kit.gaze.inside),
         )
         .map(
           (r) =>
@@ -327,7 +326,7 @@ if (pack.gaze && pack.gaze.inside)
 
 rule(
   "bounds is the tightest box around each mode",
-  pack.modes.flatMap((m) => {
+  kit.modes.flatMap((m) => {
     // a piece seen through the window only counts as far as the window shows it
     const box = [Infinity, Infinity, -Infinity, -Infinity];
     for (const p of m.pieces) {
@@ -361,6 +360,6 @@ console.log(
 console.log(
   failed
     ? `FAIL: ${failed} of ${failed + passed} rules`
-    : `ok: ${passed} rules, ${pack.modes.length} modes`,
+    : `ok: ${passed} rules, ${kit.modes.length} modes`,
 );
 process.exit(failed ? 1 : 0);

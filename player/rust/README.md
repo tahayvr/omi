@@ -1,8 +1,8 @@
 # Omi player in Rust
 
-A second, independent player for the Omi pack, as a Rust crate (`omi`),
-written from `pack/README.md` alone and checked against
-`pack/conformance.json`. It exists to show that the pack is a
+A second, independent player for the Omi kit, as a Rust crate (`omi`),
+written from `kit/README.md` alone and checked against
+`kit/conformance.json`. It exists to show that the kit is a
 language-neutral contract: the reference player, `player/omi.js`, was only
 consulted where the README left something open, and those gaps are being
 fixed in the README itself.
@@ -13,10 +13,10 @@ fills the rects itself, in its accent colour. Dependencies: `serde` and
 
 ## Using it
 
-    use omi::{Pack, Player};
+    use omi::{Kit, Player};
 
-    let pack = Pack::parse(&std::fs::read_to_string("omi.json")?)?;
-    let mut omi = Player::new(&pack);   // starts at "logo", the plain logo
+    let kit = Kit::bundled();           // the kit that ships in the crate
+    let mut omi = Player::new(&kit);    // starts at "logo", the plain logo
     omi.set("thinking")?;               // morphs there from wherever Omi is
     loop {
         omi.frame(now_ms());            // wall clock, milliseconds
@@ -30,18 +30,18 @@ passes of a loop: 1 as designed, 0 back to back, 2 twice as long), `animate`,
 `body_motion` and the start `mode`. Also there: `set_instant`, `mode_rects(mode, seconds)` for stills,
 `look(dx, dy)`, `gaze()`, `gazing()`, `loop_seconds`, `hold`, `kind`,
 `label` (what a screen reader says for a mode: your toolkit's accessible name),
-`settled()` and `is_morphing()`. See "Drawing Omi crisp" in the pack README
+`settled()` and `is_morphing()`. See "Drawing Omi crisp" in the kit README
 for how to snap the rects to device pixels.
 
 ## Checking it
 
-    cargo test                          # conformance against ../../pack
+    cargo test                          # conformance against ../../kit
     node ../../tools/check-morphs.js rust   # every morph, against the reference player
     cargo run --example print -- idle   # prints a few frames of rects
 
 The test prints the counts, like `tools/check-player.js` does for the
 reference player, and how many of the reference player's in-between morph
-frames it matches (those are not required by the pack).
+frames it matches (those are not required by the kit).
 `tools/check-morphs.js` goes further: it has this player (`examples/morphs.rs`)
 draw every pair of modes, from rest, from the middle of a loop and from the
 middle of another morph, and holds each frame to the reference player's,

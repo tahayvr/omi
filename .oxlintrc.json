@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   // built from other files here, or someone else's
-  "ignorePatterns": ["pack/", "js/vendor/"],
+  "ignorePatterns": ["kit/", "js/vendor/"],
   "rules": {
     // `ready && go()` and `a ? b() : c()` as statements are how this code is written
     "no-unused-expressions": [

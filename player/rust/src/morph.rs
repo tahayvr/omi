@@ -2,7 +2,7 @@
 //! the README's "Morphing from one mode to another" describes. The player
 //! then moves each pair over time (see `Player::step_morph`).
 
-use crate::pack::Pack;
+use crate::kit::Kit;
 use crate::Rect;
 use std::collections::{HashMap, VecDeque};
 
@@ -54,11 +54,11 @@ fn fine(r: &Rect) -> Rect {
 
 /// Plans a morph from `from` (what is on screen) to `to` (the new mode at
 /// rest). Both are rounded to 1/1024 and cut into grid cells first.
-pub fn plan(pack: &Pack, from: &[Rect], to: &[Rect]) -> Vec<Step> {
-    let planner = Planner::new(pack);
+pub fn plan(kit: &Kit, from: &[Rect], to: &[Rect]) -> Vec<Step> {
+    let planner = Planner::new(kit);
     let src: Vec<Rect> = from.iter().flat_map(|r| planner.cells(&fine(r))).collect();
     let dst: Vec<Rect> = to.iter().flat_map(|r| planner.cells(&fine(r))).collect();
-    let (stagger, [cx, cy]) = (pack.morph.stagger, pack.morph.center);
+    let (stagger, [cx, cy]) = (kit.morph.stagger, kit.morph.center);
     planner
         .pair(&src, &dst)
         .into_iter()
@@ -124,8 +124,8 @@ fn is_face(role: &str) -> bool {
 }
 
 impl Planner {
-    fn new(pack: &Pack) -> Self {
-        let logo = pack
+    fn new(kit: &Kit) -> Self {
+        let logo = kit
             .mode("logo")
             .map(|m| {
                 m.pieces
@@ -142,9 +142,9 @@ impl Planner {
             })
             .unwrap_or_default();
         Planner {
-            grid: pack.grid,
-            reach2: pack.morph.split_reach.powi(2),
-            penalty2: pack.morph.role_penalty.powi(2),
+            grid: kit.grid,
+            reach2: kit.morph.split_reach.powi(2),
+            penalty2: kit.morph.role_penalty.powi(2),
             logo,
         }
     }

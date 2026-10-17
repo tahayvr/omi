@@ -1,10 +1,17 @@
 [package]
 name = "omi"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
-description = "Plays Omi, the Omarchy mascot, from an Omi pack: modes, loops, morphs and gaze, as a list of rects to fill"
-license = "MIT"
-publish = false
+description = "Omi, the Omarchy mascot: its kit (every mode, as data) and a player that plays it, as a list of rects to fill"
+# The player's code is MIT; the Omi design in omi.json is not (see LICENSE).
+license-file = "LICENSE"
+readme = "README.md"
+homepage = "https://tahayvr.github.io/omi/"
+repository = "https://github.com/tahayvr/omi"
+keywords = ["omi", "omarchy", "mascot", "pixel-art", "animation"]
+categories = ["graphics", "multimedia"]
+# the kit this crate was built with ships in it: Kit::bundled() reads it
+include = ["src/**", "omi.json", "LICENSE", "README.md", "Cargo.toml"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

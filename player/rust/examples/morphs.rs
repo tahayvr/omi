@@ -7,7 +7,7 @@
 //!
 //!     cargo run --release --example morphs -- morphs.jsonl
 
-use omi::{Pack, Player, Rect};
+use omi::{Kit, Player, Rect};
 use std::io::{BufRead, BufReader};
 
 /// [x, y, w, h, opacity, role]
@@ -15,12 +15,12 @@ type Row = (f64, f64, f64, f64, f64, String);
 /// [how, before, from, to, rects]
 type Line = (String, Option<String>, String, String, Vec<Row>);
 
-// The pack's tolerance, and the half a digit the file's numbers are rounded by.
+// The kit's tolerance, and the half a digit the file's numbers are rounded by.
 const POSITION: f64 = 0.01 + 0.00005;
 const OPACITY: f64 = 0.001 + 0.00005;
 
-fn play(pack: &Pack, how: &str, before: Option<&str>, old: &str, new: &str) -> Result<Vec<Rect>, omi::Error> {
-    let mut omi = Player::new(pack);
+fn play(kit: &Kit, how: &str, before: Option<&str>, old: &str, new: &str) -> Result<Vec<Rect>, omi::Error> {
+    let mut omi = Player::new(kit);
     let mut ms = 1000.0;
     let run = |omi: &mut Player, ms: &mut f64, seconds: f64| {
         let stop = *ms + seconds * 1000.0;
@@ -62,13 +62,13 @@ fn same(rects: &[Rect], wanted: &[Row]) -> bool {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = std::env::args().nth(1).ok_or("give the file tools/check-morphs.js wrote")?;
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../pack/omi.json");
-    let pack = Pack::parse(&std::fs::read_to_string(path)?)?;
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../kit/omi.json");
+    let kit = Kit::parse(&std::fs::read_to_string(path)?)?;
     let (mut total, mut off) = (0, Vec::new());
     for line in BufReader::new(std::fs::File::open(file)?).lines() {
         let (how, before, old, new, wanted): Line = serde_json::from_str(&line?)?;
         total += 1;
-        if !same(&play(&pack, &how, before.as_deref(), &old, &new)?, &wanted) {
+        if !same(&play(&kit, &how, before.as_deref(), &old, &new)?, &wanted) {
             off.push(format!("{old} to {new} ({how})"));
         }
     }

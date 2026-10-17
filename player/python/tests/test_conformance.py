@@ -1,9 +1,9 @@
-"""The player against pack/conformance.json.
+"""The player against kit/conformance.json.
 
-This follows "Checking your own player" in the pack README: every mode at
+This follows "Checking your own player" in the kit README: every mode at
 every listed time, every morph's start and landing, every gaze case. The
 reference player's frames in between a morph's start and landing are not
-required by the pack; how many of them match is counted and reported.
+required by the kit; how many of them match is counted and reported.
 
 Run it from player/python:
 
@@ -18,9 +18,9 @@ import unittest
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 
-from omi import Pack, Player  # noqa: E402
+from omi import Kit, Player  # noqa: E402
 
-PACK = os.path.join(HERE, "..", "..", "..", "pack")
+KIT = os.path.join(HERE, "..", "..", "..", "kit")
 
 # What the summary line reports, filled in as the tests run.
 COUNTS = {
@@ -37,9 +37,9 @@ COUNTS = {
 
 
 def setUpModule():
-    global pack, conformance
-    pack = Pack.load(os.path.join(PACK, "omi.json"))
-    with open(os.path.join(PACK, "conformance.json"), "r", encoding="utf-8") as file:
+    global kit, conformance
+    kit = Kit.load(os.path.join(KIT, "omi.json"))
+    with open(os.path.join(KIT, "conformance.json"), "r", encoding="utf-8") as file:
         conformance = json.load(file)
 
 
@@ -111,17 +111,17 @@ class Conformance(unittest.TestCase):
 
     def test_data(self):
         self.assertEqual(conformance["format"], "omi-conformance")
-        self.assertEqual(conformance["pack_version"], pack.version)
+        self.assertEqual(conformance["kit_version"], kit.version)
         self.assertEqual(
             conformance["rect"], ["x", "y", "w", "h", "opacity", "role"]
         )
-        # Every mode of the pack is in the data, and the other way round.
-        self.assertEqual(sorted(conformance["modes"]), sorted(pack.mode_ids))
+        # Every mode of the kit is in the data, and the other way round.
+        self.assertEqual(sorted(conformance["modes"]), sorted(kit.mode_ids))
 
     def test_modes(self):
         """Every mode at every listed time, with body motion on."""
         tolerance = conformance["tolerance"]
-        player = Player(pack)
+        player = Player(kit)
         for mode, times in conformance["modes"].items():
             COUNTS["modes"] += 1
             for seconds, want in times.items():
@@ -129,14 +129,14 @@ class Conformance(unittest.TestCase):
                     got = player.mode_rects(mode, float(seconds))
                     self.check(
                         same_in_order(got, want, tolerance),
-                        "%s at %s s is not what the pack draws" % (mode, seconds),
+                        "%s at %s s is not what the kit draws" % (mode, seconds),
                     )
 
     def test_modes_played(self):
         """The same, reached by playing frames instead of asking for a still."""
         tolerance = conformance["tolerance"]
         for mode, times in conformance["modes"].items():
-            player = Player(pack, mode=mode)
+            player = Player(kit, mode=mode)
             player.frame(0.0)
             clock = 0.0
             for seconds, want in sorted(times.items(), key=lambda item: float(item[0])):
@@ -144,7 +144,7 @@ class Conformance(unittest.TestCase):
                     clock = run_to(player, clock, float(seconds) * 1000.0)
                     self.assertTrue(
                         same_in_order(player.rects(), want, tolerance),
-                        "%s played to %s s is not what the pack draws" % (mode, seconds),
+                        "%s played to %s s is not what the kit draws" % (mode, seconds),
                     )
 
     def test_morphs(self):
@@ -155,7 +155,7 @@ class Conformance(unittest.TestCase):
             COUNTS["morphs"] += 1
             name = "%s to %s" % (morph["from"], morph["to"])
             with self.subTest(morph=name):
-                player = Player(pack, mode=morph["from"])
+                player = Player(kit, mode=morph["from"])
                 player.frame(0.0)
                 self.check(
                     same_in_any_order(player.rects(), morph["start"], tolerance),
@@ -192,7 +192,7 @@ class Conformance(unittest.TestCase):
             name = "%s looking %s" % (gaze["mode"], gaze["look"])
             with self.subTest(gaze=name):
                 # A mode at rest with no loops, looking ahead.
-                player = Player(pack, animate=False, mode=gaze["mode"])
+                player = Player(kit, animate=False, mode=gaze["mode"])
                 player.frame(0.0)
                 player.look(gaze["look"][0], gaze["look"][1])
                 clock = run_to(player, 0.0, gaze["half"]["at"] * 1000.0)
@@ -212,13 +212,13 @@ class Conformance(unittest.TestCase):
         tolerance = conformance["tolerance"]
         for case in conformance.get("rests", []):
             COUNTS["rests"] += 1
-            player = Player(pack, rest=case["rest"])
+            player = Player(kit, rest=case["rest"])
             for seconds, want in case["times"].items():
                 with self.subTest(mode=case["mode"], rest=case["rest"], seconds=seconds):
                     got = player.mode_rects(case["mode"], float(seconds))
                     self.check(
                         same_in_order(got, want, tolerance),
-                        "%s with rest %s at %s s is not what the pack draws"
+                        "%s with rest %s at %s s is not what the kit draws"
                         % (case["mode"], case["rest"], seconds),
                     )
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://tahayvr.github.io/meet-omi/pack/omi.schema.json",
-  "title": "Omi pack",
-  "description": "omi.json, format version 1: every mode, every animation, and the morph and gaze settings. The pack's README.md says what each part means.",
+  "$id": "https://tahayvr.github.io/omi/kit/omi.schema.json",
+  "title": "Omi kit",
+  "description": "omi.json, format version 1: every mode, every animation, and the morph and gaze settings. The kit's README.md says what each part means.",
   "type": "object",
   "required": [
     "format",
@@ -17,7 +17,7 @@
   "additionalProperties": false,
   "properties": {
     "format": {
-      "const": "omi-pack"
+      "const": "omi-kit"
     },
     "version": {
       "const": 1

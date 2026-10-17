@@ -1,6 +1,6 @@
 #!/bin/bash
 # Installs this example as the Omarchy shell plugin `omi.example`, with the
-# pack copied in, the way a real plugin ships it:
+# kit copied in, the way a real plugin ships it:
 #
 #   examples/omarchy/install.sh            # install (or update) and enable
 #   examples/omarchy/install.sh --remove   # disable and remove
@@ -9,7 +9,7 @@
 set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
-pack="$here/../../pack"
+kit="$here/../../kit"
 id=omi.example
 dest="${XDG_CONFIG_HOME:-$HOME/.config}/omarchy/plugins/$id"
 
@@ -23,7 +23,7 @@ fi
 
 mkdir -p "$dest"
 cp "$here/manifest.json" "$here/Overlay.qml" "$here/Omi.qml" "$dest/"
-cp "$pack/omi.js" "$pack/omi.json" "$dest/"
+cp "$kit/omi.js" "$kit/omi.json" "$dest/"
 omarchy-shell shell rescanPlugins >/dev/null
 omarchy-shell shell setPluginEnabled "$id" true >/dev/null
 echo "installed $id in $dest"

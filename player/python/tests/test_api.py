@@ -1,11 +1,11 @@
 """The parts of the player that conformance.json has no data for.
 
-These hold the player to rules of the pack README and the Omi state
+These hold the player to rules of the kit README and the Omi state
 protocol that the conformance data doesn't exercise: the clocks, mode
 changes, the gaze meeting a morph, and changes with `since`.
 
 What a mode looks like, how long its loops are and how long a morph takes
-are the pack's to say, so every number here that depends on a design is
+are the kit's to say, so every number here that depends on a design is
 worked out from omi.json, by the README's rules: a mode can be redrawn
 without touching these tests.
 """
@@ -18,15 +18,15 @@ import unittest
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 
-from omi import Pack, PackError, Player, Rect, UnknownMode  # noqa: E402
+from omi import Kit, KitError, Player, Rect, UnknownMode  # noqa: E402
 
-PACK = os.path.join(HERE, "..", "..", "..", "pack", "omi.json")
+KIT = os.path.join(HERE, "..", "..", "..", "kit", "omi.json")
 
 
 def setUpModule():
-    global pack, RAW, MODES, LAND
-    pack = Pack.load(PACK)
-    with open(PACK, encoding="utf-8") as f:
+    global kit, RAW, MODES, LAND
+    kit = Kit.load(KIT)
+    with open(KIT, encoding="utf-8") as f:
         RAW = json.load(f)
     MODES = {m["id"]: m for m in RAW["modes"]}
     # how long a morph takes to land, in ms: duration + stagger
@@ -72,7 +72,7 @@ def body_mode():
             for at, key in anim["keys"]:
                 if key.get("tx", 0) or key.get("ty", 0):
                     return mode["id"], at * anim["duration"]
-    raise AssertionError("no mode in the pack moves its whole body")
+    raise AssertionError("no mode in the kit moves its whole body")
 
 
 def gaze_move(rects, gx, gy):
@@ -110,26 +110,34 @@ INK = 1.0
 
 
 class Loading(unittest.TestCase):
-    def test_pack(self):
-        self.assertEqual(pack.version, 1)
-        self.assertEqual(pack.grid, RAW["grid"])
-        self.assertEqual(pack.view, tuple(RAW["view"]))
-        self.assertEqual(list(pack.mode_ids), list(MODES))
-        self.assertTrue(pack.has("logo"))
-        self.assertFalse(pack.has("thinkng"))
+    def test_kit(self):
+        self.assertEqual(kit.version, 1)
+        self.assertEqual(kit.grid, RAW["grid"])
+        self.assertEqual(kit.view, tuple(RAW["view"]))
+        self.assertEqual(list(kit.mode_ids), list(MODES))
+        self.assertTrue(kit.has("logo"))
+        self.assertFalse(kit.has("thinkng"))
 
-    def test_not_a_pack(self):
+    def test_bundled(self):
+        # the package's own copy of omi.json is the kit's, as built
+        copy = os.path.join(HERE, "..", "omi", "omi.json")
+        with open(copy, encoding="utf-8") as a, open(KIT, encoding="utf-8") as b:
+            self.assertEqual(a.read(), b.read())
+        bundled = Kit.bundled()
+        self.assertEqual(list(bundled.mode_ids), list(MODES))
+
+    def test_not_a_kit(self):
         for text in ("", "[]", '{"format": "something-else"}',
-                     '{"format": "omi-pack", "version": 2}'):
-            with self.assertRaises(PackError):
-                Pack.parse(text)
-        self.assertTrue(issubclass(PackError, ValueError))
+                     '{"format": "omi-kit", "version": 2}'):
+            with self.assertRaises(KitError):
+                Kit.parse(text)
+        self.assertTrue(issubclass(KitError, ValueError))
 
     def test_unknown_mode(self):
         with self.assertRaises(UnknownMode) as raised:
-            Player(pack, mode="thinkng")
+            Player(kit, mode="thinkng")
         self.assertEqual(str(raised.exception), 'no mode "thinkng"')
-        player = Player(pack)
+        player = Player(kit)
         with self.assertRaises(KeyError):
             player.set("thinkng")
         with self.assertRaises(UnknownMode):
@@ -139,11 +147,11 @@ class Loading(unittest.TestCase):
         self.assertTrue(player.settled)
 
     def test_rects(self):
-        rects = Player(pack, mode="idle").rects()
+        rects = Player(kit, mode="idle").rects()
         pieces = MODES["idle"]["pieces"]
         self.assertEqual([r.role for r in rects], [p["role"] for p in pieces])
         self.assertIsInstance(rects[0], Rect)
-        # A piece that doesn't move is drawn where the pack puts it.
+        # A piece that doesn't move is drawn where the kit puts it.
         for r, p in zip(rects, pieces):
             if not p.get("anim"):
                 self.assertEqual(
@@ -156,7 +164,7 @@ class Loading(unittest.TestCase):
 
 class WhatAModeIsFor(unittest.TestCase):
     def test_loop_seconds(self):
-        player = Player(pack)
+        player = Player(kit)
         self.assertEqual(player.loop_seconds("logo"), 0)
         for id, mode in MODES.items():
             with self.subTest(mode=id):
@@ -164,13 +172,13 @@ class WhatAModeIsFor(unittest.TestCase):
 
     def test_loop_seconds_with_the_rest_scaled(self):
         for rest in (0.0, 0.5, 2.0):
-            player = Player(pack, rest=rest)
+            player = Player(kit, rest=rest)
             for id, mode in MODES.items():
                 with self.subTest(mode=id, rest=rest):
                     self.assertAlmostEqual(player.loop_seconds(id), loop_seconds(mode, rest))
 
     def test_hold_and_kind(self):
-        player = Player(pack)
+        player = Player(kit)
         for id, mode in MODES.items():
             with self.subTest(mode=id):
                 self.assertEqual(player.kind(id), mode["kind"])
@@ -187,12 +195,12 @@ class Rest(unittest.TestCase):
     def test_the_still_is_the_same_at_any_rest(self):
         # A rest holds the pose a mode rests in, so the still (time 0) is
         # the same however the rest is scaled.
-        assert resting(), "no animation in the pack has a rest"
+        assert resting(), "no animation in the kit has a rest"
         for scale in (0.0, 0.5, 3.0):
-            player = Player(pack, rest=scale)
+            player = Player(kit, rest=scale)
             for id in MODES:
                 with self.subTest(mode=id, rest=scale):
-                    self.assertEqual(player.mode_rects(id, 0), Player(pack).mode_rects(id, 0))
+                    self.assertEqual(player.mode_rects(id, 0), Player(kit).mode_rects(id, 0))
 
     def test_a_rest_is_its_own_scale(self):
         # A loop with a rest of r and a duration of d: at rest scale k a
@@ -210,7 +218,7 @@ class Rest(unittest.TestCase):
         # a moment inside the keys, where the piece is off its rest pose
         rest, duration = anim["rest"], anim["duration"]
         inside = None
-        base = Player(pack, body_motion=False)
+        base = Player(kit, body_motion=False)
         for i in range(1, 100):
             t = rest + duration * i / 100.0
             if base.mode_rects(mode, t)[index] != base.mode_rects(mode, 0)[index]:
@@ -218,7 +226,7 @@ class Rest(unittest.TestCase):
                 break
         self.assertIsNotNone(inside, "%s never leaves its rest pose" % name)
         for scale in (0.0, 1.0, 2.5):
-            player = Player(pack, rest=scale, body_motion=False)
+            player = Player(kit, rest=scale, body_motion=False)
             at_rest = player.mode_rects(mode, 0)[index]
             moved = player.mode_rects(mode, scale * rest + inside)[index]
             with self.subTest(scale=scale):
@@ -235,22 +243,22 @@ class Rest(unittest.TestCase):
                     self.assertAlmostEqual(a, b, places=6)
 
     def test_never_below_zero(self):
-        player = Player(pack, rest=-1.0)
-        zero = Player(pack, rest=0.0)
+        player = Player(kit, rest=-1.0)
+        zero = Player(kit, rest=0.0)
         for t in (0.1, 0.7, 1.9):
             self.assertEqual(player.mode_rects("idle", t), zero.mode_rects("idle", t))
 
     def test_it_can_change_later(self):
-        player = Player(pack)
+        player = Player(kit)
         player.rest = 0.0
         self.assertEqual(
-            player.mode_rects("idle", 0.2), Player(pack, rest=0.0).mode_rects("idle", 0.2)
+            player.mode_rects("idle", 0.2), Player(kit, rest=0.0).mode_rects("idle", 0.2)
         )
 
 
 class Labels(unittest.TestCase):
     def test_what_a_screen_reader_says(self):
-        player = Player(pack)
+        player = Player(kit)
         for id, mode in MODES.items():
             self.assertTrue(player.label(id))
             self.assertEqual(player.label(id), mode["label"])
@@ -259,12 +267,12 @@ class Labels(unittest.TestCase):
 
 class Time(unittest.TestCase):
     def test_first_frame_advances_nothing(self):
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(123456.0)
         self.assertEqual(player.rects(), player.mode_rects("idle", 0))
 
     def test_dt_is_kept_between_0_and_a_tenth(self):
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         player.frame(5000.0)   # a pause: counts as 0.1 s
         self.assertEqual(player.rects(), player.mode_rects("idle", 0.1))
@@ -274,19 +282,19 @@ class Time(unittest.TestCase):
         self.assertEqual(player.rects(), player.mode_rects("idle", 0.1 + 0.05))
 
     def test_speed(self):
-        player = Player(pack, mode="idle", speed=2.0)
+        player = Player(kit, mode="idle", speed=2.0)
         player.frame(0.0)
         player.frame(100.0)
         self.assertEqual(player.rects(), player.mode_rects("idle", 0.2))
 
     def test_speed_is_never_less_than_a_twentieth(self):
-        player = Player(pack, mode="idle", speed=0.0)
+        player = Player(kit, mode="idle", speed=0.0)
         player.frame(0.0)
         player.frame(100.0)
         self.assertEqual(player.rects(), player.mode_rects("idle", 0.1 * 0.05))
 
     def test_turning_animate_off_goes_back_to_rest(self):
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         run_to(player, 0.0, 900.0)
         self.assertNotEqual(player.rects(), player.mode_rects("idle", 0))
@@ -298,7 +306,7 @@ class Time(unittest.TestCase):
         self.assertEqual(player.rects(), player.mode_rects("idle", 0.05))
 
     def test_animate_off(self):
-        player = Player(pack, mode="idle", animate=False)
+        player = Player(kit, mode="idle", animate=False)
         player.frame(0.0)
         run_to(player, 0.0, 900.0)
         self.assertEqual(player.rects(), player.mode_rects("idle", 0))
@@ -313,11 +321,11 @@ class Time(unittest.TestCase):
     def test_body_motion_off(self):
         mode, at = body_mode()
         ms = at * 1000.0
-        rest = Player(pack, mode=mode).mode_rects(mode, 0)
-        still = Player(pack, mode=mode, body_motion=False)
+        rest = Player(kit, mode=mode).mode_rects(mode, 0)
+        still = Player(kit, mode=mode, body_motion=False)
         still.frame(0.0)
         run_to(still, 0.0, ms)
-        moving = Player(pack, mode=mode)
+        moving = Player(kit, mode=mode)
         moving.frame(0.0)
         run_to(moving, 0.0, ms)
         # The whole body has moved off its rest, unless body motion is off;
@@ -335,7 +343,7 @@ class Time(unittest.TestCase):
 
 class Changes(unittest.TestCase):
     def test_same_mode_does_nothing(self):
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         run_to(player, 0.0, 500.0)
         before = player.rects()
@@ -345,7 +353,7 @@ class Changes(unittest.TestCase):
         self.assertEqual(player.rects(), before)
 
     def test_instant(self):
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         run_to(player, 0.0, 500.0)
         player.set("warning", instant=True)
@@ -354,7 +362,7 @@ class Changes(unittest.TestCase):
         self.assertEqual(player.rects(), player.mode_rects("warning", 0))
 
     def test_morph_starts_from_what_is_on_screen(self):
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         run_to(player, 0.0, 900.0)
         before = player.rects()
@@ -368,7 +376,7 @@ class Changes(unittest.TestCase):
     def test_change_in_the_middle_of_a_morph(self):
         # Through a mode with no props fading in: a piece the next mode
         # splits off a half-faded prop starts on top of it, drawn twice.
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         player.set("working")
         run_to(player, 0.0, 300.0)
@@ -381,7 +389,7 @@ class Changes(unittest.TestCase):
 
     def test_landing_and_on_settled(self):
         landed = []
-        player = Player(pack, mode="idle", on_settled=landed.append)
+        player = Player(kit, mode="idle", on_settled=landed.append)
         player.frame(0.0)
         player.set("thinking")
         run_to(player, 0.0, LAND - 40.0)
@@ -402,14 +410,14 @@ class Changes(unittest.TestCase):
 
     def test_a_jump_settles_too(self):
         landed = []
-        player = Player(pack, mode="idle", on_settled=landed.append)
+        player = Player(kit, mode="idle", on_settled=landed.append)
         player.frame(0.0)
         player.set("warning", instant=True)
         self.assertEqual(landed, ["warning"])
 
     def test_nothing_on_screen_is_a_jump(self):
         # With nothing drawn there is nothing to morph from.
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         player._base = []
         player.set("thinking")
@@ -419,7 +427,7 @@ class Changes(unittest.TestCase):
     def test_the_mode_a_morph_is_heading_for(self):
         # In the middle of a morph, a change to its own mode is a change
         # like any other: a new morph, from what is on screen.
-        player = Player(pack, mode="idle")
+        player = Player(kit, mode="idle")
         player.frame(0.0)
         player.set("warning")
         run_to(player, 0.0, 300.0)
@@ -432,7 +440,7 @@ class Changes(unittest.TestCase):
 
 class Gaze(unittest.TestCase):
     def test_look(self):
-        player = Player(pack, mode="idle", animate=False)
+        player = Player(kit, mode="idle", animate=False)
         player.frame(0.0)
         self.assertEqual(player.gaze(), (0.0, 0.0))
         self.assertFalse(player.gazing)
@@ -459,7 +467,7 @@ class Gaze(unittest.TestCase):
         self.assertFalse(player.gazing)
 
     def test_a_new_look_starts_from_where_the_eyes_are(self):
-        player = Player(pack, mode="idle", animate=False)
+        player = Player(kit, mode="idle", animate=False)
         player.frame(0.0)
         player.look(1, 0)
         run_to(player, 0.0, 175.0)
@@ -471,7 +479,7 @@ class Gaze(unittest.TestCase):
         self.assertEqual(player.gaze(), (0.0, 0.0))
 
     def test_a_morph_takes_its_source_before_the_gaze(self):
-        player = Player(pack, mode="idle", animate=False)
+        player = Player(kit, mode="idle", animate=False)
         player.frame(0.0)
         player.look(1, 0)
         run_to(player, 0.0, 500.0)
@@ -488,19 +496,19 @@ class Gaze(unittest.TestCase):
         # inside the inner square inside it (wide eyes get less reach).
         inside = RAW["gaze"].get("inside")
         if not inside:
-            self.skipTest("the pack has no inner square for the gaze")
+            self.skipTest("the kit has no inner square for the gaze")
         lo_x, lo_y = inside[0], inside[1]
         hi_x, hi_y = inside[0] + inside[2], inside[1] + inside[3]
         roles = RAW["gaze"]["roles"]
         for id in MODES:
-            rest = Player(pack, mode=id).mode_rects(id, 0)
+            rest = Player(kit, mode=id).mode_rects(id, 0)
             fits = [
                 (lo_x <= r.x and r.x + r.w <= hi_x, lo_y <= r.y and r.y + r.h <= hi_y)
                 for r in rest
             ]
             for gx, gy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 with self.subTest(mode=id, look=(gx, gy)):
-                    player = Player(pack, mode=id, animate=False)
+                    player = Player(kit, mode=id, animate=False)
                     player.frame(0.0)
                     player.look(gx, gy)
                     run_to(player, 0.0, RAW["gaze"]["duration"] * 1000.0 + 100.0)
@@ -527,12 +535,12 @@ class Since(unittest.TestCase):
 
     def test_a_morph_part_of_the_way_along(self):
         # One app watched the change happen.
-        watching = Player(pack, mode="idle", animate=False)
+        watching = Player(kit, mode="idle", animate=False)
         watching.frame(self.NOW)
         watching.set("thinking", since=self.NOW)
         run_to(watching, self.NOW, self.NOW + 300.0)
         # Another hears of it 0.29 s late.
-        late = Player(pack, mode="idle", animate=False)
+        late = Player(kit, mode="idle", animate=False)
         late.frame(self.NOW + 290.0)
         late.set("thinking", since=self.NOW)
         late.frame(self.NOW + 300.0)
@@ -549,7 +557,7 @@ class Since(unittest.TestCase):
         # differently, and hear of warning a few frames after it happened.
         apps = []
         for step in (16.0, 23.0):
-            app = Player(pack, mode="idle")
+            app = Player(kit, mode="idle")
             app.frame(self.NOW)
             app.set("thinking", since=self.NOW)
             clock = self.NOW
@@ -566,7 +574,7 @@ class Since(unittest.TestCase):
         self.assertSameRects(a.rects(), b.rects())
         # Even when a frame has landed the morph by the time the change
         # arrives, the change starts from before the landing.
-        late = Player(pack, mode="idle")
+        late = Player(kit, mode="idle")
         late.frame(self.NOW)
         late.set("thinking", since=self.NOW)
         late.frame(self.NOW + 100.0)
@@ -578,7 +586,7 @@ class Since(unittest.TestCase):
 
     def test_a_morph_that_has_landed(self):
         landed = []
-        player = Player(pack, mode="idle", on_settled=landed.append)
+        player = Player(kit, mode="idle", on_settled=landed.append)
         player.frame(self.NOW)
         player.set("thinking", since=self.NOW - 5000.0)
         self.assertEqual(landed, [])
@@ -591,17 +599,17 @@ class Since(unittest.TestCase):
         )
 
     def test_before_the_first_frame(self):
-        player = Player(pack, mode="logo")
+        player = Player(kit, mode="logo")
         player.set("idle", since=self.NOW - 400.0)
         player.frame(self.NOW)
-        other = Player(pack, mode="logo")
+        other = Player(kit, mode="logo")
         other.frame(self.NOW - 400.0)
         other.set("idle")
         run_to(other, self.NOW - 400.0, self.NOW)
         self.assertSameRects(player.rects(), other.rects())
 
     def test_instant(self):
-        player = Player(pack, mode="logo")
+        player = Player(kit, mode="logo")
         player.frame(self.NOW)
         player.set("idle", instant=True, since=self.NOW - 2500.0)
         player.frame(self.NOW + 100.0)
@@ -612,7 +620,7 @@ class Since(unittest.TestCase):
         # An app that stalls is back in step on its next frame: a frame
         # counts for 0.1 s at most, but a shared change is worked out from
         # the clock.
-        player = Player(pack, mode="logo")
+        player = Player(kit, mode="logo")
         player.frame(self.NOW)
         player.set("idle", instant=True, since=self.NOW)
         player.frame(self.NOW + 100.0)
@@ -625,11 +633,11 @@ class Since(unittest.TestCase):
 
     def test_a_time_still_to_come(self):
         # A clock a little behind the service's: the change starts now.
-        player = Player(pack, mode="logo")
+        player = Player(kit, mode="logo")
         player.frame(self.NOW)
         player.set("idle", since=self.NOW + 50.0)
         player.frame(self.NOW + 16.0)
-        other = Player(pack, mode="logo")
+        other = Player(kit, mode="logo")
         other.frame(self.NOW)
         other.set("idle")
         self.assertSameRects(player.rects(), other.rects())

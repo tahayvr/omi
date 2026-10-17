@@ -1,16 +1,16 @@
-//! Loads the pack, morphs to a mode and prints the rects a host would fill.
+//! Loads the kit, morphs to a mode and prints the rects a host would fill.
 //!
 //!     cargo run --example print -- thinking
 
-use omi::{Pack, Player};
+use omi::{Kit, Player};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mode = std::env::args()
         .nth(1)
         .unwrap_or_else(|| "idle".to_string());
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../pack/omi.json");
-    let pack = Pack::parse(&std::fs::read_to_string(path)?)?;
-    let mut omi = Player::new(&pack);
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../kit/omi.json");
+    let kit = Kit::parse(&std::fs::read_to_string(path)?)?;
+    let mut omi = Player::new(&kit);
 
     println!(
         "{mode}: {:?}, hold {:.1} s, loop {:.1} s",

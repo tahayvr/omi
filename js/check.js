@@ -1,10 +1,10 @@
 /* ---------- the jig checks itself: jig.html?check ----------
-   Everything this page shows comes from the pack it builds (pack.js) and
-   the reference player, and the pack kept in pack/ is what apps copy. This
+   Everything this page shows comes from the kit it builds (kit.js) and
+   the reference player, and the kit kept in kit/ is what apps copy. This
    holds the three together, in a real browser:
 
-   1. The pack this page builds is the one in pack/, file for file, and the
-      player it runs is the one in the pack.
+   1. The kit this page builds is the one in kit/, file for file, and the
+      player it runs is the one in the kit.
    2. A mode looping as CSS (the tiles, the single view, the animated SVG
       export) is, at any moment, what the player draws.
 
@@ -14,7 +14,7 @@
    tools/check-site.js opens this in Chrome without a window (npm run
    check:site), and anyone can open it by hand, here or on the live site.
 
-   It runs in one go as the page loads, reading the pack's files with requests
+   It runs in one go as the page loads, reading the kit's files with requests
    that wait for their answer, so the report is in the page by the time the
    page has loaded: that is all the tool has to wait for. */
 function checkSite() {
@@ -27,7 +27,7 @@ function checkSite() {
     if (!ok) failed++;
   };
 
-  // 1. the same build as pack/
+  // 1. the same build as kit/
   const read = (url) => {
     const req = new XMLHttpRequest();
     // the file as it is now, not as a browser remembers it
@@ -37,20 +37,19 @@ function checkSite() {
     return req.responseText;
   };
   try {
-    const built = packFiles();
+    const built = kitFiles();
     for (const name of Object.keys(built))
       say(
-        read("pack/" + name) === built[name],
-        `pack/${name} is the one this page builds`,
+        read("kit/" + name) === built[name],
+        `kit/${name} is the one this page builds`,
       );
     say(
-      read("pack/omi.js") === read("player/omi.js"),
-      "pack/omi.js is the player this page runs",
+      read("kit/omi.js") === read("player/omi.js"),
+      "kit/omi.js is the player this page runs",
     );
-    if (failed)
-      lines.push("      run node tools/build-pack.js and commit pack/");
+    if (failed) lines.push("      run node tools/build-kit.js and commit kit/");
   } catch (err) {
-    say(false, `the pack could not be read (${err.message})`);
+    say(false, `the kit could not be read (${err.message})`);
   }
 
   // 2. the CSS against the player, both as designed: the rests at 1x (the
@@ -58,7 +57,7 @@ function checkSite() {
   const viewerRest = MOTION_REST;
   setRest(1);
   const TIMES = [0, 0.9, 3.3, 7.77],
-    NEAR = { position: 0.01, opacity: 0.001 }, // the pack's own tolerance
+    NEAR = { position: 0.01, opacity: 0.001 }, // the kit's own tolerance
     vb = { ...MORPH_VB },
     host = document.createElement("div");
   host.style.cssText = `position:absolute;left:-10000px;top:0;width:${vb.w}px;height:${vb.h}px`;
@@ -148,7 +147,7 @@ function checkSite() {
   lines.push(
     failed
       ? `FAIL: ${failed} of the checks above`
-      : "ok: this page shows what the pack and the player say",
+      : "ok: this page shows what the kit and the player say",
   );
   // for a person, and for tools/check-site.js
   const out = document.createElement("pre");

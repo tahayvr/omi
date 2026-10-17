@@ -1,0 +1,42 @@
+{
+  "name": "omi-kit",
+  "version": "1.0.0",
+  "description": "Omi, the Omarchy mascot: every mode as data (omi.json) and the player that draws and morphs it (omi.js)",
+  "keywords": [
+    "omi",
+    "omarchy",
+    "mascot",
+    "pixel-art",
+    "animation",
+    "canvas"
+  ],
+  "homepage": "https://tahayvr.github.io/omi/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tahayvr/omi.git",
+    "directory": "kit"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "main": "omi.js",
+  "types": "omi.d.ts",
+  "exports": {
+    ".": {
+      "types": "./omi.d.ts",
+      "default": "./omi.js"
+    },
+    "./omi.json": "./omi.json",
+    "./omi.schema.json": "./omi.schema.json",
+    "./conformance.json": "./conformance.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "omi.js",
+    "omi.d.ts",
+    "omi.json",
+    "omi.schema.json",
+    "conformance.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false
+}

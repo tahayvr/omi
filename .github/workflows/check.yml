@@ -6,9 +6,9 @@ on:
   pull_request:
 
 jobs:
-  # pack/ and docs/ are built from what's committed, and the reference
+  # kit/ and docs/ are built from what's committed, and the reference
   # player and the service do what the spec and the protocol say
-  pack:
+  kit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

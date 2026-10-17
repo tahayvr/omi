@@ -12,7 +12,7 @@ const fs = require("fs"),
 
 const root = path.join(__dirname, ".."),
   socket = path.join(os.tmpdir(), `omi-check-${process.pid}.sock`),
-  pack = JSON.parse(fs.readFileSync(path.join(root, "pack/omi.json"), "utf8")),
+  kit = JSON.parse(fs.readFileSync(path.join(root, "kit/omi.json"), "utf8")),
   env = { ...process.env, OMI_SOCKET: socket },
   wait = (ms) => new Promise((r) => setTimeout(r, ms)),
   results = [];
@@ -29,7 +29,7 @@ const ctl = (...args) =>
 const start = () => {
   const proc = spawn(
     "node",
-    [path.join(root, "service/omi-service.js"), "--pack", "pack/omi.json"],
+    [path.join(root, "service/omi-service.js"), "--kit", "kit/omi.json"],
     { cwd: root, env, stdio: ["ignore", "pipe", "pipe"] },
   );
   // a service that crashes should say why
@@ -40,7 +40,7 @@ const listening = (proc) =>
   new Promise((resolve) =>
     proc.stdout.on("data", (d) => /listening/.test(d) && resolve()),
   );
-const player = () => new Omi(null, pack, { color: "#000" });
+const player = () => new Omi(null, kit, { color: "#000" });
 // the largest difference between two players' rects, drawn at one moment
 function gap(a, b) {
   const now = Date.now() + 1000;

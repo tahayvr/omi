@@ -1,7 +1,7 @@
 # Omi follows your shell. Source this from ~/.bashrc, after any other prompt
 # setup (starship, direnv…), since it has to run last:
 #
-#   source ~/meet-omi/examples/bash/omi.bashrc
+#   source ~/omi/examples/bash/omi.bashrc
 #
 # A command that runs longer than OMI_AFTER seconds (2) makes the shared Omi
 # busy (thinking); when it ends, Omi is happy (success) or sad for a moment,

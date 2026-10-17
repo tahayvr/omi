@@ -1,6 +1,6 @@
 # Using Omi in your app
 
-Each example uses only the published pack in [`../pack`](../pack): `omi.json`
+Each example uses only the published kit in [`../kit`](../kit): `omi.json`
 (the data) and `omi.js` (the reference player). Copy those two files into your
 project and start from the example closest to your environment.
 
@@ -8,7 +8,7 @@ project and start from the example closest to your environment.
 | ------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | [omarchy](omarchy/)             | Omarchy shell plugins (Quickshell)                               | The player runs in QML's JavaScript engine; `Rectangle`s snapped to device pixels draw its rects, in the theme's accent                   |
 | [web](web/index.html)           | Web pages, Electron                                              | The player draws on a `<canvas>` by itself                                                                                                |
-| [qml](qml/Omi.qml)              | Qt Quick apps (Qt 6.4+)                                          | The same item as the Omarchy one (Rectangles snapped to device pixels, `even`, `look`, `react()`), reading the pack with XMLHttpRequest   |
+| [qml](qml/Omi.qml)              | Qt Quick apps (Qt 6.4+)                                          | The same item as the Omarchy one (Rectangles snapped to device pixels, `even`, `look`, `react()`), reading the kit with XMLHttpRequest    |
 | [terminal](terminal/omi-tty.js) | Any terminal (Node)                                              | Rects become half-block characters, in the Omarchy theme's accent or the terminal's own colors                                            |
 | [bash](bash/omi.sh)             | Any terminal, with only bash, jq and awk                         | Its own player in awk ([omi.awk](bash/omi.awk)), drawn the same way; [omi.bashrc](bash/omi.bashrc) makes the shared Omi follow your shell |
 | [python](python/omi_window.py)  | Desktop apps in Python (Tk, standard library only)               | The Python player ([`player/python`](../player/python)); rects become Tk canvas rectangles, faded ones mixed into the background          |
@@ -37,14 +37,14 @@ reaction, and ← → step through the modes.
 Every example does the same three things, and so would a player in another
 language:
 
-1. **Load the pack** and create a player: `new Omi(canvas, pack, options)`.
+1. **Load the kit** and create a player: `new Omi(canvas, kit, options)`.
    Without a browser canvas, pass `null` and a `color`.
 2. **Tell it what Omi is doing**: `omi.set("thinking")`. It morphs there from
    wherever Omi is, even mid-morph. `{ instant: true }` jumps instead.
 3. **Draw every frame.** In a browser the player does this itself. Anywhere
    else, call `omi.frame(Date.now())` once per display frame, then fill the
-   rectangles in `omi.rects()`: each has `x, y, w, h` in pack units and an
-   opacity `o`. Map the pack's `view` square to your drawing area.
+   rectangles in `omi.rects()`: each has `x, y, w, h` in kit units and an
+   opacity `o`. Map the kit's `view` square to your drawing area.
 
 `omi.on("settled", fn)` tells you when a morph has landed.
 
@@ -56,7 +56,7 @@ state instead of calling `set` yourself: see the
 ## Running them
 
 - **Omarchy:** `examples/omarchy/install.sh` installs the example as the
-  shell plugin `omi.example`, with the pack copied in. Then
+  shell plugin `omi.example`, with the kit copied in. Then
   `omarchy-shell shell summon omi.example` opens it (← → step through the
   modes), and `omarchy-shell shell call omi.example set thinking` or
   `… react success` drives it from a script. `install.sh --remove` takes it
@@ -65,9 +65,9 @@ state instead of calling `set` yourself: see the
 - **Web:** `npm run dev` in the repo and open
   http://localhost:8000/examples/web/.
 - **QML:** `QML_XHR_ALLOW_FILE_READ=1 qml examples/qml/main.qml`. The
-  environment variable lets QML read the pack from disk; in an app, ship the
-  pack in your resources instead. Inside the Omarchy shell, use the Omarchy
-  example: it reads the pack with Quickshell's `FileView`, which needs no
+  environment variable lets QML read the kit from disk; in an app, ship the
+  kit in your resources instead. Inside the Omarchy shell, use the Omarchy
+  example: it reads the kit with Quickshell's `FileView`, which needs no
   environment variable.
 - **Terminal:** `node examples/terminal/omi-tty.js` shows Omi live: it
   tours every mode, its eyes follow the mouse, a click or Space plays a
@@ -96,14 +96,14 @@ state instead of calling `set` yourself: see the
   terminal sizes it stutters a pixel at a time.
 
 - **Bash:** `examples/bash/omi.sh` is Omi in a terminal with no Node: a
-  player written in awk (`omi.awk`) that reads the pack through jq. Live,
+  player written in awk (`omi.awk`) that reads the kit through jq. Live,
   it tours the modes, its eyes follow the mouse, a click or Space plays a
   reaction, ← → step through the modes, `b` turns on whole-body motion, `t`
   stops or starts the tour, `q` quits. `--once warning` prints a still and
   `--say "Hello"` puts text beside it; `--size`, `--fg`, `--bg` and
   `--bounce` are as in the Node one. It plays every animation exactly
   (`npm run check:bash` holds it to the conformance data) but pairs
-  pieces in a morph more simply than the reference player, which the pack
+  pieces in a morph more simply than the reference player, which the kit
   allows. Bash 4 or later keeps exact time; macOS's bash 3.2 counts each
   frame as 1/30 s.
 
@@ -125,8 +125,8 @@ state instead of calling `set` yourself: see the
 ## Another language
 
 A player is small: work out a mode's rects at time t, plan and play morphs,
-fill rects. [`../pack/README.md`](../pack/README.md) describes every rule, and
-[`../pack/conformance.json`](../pack/conformance.json) lists what a correct
+fill rects. [`../kit/README.md`](../kit/README.md) describes every rule, and
+[`../kit/conformance.json`](../kit/conformance.json) lists what a correct
 player draws; [`../tools/check-player.js`](../tools/check-player.js) shows how
 to check yours against it. [`../player/rust`](../player/rust) and
 [`../player/python`](../player/python) are two written that way: a crate

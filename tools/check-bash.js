@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Checks the bash example's player (examples/bash/omi.awk) against
-   pack/conformance.json: every mode at its times, body motion on. Its
+   kit/conformance.json: every mode at its times, body motion on. Its
    morphs are its own (see omi.awk), and it has no rest scale, so those
    parts of the conformance data don't apply.
 
@@ -11,7 +11,7 @@ const fs = require("fs"),
 
 const root = path.join(__dirname, ".."),
   conf = JSON.parse(
-    fs.readFileSync(path.join(root, "pack/conformance.json"), "utf8"),
+    fs.readFileSync(path.join(root, "kit/conformance.json"), "utf8"),
   ),
   tol = conf.tolerance,
   asks = [];

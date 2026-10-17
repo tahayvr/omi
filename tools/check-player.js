@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-/* Checks player/omi.js against pack/conformance.json, the same way a player
+/* Checks player/omi.js against kit/conformance.json, the same way a player
    in any other language should check itself (see "Checking your own player"
-   in pack/README.md).
+   in kit/README.md).
 
      node tools/check-player.js
 
@@ -15,9 +15,9 @@ const fs = require("fs"),
   checkConformance = require("./conformance.js");
 
 const root = path.join(__dirname, ".."),
-  dir = path.join(root, "pack"),
+  dir = path.join(root, "kit"),
   read = (f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")),
-  pack = read("omi.json"),
+  kit = read("omi.json"),
   conf = read("conformance.json"),
   source = fs.readFileSync(path.join(root, "player/omi.js"), "utf8");
 
@@ -39,12 +39,12 @@ const report = (name, { checks, fails }) => {
     );
   } else
     console.log(
-      `ok: ${name}: ${checks} checks (${pack.modes.length} modes, ${conf.morphs.length} morphs)`,
+      `ok: ${name}: ${checks} checks (${kit.modes.length} modes, ${conf.morphs.length} morphs)`,
     );
 };
 
 // 1. As written, in Node.
-report("node", checkConformance(require("../player/omi.js"), pack, conf));
+report("node", checkConformance(require("../player/omi.js"), kit, conf));
 
 // 2. Without what Qt's JavaScript lacks. The conformance data crosses into
 // the context as JSON, so it is built from that context's own arrays.
@@ -58,13 +58,13 @@ vm.runInContext(
     filename: "tools/conformance.js",
   },
 );
-ctx.packJson = JSON.stringify(pack);
+ctx.kitJson = JSON.stringify(kit);
 ctx.confJson = JSON.stringify(conf);
 try {
   report(
     "Qt's built-ins only",
     vm.runInContext(
-      "checkConformance(Omi, JSON.parse(packJson), JSON.parse(confJson))",
+      "checkConformance(Omi, JSON.parse(kitJson), JSON.parse(confJson))",
       ctx,
     ),
   );

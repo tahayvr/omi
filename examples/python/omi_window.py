@@ -35,7 +35,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 # the player, straight from the repo; in your app, `pip install` it instead
 sys.path.insert(0, str(ROOT / "player" / "python"))
-from omi import Pack, Player  # noqa: E402
+from omi import Kit, Player  # noqa: E402
 
 # ------------------------------------------------------------------ colors
 THEME = Path.home() / ".local/state/omarchy/current/theme/colors.toml"
@@ -68,22 +68,22 @@ def readable(bg):
 
 # ------------------------------------------------------------------ the window
 class OmiWindow:
-    # room around the pack's view, in grid units, for props that go past it
+    # room around the kit's view, in grid units, for props that go past it
     # (the z's, the confetti, the download arrow)
     BLEED = 90
     TEXT = 96  # pixels under Omi for its name, what it's doing and the keys
 
-    def __init__(self, root, pack, fg, bg, follow):
-        self.root, self.pack = root, pack
+    def __init__(self, root, kit, fg, bg, follow):
+        self.root, self.kit = root, kit
         self.fg_default, self.bg = fg, bg
         self.text = readable(bg)
         self.swatch = 0
         self.fg = fg
         self.following = follow
         self.error = None
-        self.omi = Player(pack, body_motion=True)
-        self.reactions = [m for m in pack.mode_ids if pack.mode(m).kind == "reaction"]
-        self.picks = [m for m in pack.mode_ids if m != "logo"]
+        self.omi = Player(kit, body_motion=True)
+        self.reactions = [m for m in kit.mode_ids if kit.mode(m).kind == "reaction"]
+        self.picks = [m for m in kit.mode_ids if m != "logo"]
         self.base = "idle"  # the mode picked
         self.reaction_until = 0.0
         self.pokes = 0
@@ -95,7 +95,7 @@ class OmiWindow:
         root.configure(bg=bg)
         root.minsize(260, 320)
         self.canvas = tk.Canvas(root, bg=bg, highlightthickness=0, width=520, height=620)
-        self.canvas.pack(fill="both", expand=True)
+        self.canvas.kit(fill="both", expand=True)
         self.items = []  # rectangles, reused frame to frame
         self.name = self.canvas.create_text(0, 0, fill=self.fg, font=("TkFixedFont", 16, "bold"))
         self.label = self.canvas.create_text(0, 0, fill=self.text, font=("TkFixedFont", 11))
@@ -121,7 +121,7 @@ class OmiWindow:
     # ---------------------------------------------------- what Omi is doing
     def show(self, mode):
         self.omi.set(mode)
-        self.root.title(f"Omi · {self.pack.mode(mode).name}")
+        self.root.title(f"Omi · {self.kit.mode(mode).name}")
 
     def pick(self, mode):
         self.base = mode
@@ -139,7 +139,7 @@ class OmiWindow:
         mode = self.reactions[self.pokes % len(self.reactions)]
         self.pokes += 1
         self.show(mode)
-        self.reaction_until = time.time() + self.omi.hold(mode) + self.pack.morph.duration + self.pack.morph.stagger
+        self.reaction_until = time.time() + self.omi.hold(mode) + self.kit.morph.duration + self.kit.morph.stagger
 
     # ---------------------------------------------------- input
     def on_motion(self, e):
@@ -210,11 +210,11 @@ class OmiWindow:
             st = self.states.get()
             if st["type"] == "error":
                 self.error = st["message"]
-            elif self.pack.has(st["mode"]):
+            elif self.kit.has(st["mode"]):
                 # the change as it happened at `since`: every app shows the
                 # same frame
                 self.omi.set(st["mode"], instant=st.get("instant", False), since=st["since"])
-                self.root.title(f"Omi · {self.pack.mode(st['mode']).name}")
+                self.root.title(f"Omi · {self.kit.mode(st['mode']).name}")
         if not self.following:
             if self.reaction_until and now >= self.reaction_until:
                 self.reaction_until = 0
@@ -234,12 +234,12 @@ class OmiWindow:
         self.root.after(16, self.tick)
 
     def draw(self):
-        c, pack = self.canvas, self.pack
+        c, kit = self.canvas, self.kit
         cx, cy, side = self.stage()
-        vx, vy, vw, vh = pack.view
+        vx, vy, vw, vh = kit.view
         # crisp: one logo cell a whole number of pixels (see "Drawing Omi
-        # crisp" in the pack's README), with the view and its bleed inside
-        s = max(1, int(side / (vw + 2 * self.BLEED) * pack.grid)) / pack.grid
+        # crisp" in the kit's README), with the view and its bleed inside
+        s = max(1, int(side / (vw + 2 * self.BLEED) * kit.grid)) / kit.grid
         ox, oy = cx - (vx + vw / 2) * s, cy - (vy + vh / 2) * s
         rects = [r for r in self.omi.rects() if r.opacity > 0.001]
         while len(self.items) < len(rects):
@@ -255,7 +255,7 @@ class OmiWindow:
             c.itemconfigure(item, state="hidden")
         # text under Omi
         h = c.winfo_height()
-        mode = pack.mode(self.omi.mode)
+        mode = kit.mode(self.omi.mode)
         c.coords(self.name, cx, h - self.TEXT + 24)
         c.itemconfigure(self.name, text=mode.name, fill=self.fg)
         c.coords(self.label, cx, h - self.TEXT + 50)
@@ -270,7 +270,7 @@ def main():
     ap.add_argument("--follow", action="store_true", help="show the shared Omi")
     ap.add_argument("--fg", help="Omi's color, #rrggbb")
     ap.add_argument("--bg", help="the background, #rrggbb")
-    ap.add_argument("--pack", default=str(ROOT / "pack" / "omi.json"))
+    ap.add_argument("--kit", default=str(ROOT / "kit" / "omi.json"))
     a = ap.parse_args()
     hexok = lambda v: v if v and re.fullmatch(r"#[0-9a-fA-F]{6}", v) else None
     fg = hexok(a.fg) or themed("accent") or "#7aa2f7"
@@ -282,7 +282,7 @@ def main():
             "On macOS, use a Python from python.org, Homebrew or uv."
         )
     root = tk.Tk()
-    OmiWindow(root, Pack.load(a.pack), fg, bg, a.follow)
+    OmiWindow(root, Kit.load(a.kit), fg, bg, a.follow)
     root.mainloop()
 
 

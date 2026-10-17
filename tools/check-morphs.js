@@ -2,14 +2,14 @@
 /* Holds the other players to the reference player on every morph there is.
 
    The conformance data has a handful of morphs and only requires where they
-   start and land. The pack README says more: that two players which follow
+   start and land. The kit README says more: that two players which follow
    its steps draw the same morph, between any two modes and from any moment.
    This checks that, rect for rect, for every pair of modes, three ways:
 
      rest    from the old mode at rest
      loop    from the old mode 0.9 s into its loops
      morph   from 0.3 s into a morph to the old mode (from the mode before
-             it in the pack)
+             it in the kit)
 
    and in each, the frame 0.3 s into the morph. The reference player's
    frames are written to a file, one line each as JSON,
@@ -32,7 +32,7 @@ const fs = require("fs"),
 
 const root = path.join(__dirname, ".."),
   Omi = require(path.join(root, "player/omi.js")),
-  pack = JSON.parse(fs.readFileSync(path.join(root, "pack/omi.json"), "utf8"));
+  kit = JSON.parse(fs.readFileSync(path.join(root, "kit/omi.json"), "utf8"));
 
 const PLAYERS = {
   python: { cwd: "player/python", run: ["python3", "tests/morphs.py"] },
@@ -62,7 +62,7 @@ if (unknown.length) {
 }
 
 // --- the reference player's frames
-const ids = pack.modes.map((m) => m.id),
+const ids = kit.modes.map((m) => m.id),
   num = (v) => +v.toFixed(4),
   lines = [];
 for (const how of ["rest", "loop", "morph"])
@@ -72,7 +72,7 @@ for (const how of ["rest", "loop", "morph"])
         before =
           how === "morph" ? ids[(i + ids.length - 1) % ids.length] : null;
       if (from === to) continue;
-      const omi = new Omi(null, pack, { color: "#000" });
+      const omi = new Omi(null, kit, { color: "#000" });
       let ms = 1000;
       const run = (seconds) => {
         for (const stop = ms + seconds * 1000; ms < stop - 1e-6;)

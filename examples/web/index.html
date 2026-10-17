@@ -569,7 +569,7 @@
           <section class="card" aria-labelledby="move-h">
             <h2 id="move-h">Move files</h2>
             <p>
-              A download (the pack itself, for real) and an upload (pretend),
+              A download (the kit itself, for real) and an upload (pretend),
               with Omi showing which way things go. Cancel one and it's sad.
             </p>
             <div class="transfer">
@@ -639,18 +639,18 @@
             </div>
             <p>
               Copy <code>omi.js</code> and <code>omi.json</code> from the
-              <a href="../../pack/">pack</a>, then:
+              <a href="../../kit/">kit</a>, then:
             </p>
             <pre><code id="code">&lt;canvas id="omi" style="width: 200px; height: 200px; color: #7aa2f7"&gt;&lt;/canvas&gt;
 &lt;script src="omi.js"&gt;&lt;/script&gt;
 &lt;script type="module"&gt;
-  const pack = await (await fetch("omi.json")).json();
-  const omi = new Omi(document.getElementById("omi"), pack);
+  const kit = await (await fetch("omi.json")).json();
+  const omi = new Omi(document.getElementById("omi"), kit);
   omi.set("idle");          // and later: omi.set("thinking"),
   omi.look(1, 0);           // omi.look(0, 0), omi.on("settled", …)
 &lt;/script&gt;</code></pre>
             <p>
-              The <a href="../../pack/README.md">pack's README</a> has every
+              The <a href="../../kit/README.md">kit's README</a> has every
               option, and this page's source is the rest of the example.
             </p>
           </section>
@@ -663,28 +663,28 @@
       </footer>
     </div>
 
-    <!-- the player and the pack, straight from the published pack folder -->
-    <script src="../../pack/omi.js"></script>
+    <!-- the player and the kit, straight from the published kit folder -->
+    <script src="../../kit/omi.js"></script>
     <script type="module">
-      const pack = await (await fetch("../../pack/omi.json")).json();
+      const kit = await (await fetch("../../kit/omi.json")).json();
       const $ = (id) => document.getElementById(id);
-      const modeOf = (id) => pack.modes.find((m) => m.id === id);
+      const modeOf = (id) => kit.modes.find((m) => m.id === id);
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       // With reduced motion: no loops, no gaze, and modes jump instead of morphing.
       const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const morphMs = (pack.morph.duration + pack.morph.stagger) * 1000;
+      const morphMs = (kit.morph.duration + kit.morph.stagger) * 1000;
 
       /* ---------------------------------------------------------------
-         The big Omi. Its view is the pack's, plus room on every side
+         The big Omi. Its view is the kit's, plus room on every side
          (BLEED units) that the canvas spills into past the art: the z's,
          the confetti and the download arrow can leave Omi's square without
          being cut off, and Omi stays the art's size. */
       const BLEED = 90,
-        [vx, vy, vw, vh] = pack.view,
+        [vx, vy, vw, vh] = kit.view,
         art = $("art"),
         canvas = $("omi");
       art.style.setProperty("--bleed", `${(BLEED / vw) * 100}%`);
-      const omi = new Omi(canvas, pack, {
+      const omi = new Omi(canvas, kit, {
         view: [vx - BLEED, vy - BLEED, vw + 2 * BLEED, vh + 2 * BLEED],
         animate: !still,
         bodyMotion: !still,
@@ -750,7 +750,7 @@
       document.addEventListener("pointerleave", () => omi.look(0, 0));
 
       // --- poke it: the reactions, in turn
-      const reactions = pack.modes
+      const reactions = kit.modes
         .filter((m) => m.kind === "reaction")
         .map((m) => m.id);
       let pokes = 0;
@@ -758,7 +758,7 @@
       art.addEventListener("click", poke);
 
       // --- keys: Space pokes, ← → step through the modes (not while typing)
-      const picks = pack.modes.filter((m) => m.id !== "logo").map((m) => m.id);
+      const picks = kit.modes.filter((m) => m.id !== "logo").map((m) => m.id);
       const pick = (id) => {
         want.base = id;
         want.reaction = null;
@@ -862,7 +862,7 @@
 
       /* ---------------------------------------------------------------
          Move files: download or upload while it runs, a success when it
-         lands, sad when it's cancelled. The download fetches the pack
+         lands, sad when it's cancelled. The download fetches the kit
          itself; on a fast local server that takes no time, so the bar
          runs for as long as Omi takes to morph there and play its loop
          twice, to show it doing its thing. */
@@ -900,7 +900,7 @@
       }
       $("down").addEventListener("click", () =>
         transfer("download", "omi.json", async () => {
-          const res = await fetch("../../pack/omi.json", { cache: "no-store" });
+          const res = await fetch("../../kit/omi.json", { cache: "no-store" });
           return (await res.arrayBuffer()).byteLength;
         }),
       );
@@ -913,7 +913,7 @@
          Omi in a button: a small player per button. Its view is the logo
          and a little around it, so Omi fills the button's square. */
       for (const btn of document.querySelectorAll(".with-omi")) {
-        const mini = new Omi(btn.querySelector("canvas"), pack, {
+        const mini = new Omi(btn.querySelector("canvas"), kit, {
           view: [-20, -20, 340, 340],
           mode: "idle",
           animate: !still,
@@ -1028,9 +1028,9 @@
       if (!navigator.onLine) signal("offline", true);
 
       /* ---------------------------------------------------------------
-         Every mode, by the pack's groups (jokes included: it's a demo). */
+         Every mode, by the kit's groups (jokes included: it's a demo). */
       const groups = new Map();
-      for (const m of pack.modes) {
+      for (const m of kit.modes) {
         if (m.id === "logo") continue;
         const g = m.group || "Other";
         groups.set(g, [...(groups.get(g) || []), m]);

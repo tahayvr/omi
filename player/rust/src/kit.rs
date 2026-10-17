@@ -1,27 +1,27 @@
-//! The Omi pack (omi.json) as Rust types, read with serde. Field names and
-//! defaults follow pack/README.md: a piece's `opacity` defaults to 1, `delay`
+//! The Omi kit (omi.json) as Rust types, read with serde. Field names and
+//! defaults follow kit/README.md: a piece's `opacity` defaults to 1, `delay`
 //! to 0, `clip` to false; a mode's `kind` to "state".
 
 use serde::{Deserialize, Deserializer};
 use std::collections::BTreeMap;
 use std::fmt;
 
-/// Why a pack could not be used.
+/// Why a kit could not be used.
 #[derive(Debug)]
 pub enum Error {
-    /// The JSON could not be read into the pack types.
+    /// The JSON could not be read into the kit types.
     Json(serde_json::Error),
-    /// The file is not an Omi pack of format version 1.
+    /// The file is not an Omi kit of format version 1.
     Format(String),
-    /// A mode id the pack doesn't have.
+    /// A mode id the kit doesn't have.
     UnknownMode(String),
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Error::Json(e) => write!(f, "omi pack: {e}"),
-            Error::Format(s) => write!(f, "omi pack: {s}"),
+            Error::Json(e) => write!(f, "omi kit: {e}"),
+            Error::Format(s) => write!(f, "omi kit: {s}"),
             Error::UnknownMode(id) => write!(f, "omi: no mode {id:?}"),
         }
     }
@@ -37,7 +37,7 @@ impl From<serde_json::Error> for Error {
 
 /// Everything in omi.json.
 #[derive(Debug, Clone, Deserialize)]
-pub struct Pack {
+pub struct Kit {
     pub format: String,
     pub version: u32,
     /// The size of one logo cell, in grid units.
@@ -54,18 +54,28 @@ pub struct Pack {
     pub modes: Vec<Mode>,
 }
 
-impl Pack {
-    /// Reads a pack from its JSON text and checks that it is an Omi pack of
+impl Kit {
+    /// omi.json from the same release as this crate: the text
+    /// [`Kit::bundled`] reads.
+    pub const JSON: &'static str = include_str!("../omi.json");
+
+    /// The kit that ships in this crate, from the same release as the
+    /// player, so the two always agree.
+    pub fn bundled() -> Kit {
+        Kit::parse(Kit::JSON).expect("the bundled omi.json is a version 1 kit")
+    }
+
+    /// Reads a kit from its JSON text and checks that it is an Omi kit of
     /// format version 1.
-    pub fn parse(json: &str) -> Result<Pack, Error> {
-        let pack: Pack = serde_json::from_str(json)?;
-        if pack.format != "omi-pack" || pack.version != 1 {
+    pub fn parse(json: &str) -> Result<Kit, Error> {
+        let kit: Kit = serde_json::from_str(json)?;
+        if kit.format != "omi-kit" || kit.version != 1 {
             return Err(Error::Format(format!(
-                "expected an Omi pack, format version 1, got {:?} version {}",
-                pack.format, pack.version
+                "expected an Omi kit, format version 1, got {:?} version {}",
+                kit.format, kit.version
             )));
         }
-        Ok(pack)
+        Ok(kit)
     }
 
     /// The mode with this id.
@@ -74,7 +84,7 @@ impl Pack {
     }
 }
 
-/// How a morph runs, from `pack.morph`.
+/// How a morph runs, from `kit.morph`.
 #[derive(Debug, Clone, Deserialize)]
 pub struct MorphSettings {
     /// Seconds each pair takes to move.
@@ -92,7 +102,7 @@ pub struct MorphSettings {
     pub role_penalty: f64,
 }
 
-/// Where the eyes may look, from `pack.gaze`.
+/// Where the eyes may look, from `kit.gaze`.
 #[derive(Debug, Clone, Deserialize)]
 pub struct GazeSettings {
     /// How far a full look moves the eyes, on each axis, in grid units.
@@ -136,7 +146,7 @@ pub struct Animation {
     /// Seconds the keys play over.
     pub duration: f64,
     /// Seconds it holds still before each pass, at its pose at progress 0
-    /// (0 when the pack gives none). The player's rest scale scales it.
+    /// (0 when the kit gives none). The player's rest scale scales it.
     #[serde(default)]
     pub rest: f64,
     pub ease: Ease,

@@ -1,11 +1,11 @@
-/* ---------- Omi pack: everything an app needs to draw, animate and morph Omi ----------
+/* ---------- Omi kit: everything an app needs to draw, animate and morph Omi ----------
    omi.json holds every mode as plain rects (with roles), every animation as
-   keyframes, and the numbers the morph uses. README.md (PACK_README) explains
+   keyframes, and the numbers the morph uses. README.md (KIT_README) explains
    the format to whoever writes a player for it, in any language, and
-   conformance.json lets that player check itself. Bump PACK_VERSION whenever
+   conformance.json lets that player check itself. Bump KIT_VERSION whenever
    the format changes in a way an existing player would misread.
-   tools/build-pack.js writes the same files into pack/. */
-const PACK_VERSION = 1;
+   tools/build-kit.js writes the same files into kit/. */
+const KIT_VERSION = 1;
 // "logo": the plain logo, with nothing in the middle
 const MORPH_LOGO = { id: "logo", name: "Logo", face: [], mood: "" };
 // a square around the logo with room for the props
@@ -87,7 +87,7 @@ function modeMeta(id) {
   return meta;
 }
 
-function packAnim(a) {
+function kitAnim(a) {
   return {
     duration: a.dur,
     ...(a.rest ? { rest: a.rest } : {}),
@@ -103,7 +103,7 @@ function packAnim(a) {
     keys: a.keys,
   };
 }
-function packPiece(r) {
+function kitPiece(r) {
   const a = r.c && ANIM[r.c],
     p = { x: r.x, y: r.y, w: r.w, h: r.h, role: r.role };
   if (r.o != null && r.o !== 1) p.opacity = r.o;
@@ -116,12 +116,12 @@ function packPiece(r) {
   }
   return p;
 }
-function packMode(d) {
+function kitMode(d) {
   const sh = shapes(d, false),
     m = {
       id: d.id,
       name: d.name,
-      // a design the pack doesn't have (the anatomy's bare logo) has no label
+      // a design the kit doesn't have (the anatomy's bare logo) has no label
       ...(LABELS[d.id] ? { label: LABELS[d.id] } : {}),
       ...(d.group ? { group: d.group } : {}),
       ...modeMeta(d.id),
@@ -132,25 +132,25 @@ function packMode(d) {
     const { x, y, w, h, mood } = d.clip;
     m.clip = { x, y, w, h, ...(mood ? { anim: mood } : {}) };
   }
-  m.pieces = sh.rects.map(packPiece);
+  m.pieces = sh.rects.map(kitPiece);
   return m;
 }
-function buildPack() {
+function buildKit() {
   const used = new Set();
   const modes = [MORPH_LOGO, ...DESIGNS].map((d) => {
     if (!LABELS[d.id])
       throw new Error(
         `"${d.id}" has no label: say what a screen reader says for it, in LABELS`,
       );
-    const m = packMode(d);
+    const m = kitMode(d);
     if (m.anim) used.add(m.anim);
     if (m.clip && m.clip.anim) used.add(m.clip.anim);
     m.pieces.forEach((p) => p.anim && used.add(p.anim));
     return m;
   });
   return {
-    format: "omi-pack",
-    version: PACK_VERSION,
+    format: "omi-kit",
+    version: KIT_VERSION,
     grid: 20,
     // a square around the logo with room for the props; keeps Omi still
     // while it changes mode
@@ -174,7 +174,7 @@ function buildPack() {
     animations: Object.fromEntries(
       Object.keys(ANIM)
         .filter((k) => used.has(k))
-        .map((k) => [k, packAnim(ANIM[k])]),
+        .map((k) => [k, kitAnim(ANIM[k])]),
     ),
     modes,
   };
@@ -212,7 +212,7 @@ const CONFORMANCE_TIMES = [0, 0.9, 3.3],
     ["download", 2.5],
   ],
   CONFORMANCE_REST_TIMES = [0, 0.3, 1.5, 2.9, 4.2];
-function buildConformance(pack) {
+function buildConformance(kit) {
   const canvas = {
       width: 1,
       height: 1,
@@ -222,16 +222,16 @@ function buildConformance(pack) {
         fillRect() {},
       }),
     },
-    omi = new Omi(canvas, pack, { color: "#000" }),
+    omi = new Omi(canvas, kit, { color: "#000" }),
     num = (v) => +v.toFixed(4),
     rect = (r) => [num(r.x), num(r.y), num(r.w), num(r.h), num(r.o), r.role],
     shown = (list) => list.filter((r) => r.o > 0.001).map(rect);
   const modes = {};
-  for (const m of pack.modes)
+  for (const m of kit.modes)
     modes[m.id] = Object.fromEntries(
       CONFORMANCE_TIMES.map((t) => [t, shown(omi.modeRects(m, t))]),
     );
-  const { duration, stagger } = pack.morph,
+  const { duration, stagger } = kit.morph,
     total = duration + stagger,
     morphs = CONFORMANCE_MORPHS.map(([from, to]) => {
       omi.set(from, { instant: true });
@@ -260,7 +260,7 @@ function buildConformance(pack) {
     // advances nothing: take that frame here, so the count below is the
     // same in a browser as in Node
     omi.frame(ms);
-    while (ms < 5000 + (pack.gaze.duration / 2) * 1000) omi.frame((ms += 5));
+    while (ms < 5000 + (kit.gaze.duration / 2) * 1000) omi.frame((ms += 5));
     const half = { at: (ms - 5000) / 1000, rects: shown(omi.rects()) };
     while (omi.gazing) omi.frame((ms += 10));
     const end = shown(omi.rects());
@@ -271,7 +271,7 @@ function buildConformance(pack) {
   });
   const rests = CONFORMANCE_RESTS.map(([mode, rest]) => {
     omi.rest = rest;
-    const m = pack.modes.find((x) => x.id === mode),
+    const m = kit.modes.find((x) => x.id === mode),
       times = Object.fromEntries(
         CONFORMANCE_REST_TIMES.map((t) => [t, shown(omi.modeRects(m, t))]),
       );
@@ -282,7 +282,7 @@ function buildConformance(pack) {
   return {
     format: "omi-conformance",
     version: 1,
-    pack_version: pack.version,
+    kit_version: kit.version,
     tolerance: { position: 0.01, opacity: 0.001 },
     rect: ["x", "y", "w", "h", "opacity", "role"],
     modes,
@@ -292,31 +292,31 @@ function buildConformance(pack) {
     rests,
   };
 }
-// The pack's files, as { name: text }.
-function packFiles() {
-  const pack = JSON.parse(JSON.stringify(buildPack()));
+// The kit's files, as { name: text }.
+function kitFiles() {
+  const kit = JSON.parse(JSON.stringify(buildKit()));
   return {
-    "omi.json": JSON.stringify(pack, null, 2) + "\n",
-    "README.md": PACK_README,
-    "conformance.json": JSON.stringify(buildConformance(pack)) + "\n",
-    "omi.schema.json": JSON.stringify(PACK_SCHEMA, null, 2) + "\n",
+    "omi.json": JSON.stringify(kit, null, 2) + "\n",
+    "README.md": KIT_README,
+    "conformance.json": JSON.stringify(buildConformance(kit)) + "\n",
+    "omi.schema.json": JSON.stringify(KIT_SCHEMA, null, 2) + "\n",
   };
 }
 
-/* omi.json's shape, as a JSON Schema: what every pack of this format version
-   has, for an editor, a validator, or a player's own loader to check a pack
+/* omi.json's shape, as a JSON Schema: what every kit of this format version
+   has, for an editor, a validator, or a player's own loader to check a kit
    against. It says what the fields are, not what they mean (the README does),
-   and not the rules Omi is drawn by: tools/check-pack.js holds this pack to
+   and not the rules Omi is drawn by: tools/check-kit.js holds this kit to
    those. */
 const schemaNumber = { type: "number" },
   schemaAbove0 = { type: "number", exclusiveMinimum: 0 },
   schemaFrom0 = { type: "number", minimum: 0 },
   schemaName = { type: "string", minLength: 1 };
-const PACK_SCHEMA = {
+const KIT_SCHEMA = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
-  $id: "https://tahayvr.github.io/meet-omi/pack/omi.schema.json",
-  title: "Omi pack",
-  description: `omi.json, format version ${PACK_VERSION}: every mode, every animation, and the morph and gaze settings. The pack's README.md says what each part means.`,
+  $id: "https://tahayvr.github.io/omi/kit/omi.schema.json",
+  title: "Omi kit",
+  description: `omi.json, format version ${KIT_VERSION}: every mode, every animation, and the morph and gaze settings. The kit's README.md says what each part means.`,
   type: "object",
   required: [
     "format",
@@ -330,8 +330,8 @@ const PACK_SCHEMA = {
   ],
   additionalProperties: false,
   properties: {
-    format: { const: "omi-pack" },
-    version: { const: PACK_VERSION },
+    format: { const: "omi-kit" },
+    version: { const: KIT_VERSION },
     grid: {
       description: "The size of one logo cell, in grid units.",
       ...schemaAbove0,
@@ -592,11 +592,11 @@ const PACK_SCHEMA = {
   },
 };
 
-const PACK_README = `# Omi pack
+const KIT_README = `# Omi kit
 
 Everything an app needs to draw Omi, animate every mode, and morph between
-modes. Made by the Meet Omi design jig. This file describes format version
-${PACK_VERSION}.
+modes. Made by the Omi design jig. This file describes format version
+${KIT_VERSION}.
 
 ## Files
 
@@ -606,6 +606,17 @@ ${PACK_VERSION}.
 - conformance.json: what a correct player draws, to test your own.
 - omi.schema.json: omi.json's shape as a JSON Schema, for an editor or a
   validator.
+- omi.d.ts (in the npm package): TypeScript types for omi.js and omi.json.
+
+## Getting it
+
+    npm install omi-kit    # these files: omi.js, omi.json, the types
+    pip install omi-kit    # the Python player, with omi.json inside
+    cargo add omi          # the Rust player, with omi.json inside
+
+Each release also has omi-kit-<version>.zip on GitHub
+(github.com/tahayvr/omi/releases), and every package of one release
+carries the same omi.json.
 
 Nothing here is tied to one language or toolkit. omi.json is plain JSON and
 this file describes every rule, so any app can read it and draw Omi itself:
@@ -620,8 +631,8 @@ for players in other languages:
     <canvas id="omi" style="width: 240px; height: 240px; color: #9ece6a"></canvas>
     <script src="omi.js"></script>
     <script>
-      const pack = await (await fetch("omi.json")).json();
-      const omi = new Omi(document.getElementById("omi"), pack);
+      const kit = await (await fetch("omi.json")).json();
+      const omi = new Omi(document.getElementById("omi"), kit);
       omi.set("thinking"); // morphs from wherever Omi is
     </script>
 
@@ -629,14 +640,14 @@ Options: color (null follows the canvas's CSS color), speed, rest (scales
 the still time between passes of a loop: 1 as designed, 0 back to back, 2
 twice as long), animate (false shows every mode at rest; morphs and the
 gaze still play), bodyMotion (false leaves out whole-body bobs), mode (where to start), view (an [x, y, w, h]
-to show instead of the pack's view), label (false leaves the canvas's
+to show instead of the kit's view), label (false leaves the canvas's
 accessible name alone: otherwise the player keeps its aria-label on the
 mode's \`label\`, and gives it role="img" if it has no role).
 omi.set(mode, { instant: true }) jumps instead of morphing. omi.on("settled", fn) runs fn when a morph lands, and
 after a jump. omi.loopSeconds(mode) is how long a mode takes
 to play every piece's loop once: show it at least that long in a tour.
 omi.hold(mode) is how long to show a reaction after its morph lands, and
-omi.kind(mode) whether the pack calls it one.
+omi.kind(mode) whether the kit calls it one.
 omi.set(mode, { since }) plays a change that
 happened at \`since\` (Unix ms), for apps sharing one Omi through the Omi
 state protocol: every app then shows the same frame at the same moment. Outside a browser (QML, GJS, Node, tests), pass
@@ -645,7 +656,7 @@ display frame, and fill the rects in omi.rects() yourself.
 
 omi.js runs in Qt Quick's JavaScript (Qt 6), the engine behind the Omarchy
 shell, so Omarchy shell plugins use it as is: see examples/omarchy in the
-Meet Omi repo for a ready Omi.qml.
+Omi repo for a ready Omi.qml.
 
 ## Units
 
@@ -766,7 +777,7 @@ the transfer modes between one pass of the frame and the next. It comes
 first in every cycle, holding the pose the mode rests in, so an app can
 scale it without changing what a pass looks like: at 1 a mode plays as
 designed, at 0 its passes run back to back, at 2 they wait twice as long.
-The pack keeps to two rules for it: an animation with a rest ends where it
+The kit keeps to two rules for it: an animation with a rest ends where it
 starts (its keys at 0 and 1 give the same values, so nothing jumps into the
 rest), and a piece that plays one doesn't set its own duration. A row of
 pieces in step (a delay each) shares the one rest: the animation's
@@ -988,16 +999,16 @@ listed, in drawing order.
 
 omi.js is MIT licensed. The Omi design in omi.json and conformance.json is
 not: it is a derivative of the Omarchy logo, owned by the Omacom Foundation,
-and the MIT license does not apply to it. See LICENSE in the meet-omi
+and the MIT license does not apply to it. See LICENSE in the omi
 repository.
 `;
 
-// on the page only (tools/build-pack.js loads this file without one)
-if (typeof $ === "function" && $("savePack"))
-  $("savePack").addEventListener("click", async () => {
+// on the page only (tools/build-kit.js loads this file without one)
+if (typeof $ === "function" && $("saveKit"))
+  $("saveKit").addEventListener("click", async () => {
     const enc = new TextEncoder(),
-      files = Object.entries(packFiles()).map(([name, text]) => ({
-        name: "omi-pack/" + name,
+      files = Object.entries(kitFiles()).map(([name, text]) => ({
+        name: "omi-kit/" + name,
         data: enc.encode(text),
       }));
     try {
@@ -1006,10 +1017,10 @@ if (typeof $ === "function" && $("savePack"))
         res = await fetch(running ? running.src : "player/omi.js");
       if (res.ok)
         files.push({
-          name: "omi-pack/omi.js",
+          name: "omi-kit/omi.js",
           data: enc.encode(await res.text()),
         });
     } catch (e) {}
     if (files.length < 4) toast("Couldn\u2019t include the player (omi.js).");
-    await save("omi-pack.zip", zip(files));
+    await save("omi-kit.zip", zip(files));
   });

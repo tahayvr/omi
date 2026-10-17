@@ -1,4 +1,4 @@
-# Meet Omi - The Omarchy logo, brought to life.
+# Omi - The Omarchy logo, brought to life.
 
 > [!IMPORTANT]  
 > **Concept!** Not final designs.
@@ -41,14 +41,16 @@ The rules it's drawn by, in short (the long form is in
   off, and [jig.html](jig.html), the design jig, where every mode is looked
   at, restyled with the Controls, and exported as a picture or a video.
   `npm run dev` serves both at http://localhost:8000 and reloads them as you
-  edit; the site, https://tahayvr.github.io/meet-omi/, is the same pages,
+  edit; the site, https://tahayvr.github.io/omi/, is the same pages,
   published from `master` once its checks pass
   ([.github/workflows/publish.yml](.github/workflows/publish.yml)). What they
-  show is the pack, played by the player: add `?check` to the jig's address
+  show is the kit, played by the player: add `?check` to the jig's address
   and it checks that itself.
-- **[pack/](pack/):** what apps use: `omi.json` (every mode, with what a
+- **[kit/](kit/):** what apps use: `omi.json` (every mode, with what a
   screen reader says for each), `omi.js` (the player), the spec and a JSON
-  Schema.
+  Schema. It's released as packages, each with the kit inside:
+  `npm install omi-kit`, `pip install omi-kit`, `cargo add omi`
+  ([CHANGELOG.md](CHANGELOG.md)).
 - **[player/rust/](player/rust/) and [player/python/](player/python/):**
   two more players, a Rust crate and a Python package, written from the
   spec and checked against the same conformance data. They draw every morph
@@ -61,25 +63,25 @@ The rules it's drawn by, in short (the long form is in
   mode to show when.
 - **[docs/modes.md](docs/modes.md):** every mode, with a still and what it's
   for. **[docs/designing.md](docs/designing.md):** the rules Omi is drawn
-  by, and how a mode goes from the jig to the pack.
+  by, and how a mode goes from the jig to the kit.
 - **[protocol/](protocol/) and [service/](service/):** one Omi shared by
   every app on the machine.
 - **[docs/ideas.md](docs/ideas.md):** modes and reactions still to make, each
   with a sketch.
 
-Checks: `npm run check` runs the ones that only need Node: that pack/ and
-docs/modes are built from what's committed (`tools/build-pack.js --check`,
-`tools/modes-doc.js --check`), that the pack has its shape and keeps the
-rules Omi is drawn by (`tools/check-pack.js`), the reference player
+Checks: `npm run check` runs the ones that only need Node: that kit/ and
+docs/modes are built from what's committed (`tools/build-kit.js --check`,
+`tools/modes-doc.js --check`), that the kit has its shape and keeps the
+rules Omi is drawn by (`tools/check-kit.js`), the reference player
 (`tools/check-player.js`) and the service (`tools/check-service.js`). Then `npm run check:site` (the
-site, in Chrome: it shows the pack in pack/, and its CSS draws what the
+site, in Chrome: it shows the kit in kit/, and its CSS draws what the
 player draws), `npm run check:rust` and `npm run check:python` (the Rust
 and the Python player, on the conformance data), `npm run check:morphs`
 (both of them against the reference player on every morph there is),
 `npm run check:qt` (the Qt Quick example's item), `npm run check:bash` (the
 bash example's player, on the conformance data) and, in a Wayland session,
 `npm run check:quickshell`.
-`npm run build` rebuilds pack/ and docs/modes. All but the site's, the
+`npm run build` rebuilds kit/ and docs/modes. All but the site's, the
 examples' and the Quickshell one run on every push
 ([.github/workflows/check.yml](.github/workflows/check.yml)); those are run
 by hand.

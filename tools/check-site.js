@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /* Has the site check itself in a real browser: it opens jig.html?check
    (js/check.js) in Chrome without a window and reports what the page found.
-   The page holds what it shows to the pack in pack/ and to the player: see
+   The page holds what it shows to the kit in kit/ and to the player: see
    js/check.js for what that covers.
 
      node tools/check-site.js                    this checkout
      node tools/check-site.js --dir _site        the site as it is published
                                                  (tools/publish-site.js)
-     node tools/check-site.js https://tahayvr.github.io/meet-omi/
+     node tools/check-site.js https://tahayvr.github.io/omi/
                                                  the live site
      … --build 2f09c9a                           and it must be that build:
                                                  a live site is given three
