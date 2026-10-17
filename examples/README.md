@@ -12,12 +12,20 @@ project and start from the example closest to your environment.
 | [terminal](terminal/omi-tty.js) | Any terminal (Node)                      | Rects become half-block characters, in the Omarchy theme's accent or the terminal's own colors                                            |
 | [bash](bash/omi.sh)             | Any terminal, with only bash, jq and awk | Its own player in awk ([omi.awk](bash/omi.awk)), drawn the same way; [omi.bashrc](bash/omi.bashrc) makes the shared Omi follow your shell |
 
-The web and Qt examples are small showcases: Omi enters as the plain logo
-and comes to life, its eyes follow the pointer, a click or Space plays a
-reaction, ← → step through the modes, and the swatches show it takes any one
-color. The web page follows the system's light or dark setting and, with
-reduced motion on, holds still. The terminal one is a showcase too, and
-runs a command with Omi beside it.
+The examples are showcases too. In each, Omi enters as the plain logo and
+comes to life, its eyes follow the pointer, a click or Space plays a
+reaction, and ← → step through the modes.
+
+- **Web:** Omi follows what you do on the page. It types along in a chat
+  box, thinks when you send, and answers with a reaction that fits what you
+  said. It shows which way a download or an upload goes, and is sad when
+  you cancel one. It reacts to what the browser tells the page: the tab out
+  of sight, you away, no network, a low battery, a copy. Small Omis in
+  buttons say how their work went. Swatches and a color picker show it
+  takes any one color, and the page has a light and a dark theme and a
+  snippet to start from. With reduced motion on, Omi holds still.
+- **Qt:** the swatches show it takes any one color.
+- **Terminal:** it also runs a command with Omi beside it.
 
 ## The pattern
 

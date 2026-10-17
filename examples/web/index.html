@@ -4,190 +4,742 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Omi on a web page</title>
+    <meta
+      name="description"
+      content="Omi, the Omarchy mascot, on a web page: the reference player on a canvas, reacting to what you do."
+    />
     <style>
       /* square corners throughout, like Omi */
       * {
+        box-sizing: border-box;
         border-radius: 0;
+      }
+      [hidden] {
+        display: none !important;
       }
       :root {
         color-scheme: light dark;
-        --bg: #f5f5f7;
-        --fg: #1a1b26;
-        --muted: #5a5f73;
-        --line: #d5d7e0;
-        /* Omi is one color: this is it */
-        --accent: #2f7ae5;
+        --bg: #f4f5f9;
+        --panel: #ffffff;
+        --fg: #1f2335;
+        --muted: #5a607a;
+        --line: #d5d9e6;
+        --accent: #2e7de9;
+        --on-accent: #ffffff;
+        --bad: #c64343;
+        /* Omi is one color: this is it (the swatches change it) */
+        --omi: var(--accent);
       }
       @media (prefers-color-scheme: dark) {
-        :root {
+        :root:not([data-theme="light"]) {
           --bg: #11121a;
-          --fg: #e6e7ef;
-          --muted: #9095a8;
-          --line: #2c2f40;
-          --accent: #33a1ff;
+          --panel: #181a26;
+          --fg: #c0caf5;
+          --muted: #9aa3c7;
+          --line: #2a2e42;
+          --accent: #7aa2f7;
+          --on-accent: #11121a;
+          --bad: #f7768e;
         }
+      }
+      :root[data-theme="dark"] {
+        --bg: #11121a;
+        --panel: #181a26;
+        --fg: #c0caf5;
+        --muted: #9aa3c7;
+        --line: #2a2e42;
+        --accent: #7aa2f7;
+        --on-accent: #11121a;
+        --bad: #f7768e;
+      }
+      :root[data-theme="light"] {
+        color-scheme: light;
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
       }
       body {
         margin: 0;
-        padding: 0 16px 48px;
         background: var(--bg);
         color: var(--fg);
         font:
-          15px/1.5 ui-monospace,
+          15px/1.55 ui-monospace,
           "JetBrains Mono",
+          "SF Mono",
+          Menlo,
           monospace;
       }
-      main {
-        max-width: 760px;
-        margin: 0 auto;
-        text-align: center;
+      button,
+      input,
+      textarea {
+        font: inherit;
+        color: inherit;
       }
-      header {
-        position: absolute;
-        top: 32px;
-        left: 0;
-        right: 0;
-      }
-      /* Omi in the middle of the first screen, with room above it; the modes
-         are a scroll below */
-      .stage {
-        min-height: 100svh;
-        display: grid;
-        gap: 24px;
-        place-content: center;
-        justify-items: center;
-      }
-      h1 {
-        margin: 0;
-        font-size: 22px;
-      }
-      header p {
-        margin: 4px 0 0;
-        color: var(--muted);
-      }
-      /* the player draws in the canvas's CSS color */
-      #omi {
-        width: min(352px, 80vw);
-        aspect-ratio: 1;
+      a {
         color: var(--accent);
-        /* a new color fades in; the player follows the canvas's color */
-        transition: color 0.35s;
-        cursor: pointer;
-        touch-action: manipulation;
-      }
-      #name {
-        margin: -12px 0 0;
-        min-height: 1.5em;
-        font-size: 18px;
-      }
-      .hint {
-        margin: 0;
-        color: var(--muted);
-        font-size: 13px;
+        text-underline-offset: 3px;
       }
       kbd {
         border: 1px solid var(--line);
         border-bottom-width: 2px;
         padding: 0 5px;
         font: inherit;
+        font-size: 0.9em;
       }
-      #accents {
-        display: flex;
-        gap: 10px;
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
       }
-      #accents button {
-        width: 28px;
-        height: 28px;
-        border: 2px solid var(--bg);
-        outline: 1px solid var(--line);
-        cursor: pointer;
-      }
-      #accents button[aria-pressed="true"] {
-        outline: 2px solid var(--fg);
-      }
-      nav {
-        padding-top: 8px;
-        display: flex;
-        flex-wrap: wrap;
+      .btn {
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
-        gap: 6px;
-      }
-      nav button {
-        font: inherit;
-        font-size: 13px;
-        color: inherit;
-        background: none;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 14px;
         border: 1px solid var(--line);
-        padding: 6px 10px;
-        min-height: 36px;
+        background: var(--panel);
         cursor: pointer;
+        white-space: nowrap;
       }
-      nav button[aria-pressed="true"] {
+      .btn:hover:not(:disabled) {
+        border-color: var(--muted);
+      }
+      .btn.primary {
         background: var(--accent);
         border-color: var(--accent);
+        color: var(--on-accent);
+        font-weight: 600;
+      }
+      .btn:disabled {
+        cursor: default;
+        opacity: 0.7;
+      }
+
+      /* ---- the page: Omi on one side, things to do on the other */
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 64px;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 15px;
+      }
+      header h1 span {
+        color: var(--muted);
+        font-weight: 400;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 56px;
+        align-items: start;
+      }
+      .stage {
+        position: sticky;
+        top: 0;
+        min-height: min(100svh, 760px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 24px 0 48px;
+      }
+      /* The canvas bleeds past the art (--bleed) so props like the z's and
+         the confetti can go outside Omi's square; see `view` in the script. */
+      .art {
+        position: relative;
+        width: min(400px, 100%);
+        aspect-ratio: 1;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .art canvas {
+        position: absolute;
+        inset: calc(-1 * var(--bleed));
+        width: calc(100% + 2 * var(--bleed));
+        height: calc(100% + 2 * var(--bleed));
+        pointer-events: none;
+        color: var(--omi);
+        transition: color 0.35s;
+      }
+      .now {
+        text-align: center;
+        min-height: 3.2em;
+      }
+      .now b {
+        display: block;
+        font-size: 20px;
+      }
+      .now span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .hint {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+        max-width: 380px;
+      }
+
+      .demos {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 24px 0 64px;
+      }
+      .card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-width: 0;
+      }
+      .card h2 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .card > p {
+        margin: -6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      /* talk to it */
+      .log {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-height: 0;
+      }
+      .log:empty {
+        display: none;
+      }
+      .msg {
+        max-width: 85%;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        overflow-wrap: anywhere;
+      }
+      .msg.me {
+        align-self: flex-end;
+        background: var(--bg);
+      }
+      .msg.omi {
+        align-self: flex-start;
+        border-color: var(--omi);
+      }
+      .msg.omi::before {
+        content: "Omi: ";
+        color: var(--omi);
+        font-weight: 600;
+      }
+      .composer {
+        display: flex;
+        gap: 8px;
+      }
+      .composer textarea {
+        flex: 1;
+        min-width: 0;
+        min-height: 40px;
+        max-height: 120px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        resize: none;
+        field-sizing: content;
+      }
+      .composer textarea:focus {
+        border-color: var(--accent);
+        outline: none;
+      }
+      .ideas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .idea {
+        border: 1px dashed var(--line);
+        background: none;
+        padding: 2px 8px;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .idea:hover {
+        color: var(--fg);
+        border-color: var(--muted);
+      }
+
+      /* move files */
+      .transfer {
+        display: grid;
+        gap: 8px;
+      }
+      .bar {
+        height: 8px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: var(--omi);
+      }
+      .status {
+        font-size: 13px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Omi in a button: its own small player */
+      .with-omi canvas {
+        width: 28px;
+        height: 28px;
+        margin-left: -4px;
+        color: var(--omi);
+      }
+      .btn.primary.with-omi canvas {
+        color: var(--on-accent);
+      }
+
+      /* it notices */
+      .signals {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+      }
+      .signals li {
+        display: grid;
+        grid-template-columns: 10px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 8px 0;
+        border-top: 1px solid var(--line);
+      }
+      .signals li:first-child {
+        border-top: 0;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border: 1px solid var(--muted);
+      }
+      .signals li.on .dot {
+        background: var(--omi);
+        border-color: var(--omi);
+      }
+      .signals b {
+        font-weight: 600;
+      }
+      .signals small {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .signals .btn {
+        min-height: 32px;
+        font-size: 13px;
+      }
+
+      /* every mode */
+      .groups {
+        display: grid;
+        gap: 12px;
+      }
+      .groups h3 {
+        margin: 0 0 6px;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .chip {
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        background: none;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .chip:hover {
+        border-color: var(--muted);
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--omi);
+        border-color: var(--omi);
+        color: var(--on-accent);
+      }
+
+      /* one color */
+      .sw {
+        width: 32px;
+        height: 32px;
+        border: 2px solid var(--panel);
+        outline: 1px solid var(--line);
+        cursor: pointer;
+        padding: 0;
+      }
+      .sw[aria-pressed="true"] {
+        outline: 2px solid var(--fg);
+      }
+      .sw.any {
+        position: relative;
+        overflow: hidden;
+        background: conic-gradient(
+          #f7768e,
+          #e0af68,
+          #9ece6a,
+          #7dcfff,
+          #7aa2f7,
+          #bb9af7,
+          #f7768e
+        );
+      }
+      .sw.any input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .seg {
+        display: inline-flex;
+        border: 1px solid var(--line);
+      }
+      .seg button {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 0;
+        background: none;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--fg);
         color: var(--bg);
+      }
+
+      /* put it on your page */
+      pre {
+        margin: 0;
+        padding: 14px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        overflow-x: auto;
+        font-size: 12.5px;
+        line-height: 1.6;
+      }
+      .cardhead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .cardhead .btn {
+        min-height: 32px;
+        font-size: 13px;
+      }
+      footer {
+        padding: 24px 0 40px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* ---- phones and narrow windows: Omi pinned on top, small, with what
+         it's doing beside it; the things to do scroll under it */
+      @media (max-width: 860px) {
+        .page {
+          padding: 0 16px;
+        }
+        .layout {
+          display: block;
+        }
+        .stage {
+          z-index: 2;
+          min-height: 0;
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 16px;
+          padding: 10px 0;
+          margin: 0 -16px;
+          padding-left: 16px;
+          padding-right: 16px;
+          background: color-mix(in srgb, var(--bg) 92%, transparent);
+          backdrop-filter: blur(8px);
+          border-bottom: 1px solid var(--line);
+        }
+        .art {
+          width: 108px;
+          flex: none;
+        }
+        .now {
+          text-align: left;
+          min-height: 0;
+        }
+        .now b {
+          font-size: 17px;
+        }
+        .stage .hint {
+          display: none;
+        }
+        .demos {
+          padding-top: 16px;
+        }
+        .card {
+          padding: 16px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .art canvas {
+          transition: none;
+        }
       }
     </style>
   </head>
   <body>
-    <main>
+    <div class="page">
       <header>
-        <h1>Omi</h1>
-        <p>The Omarchy logo, brought to life.</p>
+        <h1>Omi <span>on a web page</span></h1>
+        <div class="seg" role="group" aria-label="Theme" id="theme">
+          <button data-theme="">Auto</button>
+          <button data-theme="light">Light</button>
+          <button data-theme="dark">Dark</button>
+        </div>
       </header>
 
-      <section class="stage">
-        <canvas id="omi" role="img" aria-label="Omi"></canvas>
-        <p id="name" aria-live="polite"></p>
-        <p class="hint">
-          Omi watches your pointer. Click it or press <kbd>Space</kbd> to make
-          it laugh; <kbd>←</kbd> <kbd>→</kbd> step through the modes.
-        </p>
-        <div id="accents" role="group" aria-label="Omi's color"></div>
-      </section>
+      <main class="layout">
+        <section class="stage" aria-label="Omi">
+          <div class="art" id="art" title="Poke Omi">
+            <canvas id="omi"></canvas>
+          </div>
+          <div class="now" aria-live="polite">
+            <b id="name">Logo</b>
+            <span id="label"></span>
+          </div>
+          <p class="hint">
+            Omi watches your pointer. Click it or press <kbd>Space</kbd> for a
+            reaction; <kbd>←</kbd> <kbd>→</kbd> step through the modes. Try the
+            things on this page: Omi follows along.
+          </p>
+        </section>
 
-      <nav id="modes" aria-label="Modes"></nav>
-    </main>
+        <div class="demos">
+          <section class="card" aria-labelledby="talk-h">
+            <h2 id="talk-h">Talk to it</h2>
+            <p>
+              Omi types along while you type, thinks when you send, and reacts
+              to what you said.
+            </p>
+            <div class="log" id="log" aria-live="polite"></div>
+            <form class="composer" id="composer">
+              <textarea
+                id="say"
+                rows="1"
+                placeholder="Say something to Omi"
+                aria-label="Message to Omi"
+              ></textarea>
+              <button class="btn primary">Send</button>
+            </form>
+            <div class="ideas" id="ideas"></div>
+          </section>
+
+          <section class="card" aria-labelledby="move-h">
+            <h2 id="move-h">Move files</h2>
+            <p>
+              A download (the pack itself, for real) and an upload (pretend),
+              with Omi showing which way things go. Cancel one and it's sad.
+            </p>
+            <div class="transfer">
+              <div class="row">
+                <button class="btn" id="down">Download omi.json</button>
+                <button class="btn" id="up">Upload photo.png</button>
+                <button class="btn" id="cancel" hidden>Cancel</button>
+              </div>
+              <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+              <span class="status" id="xfer" aria-live="polite">Idle.</span>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="btn-h">
+            <h2 id="btn-h">Omi in a button</h2>
+            <p>
+              Every Omi is its own small player: here, one per button, telling
+              you how the work went. One of these always works, one never does.
+            </p>
+            <div class="row">
+              <button class="btn primary with-omi" data-work="ok">
+                <canvas aria-hidden="true"></canvas><span>Save</span>
+              </button>
+              <button class="btn with-omi" data-work="fail">
+                <canvas aria-hidden="true"></canvas><span>Deploy</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="sig-h">
+            <h2 id="sig-h">It notices</h2>
+            <p>
+              Things the browser tells a page, as Omi. They happen by
+              themselves; Try shows one now.
+            </p>
+            <ul class="signals" id="signals"></ul>
+          </section>
+
+          <section class="card" aria-labelledby="modes-h">
+            <h2 id="modes-h">Every mode</h2>
+            <p>Pick one: Omi morphs there from wherever it is.</p>
+            <div class="groups" id="modes"></div>
+          </section>
+
+          <section class="card" aria-labelledby="color-h">
+            <h2 id="color-h">One color, any color</h2>
+            <p>
+              Omi is drawn in its canvas's CSS <code>color</code>, so it takes
+              your page's accent, or anything else.
+            </p>
+            <div
+              class="row"
+              id="swatches"
+              role="group"
+              aria-label="Omi's color"
+            >
+              <label class="sw any" title="Any color">
+                <input type="color" id="anyColor" aria-label="Any color" />
+              </label>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="use-h">
+            <div class="cardhead">
+              <h2 id="use-h">Put Omi on your page</h2>
+              <button class="btn" id="copy">Copy</button>
+            </div>
+            <p>
+              Copy <code>omi.js</code> and <code>omi.json</code> from the
+              <a href="../../pack/">pack</a>, then:
+            </p>
+            <pre><code id="code">&lt;canvas id="omi" style="width: 200px; height: 200px; color: #7aa2f7"&gt;&lt;/canvas&gt;
+&lt;script src="omi.js"&gt;&lt;/script&gt;
+&lt;script type="module"&gt;
+  const pack = await (await fetch("omi.json")).json();
+  const omi = new Omi(document.getElementById("omi"), pack);
+  omi.set("idle");          // and later: omi.set("thinking"),
+  omi.look(1, 0);           // omi.look(0, 0), omi.on("settled", …)
+&lt;/script&gt;</code></pre>
+            <p>
+              The <a href="../../pack/README.md">pack's README</a> has every
+              option, and this page's source is the rest of the example.
+            </p>
+          </section>
+        </div>
+      </main>
+
+      <footer>
+        Omi is the Omarchy mascot. The player is MIT licensed; the design is a
+        derivative of the Omarchy logo (see LICENSE).
+      </footer>
+    </div>
 
     <!-- the player and the pack, straight from the published pack folder -->
     <script src="../../pack/omi.js"></script>
     <script type="module">
       const pack = await (await fetch("../../pack/omi.json")).json();
-      const canvas = document.getElementById("omi");
+      const $ = (id) => document.getElementById(id);
+      const modeOf = (id) => pack.modes.find((m) => m.id === id);
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       // With reduced motion: no loops, no gaze, and modes jump instead of morphing.
       const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const omi = new Omi(canvas, pack, { animate: !still, mode: "logo" });
+      const morphMs = (pack.morph.duration + pack.morph.stagger) * 1000;
+
+      /* ---------------------------------------------------------------
+         The big Omi. Its view is the pack's, plus room on every side
+         (BLEED units) that the canvas spills into past the art: the z's,
+         the confetti and the download arrow can leave Omi's square without
+         being cut off, and Omi stays the art's size. */
+      const BLEED = 90,
+        [vx, vy, vw, vh] = pack.view,
+        art = $("art"),
+        canvas = $("omi");
+      art.style.setProperty("--bleed", `${(BLEED / vw) * 100}%`);
+      const omi = new Omi(canvas, pack, {
+        view: [vx - BLEED, vy - BLEED, vw + 2 * BLEED, vh + 2 * BLEED],
+        animate: !still,
+        bodyMotion: !still,
+      });
       window.omi = omi; // to play with from the browser's console
 
-      // --- what Omi is doing: `mode`, with a reaction playing over it for a moment
-      let mode = "idle",
-        reacting = null;
-      const setMode = (id) => {
-        mode = id;
-        if (!reacting) omi.set(id, { instant: still });
-        show();
+      /* What Omi shows is the first of these that is set: a reaction
+         (playing for a moment), what you're doing on the page (typing,
+         a transfer), what the browser says (asleep, offline), then the
+         mode you picked. */
+      const want = {
+        reaction: null,
+        activity: null,
+        signal: null,
+        base: "idle",
       };
-      // A reaction: a mode for the pack's hold after its morph lands, then back.
+      let shown = "logo",
+        started = false;
+      const update = () => {
+        if (!started) return;
+        const id = want.reaction || want.activity || want.signal || want.base;
+        if (id !== shown) {
+          shown = id;
+          omi.set(id, { instant: still });
+        }
+        $("name").textContent = modeOf(id).name;
+        $("label").textContent = omi.label(id);
+        showModes();
+      };
+      // A reaction: a mode for its hold after the morph lands, then back.
+      let reactionTimer = 0;
       const react = (id) => {
-        clearTimeout(reacting);
-        omi.set(id, { instant: still });
-        reacting = setTimeout(
-          () => {
-            reacting = null;
-            omi.set(mode, { instant: still });
-          },
-          (omi.hold(id) + pack.morph.duration + pack.morph.stagger) * 1000,
+        clearTimeout(reactionTimer);
+        want.reaction = id;
+        update();
+        reactionTimer = setTimeout(
+          () => ((want.reaction = null), update()),
+          omi.hold(id) * 1000 + morphMs,
         );
       };
+      const doing = (id) => ((want.activity = id), update());
 
-      // --- the eyes follow the pointer, and look ahead again when it rests
+      // --- the eyes follow the pointer, and look ahead again when it rests,
+      // or when it's over the cards or the header: Omi leaves you to it there
       let rest = 0;
       addEventListener("pointermove", (e) => {
         if (still) return;
-        const r = canvas.getBoundingClientRect(),
+        if (e.target.closest(".demos, header")) {
+          clearTimeout(rest);
+          return omi.look(0, 0);
+        }
+        const r = art.getBoundingClientRect(),
           dx = e.clientX - (r.left + r.width / 2),
           dy = e.clientY - (r.top + r.height / 2),
-          reach = r.width * 1.5; // full tilt this far from Omi's center
+          reach = Math.max(r.width * 1.5, 240); // full tilt this far away
         omi.look(
           Math.max(-1, Math.min(1, dx / reach)),
           Math.max(-1, Math.min(1, dy / reach)),
@@ -197,74 +749,380 @@
       });
       document.addEventListener("pointerleave", () => omi.look(0, 0));
 
-      // --- poke Omi
-      canvas.addEventListener("click", () => react("laughing"));
+      // --- poke it: the reactions, in turn
+      const reactions = pack.modes
+        .filter((m) => m.kind === "reaction")
+        .map((m) => m.id);
+      let pokes = 0;
+      const poke = () => react(reactions[pokes++ % reactions.length]);
+      art.addEventListener("click", poke);
+
+      // --- keys: Space pokes, ← → step through the modes (not while typing)
+      const picks = pack.modes.filter((m) => m.id !== "logo").map((m) => m.id);
+      const pick = (id) => {
+        want.base = id;
+        want.reaction = null;
+        update();
+      };
       addEventListener("keydown", (e) => {
-        if (e.target.closest("button")) return; // let buttons take their keys
-        const ids = pack.modes.map((m) => m.id),
-          i = ids.indexOf(mode);
-        if (e.key === " ") react("laughing");
-        else if (e.key === "ArrowRight") setMode(ids[(i + 1) % ids.length]);
+        if (e.target.closest("input, textarea, button, select, a")) return;
+        const i = picks.indexOf(want.base);
+        if (e.key === " ") poke();
+        else if (e.key === "ArrowRight") pick(picks[(i + 1) % picks.length]);
         else if (e.key === "ArrowLeft")
-          setMode(ids[(i - 1 + ids.length) % ids.length]);
+          pick(picks[(i - 1 + picks.length) % picks.length]);
         else return;
         e.preventDefault();
       });
 
-      // --- one color, any color
-      const accents = document.getElementById("accents"),
-        swatches = ["", "#9ece6a", "#f7768e", "#e0af68", "#bb9af7"]; // "": the page's accent
-      accents.innerHTML = swatches
-        .map(
-          (c) =>
-            `<button style="background:${c || "var(--accent)"}" data-color="${c}" aria-label="${c || "Page accent"}"></button>`,
-        )
-        .join("");
-      accents.addEventListener("click", (e) => {
-        const b = e.target.closest("button");
-        if (!b) return;
-        canvas.style.color = b.dataset.color; // "" falls back to --accent
-        omi.draw();
-        showAccent();
+      /* ---------------------------------------------------------------
+         Talk to it: typing while you type, thinking once you send, then a
+         reaction to what you said. */
+      const REPLIES = [
+        [/sudo/i, "sudo", "Nice try. Permission denied."],
+        [/love|<3|❤|thank/i, "love", "Aw. Right back at you."],
+        [/ha(ha)+|lol|joke|funny/i, "laughing", "Ha! Good one."],
+        [/party|celebrat|birthday|🎉/i, "party", "Party time!"],
+        [
+          /sad|sorry|miss|bad day/i,
+          "crying",
+          "Oh no. Here, have a virtual hug.",
+        ],
+        [/angry|hate|stupid/i, "angry", "Hey! That's not nice."],
+        [/tile|tiling|hyprland|window/i, "tiling", "Everything in its place."],
+        [/wow|amazing|mind|blown|cool/i, "mind-blown", "I know, right?"],
+        [/sleep|tired|night/i, "sleeping", "Zzz… oh! Sorry. Good night."],
+        [/cute|shy|pretty/i, "shy", "Stop it, you."],
+        [/hi|hello|hey|yo\b/i, "wink", "Hi there! I'm Omi."],
+        [/\?$/, "skeptical", "Hmm. I'm a logo; I'd ask someone else."],
+      ];
+      const IDEAS = [
+        "hello!",
+        "sudo make me a sandwich",
+        "tell me a joke",
+        "I love Omarchy",
+        "let's party",
+        "wow",
+      ];
+      const log = $("log"),
+        say = $("say");
+      const bubble = (who, text) => {
+        const el = document.createElement("div");
+        el.className = "msg " + who;
+        el.textContent = text;
+        log.append(el);
+        while (log.children.length > 4) log.firstChild.remove();
+      };
+      let typingTimer = 0;
+      say.addEventListener("input", () => {
+        clearTimeout(typingTimer);
+        doing(say.value.trim() ? "typing" : null);
+        typingTimer = setTimeout(
+          () => want.activity === "typing" && doing(null),
+          1200,
+        );
       });
-      // With reduced motion nothing redraws by itself: draw the faded-in color.
-      canvas.addEventListener("transitionend", () => omi.draw());
-      const showAccent = () =>
-        accents
-          .querySelectorAll("button")
-          .forEach((b) =>
-            b.setAttribute(
-              "aria-pressed",
-              String(
-                b.dataset.color === canvas.style.color ||
-                  (!b.dataset.color && !canvas.style.color),
-              ),
-            ),
-          );
+      say.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          $("composer").requestSubmit();
+        }
+      });
+      $("composer").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const text = say.value.trim();
+        if (!text) return say.focus();
+        say.value = "";
+        clearTimeout(typingTimer);
+        bubble("me", text);
+        doing("thinking");
+        await wait(1400);
+        const [, mode, reply] = REPLIES.find(([re]) => re.test(text)) || [
+          null,
+          "excited",
+          "Ooh, tell me more.",
+        ];
+        doing(null);
+        react(mode);
+        bubble("omi", reply);
+      });
+      $("ideas").append(
+        ...IDEAS.map((idea) => {
+          const b = document.createElement("button");
+          b.className = "idea";
+          b.type = "button";
+          b.textContent = idea;
+          b.addEventListener("click", () => {
+            say.value = idea;
+            $("composer").requestSubmit();
+          });
+          return b;
+        }),
+      );
 
-      // --- every mode, one button each
-      const nav = document.getElementById("modes"),
-        name = document.getElementById("name");
-      nav.innerHTML = pack.modes
-        .map((m) => `<button data-mode="${m.id}">${m.name}</button>`)
-        .join("");
-      nav.addEventListener("click", (e) => {
-        const b = e.target.closest("button");
-        if (b) setMode(b.dataset.mode);
-      });
-      function show() {
-        name.textContent = pack.modes.find((m) => m.id === mode).name;
-        nav
-          .querySelectorAll("button")
-          .forEach((b) =>
-            b.setAttribute("aria-pressed", String(b.dataset.mode === mode)),
-          );
+      /* ---------------------------------------------------------------
+         Move files: download or upload while it runs, a success when it
+         lands, sad when it's cancelled. The download fetches the pack
+         itself; on a fast local server that takes no time, so the bar
+         runs for as long as Omi takes to morph there and play its loop
+         twice, to show it doing its thing. */
+      const bar = $("bar"),
+        xfer = $("xfer"),
+        cancelBtn = $("cancel");
+      let cancelled = false;
+      const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
+      async function transfer(mode, name, load) {
+        cancelled = false;
+        $("down").disabled = $("up").disabled = true;
+        cancelBtn.hidden = false;
+        doing(mode);
+        const total = await load(),
+          t0 = performance.now(),
+          ms = morphMs + 2 * omi.loopSeconds(mode) * 1000;
+        while (!cancelled) {
+          const p = Math.min(1, (performance.now() - t0) / ms);
+          bar.style.width = `${p * 100}%`;
+          xfer.textContent = `${mode === "download" ? "Downloading" : "Uploading"} ${name}: ${kb(total * p)} of ${kb(total)}`;
+          if (p >= 1) break;
+          await new Promise(requestAnimationFrame);
+        }
+        doing(null);
+        cancelBtn.hidden = true;
+        $("down").disabled = $("up").disabled = false;
+        if (cancelled) {
+          xfer.textContent = `Cancelled ${name}.`;
+          react("sad");
+        } else {
+          xfer.textContent = `${name}: ${kb(total)}, done.`;
+          react("success");
+        }
+        setTimeout(() => (bar.style.width = "0"), 1200);
+      }
+      $("down").addEventListener("click", () =>
+        transfer("download", "omi.json", async () => {
+          const res = await fetch("../../pack/omi.json", { cache: "no-store" });
+          return (await res.arrayBuffer()).byteLength;
+        }),
+      );
+      $("up").addEventListener("click", () =>
+        transfer("upload", "photo.png", async () => 2.4 * 1024 * 1024),
+      );
+      cancelBtn.addEventListener("click", () => (cancelled = true));
+
+      /* ---------------------------------------------------------------
+         Omi in a button: a small player per button. Its view is the logo
+         and a little around it, so Omi fills the button's square. */
+      for (const btn of document.querySelectorAll(".with-omi")) {
+        const mini = new Omi(btn.querySelector("canvas"), pack, {
+          view: [-20, -20, 340, 340],
+          mode: "idle",
+          animate: !still,
+          bodyMotion: false,
+          label: false,
+        });
+        const text = btn.querySelector("span"),
+          was = text.textContent,
+          ok = btn.dataset.work === "ok";
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          text.textContent = ok ? "Saving…" : "Deploying…";
+          mini.set("thinking", { instant: still });
+          await wait(1600);
+          mini.set(ok ? "success" : "warning", { instant: still });
+          text.textContent = ok ? "Saved" : "Failed";
+          await wait(ok ? 1800 : 2600);
+          mini.set("idle", { instant: still });
+          text.textContent = was;
+          btn.disabled = false;
+        });
       }
 
-      showAccent();
-      show();
+      /* ---------------------------------------------------------------
+         It notices: what the browser tells the page. Each signal turns
+         on or off by itself; Try turns it on for a moment. The tab coming
+         back, or you coming back after a minute away, wakes Omi up. */
+      const SIGNALS = {
+        hidden: {
+          name: "Tab out of sight",
+          does: "Omi falls asleep, and is happy you're back",
+          mode: "sleeping",
+        },
+        idle: {
+          name: "You, away for a minute",
+          does: "Omi dozes off",
+          mode: "sleeping",
+        },
+        offline: {
+          name: "No network",
+          does: "Omi is sad until it's back",
+          mode: "sad",
+        },
+        battery: {
+          name: "Battery under 15%",
+          does: "Omi runs low too",
+          mode: "low-battery",
+        },
+        copy: {
+          name: "Something copied",
+          does: "Omi winks",
+          mode: "wink",
+          moment: true,
+        },
+      };
+      const on = {};
+      const list = $("signals");
+      for (const [key, s] of Object.entries(SIGNALS)) {
+        const li = document.createElement("li");
+        li.dataset.key = key;
+        li.innerHTML = `<span class="dot"></span><span><b></b><small></small></span><button class="btn" type="button">Try</button>`;
+        li.querySelector("b").textContent = s.name;
+        li.querySelector("small").textContent = s.does;
+        li.querySelector("button").addEventListener("click", () => tryIt(key));
+        list.append(li);
+      }
+      const light = (key, yes) =>
+        list.querySelector(`[data-key="${key}"]`).classList.toggle("on", yes);
+      const signal = (key, yes) => {
+        const was = on[key];
+        on[key] = yes;
+        light(key, yes);
+        // the first that is on shows, in this order
+        const now = ["offline", "hidden", "idle", "battery"].find((k) => on[k]);
+        want.signal = now ? SIGNALS[now].mode : null;
+        update();
+        if (was && !yes && (key === "hidden" || key === "idle"))
+          react("excited");
+      };
+      const moment = (key) => {
+        light(key, true);
+        setTimeout(() => light(key, false), 1500);
+        react(SIGNALS[key].mode);
+      };
+      async function tryIt(key) {
+        if (SIGNALS[key].moment) return moment(key);
+        signal(key, true);
+        await wait(3500);
+        signal(key, key === "offline" ? !navigator.onLine : false);
+      }
+      document.addEventListener("visibilitychange", () =>
+        signal("hidden", document.hidden),
+      );
+      addEventListener("offline", () => signal("offline", true));
+      addEventListener("online", () => signal("offline", false));
+      document.addEventListener("copy", () => moment("copy"));
+      let idleTimer = 0;
+      const active = () => {
+        if (on.idle) signal("idle", false);
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => signal("idle", true), 60_000);
+      };
+      for (const t of ["pointermove", "pointerdown", "keydown", "scroll"])
+        addEventListener(t, active, { passive: true });
+      active();
+      navigator.getBattery?.().then((b) => {
+        const check = () => signal("battery", !b.charging && b.level < 0.15);
+        b.addEventListener("levelchange", check);
+        b.addEventListener("chargingchange", check);
+        check();
+      });
+      if (!navigator.onLine) signal("offline", true);
+
+      /* ---------------------------------------------------------------
+         Every mode, by the pack's groups (jokes included: it's a demo). */
+      const groups = new Map();
+      for (const m of pack.modes) {
+        if (m.id === "logo") continue;
+        const g = m.group || "Other";
+        groups.set(g, [...(groups.get(g) || []), m]);
+      }
+      const modes = $("modes");
+      for (const [g, ms] of groups) {
+        const div = document.createElement("div");
+        div.innerHTML = `<h3></h3><div class="row"></div>`;
+        div.querySelector("h3").textContent = g;
+        for (const m of ms) {
+          const b = document.createElement("button");
+          b.className = "chip";
+          b.type = "button";
+          b.dataset.mode = m.id;
+          b.textContent = m.name;
+          b.addEventListener("click", () => pick(m.id));
+          div.querySelector(".row").append(b);
+        }
+        modes.append(div);
+      }
+      function showModes() {
+        for (const b of modes.querySelectorAll(".chip"))
+          b.setAttribute("aria-pressed", String(b.dataset.mode === want.base));
+      }
+
+      /* ---------------------------------------------------------------
+         One color, any color: the swatches set --omi, which every Omi on
+         the page is drawn in (a canvas's CSS color). "" is the page's
+         accent, which follows the theme. */
+      const root = document.documentElement,
+        swatches = $("swatches"),
+        any = $("anyColor"),
+        COLORS = ["", "#9ece6a", "#f7768e", "#e0af68", "#bb9af7", "#7dcfff"];
+      const redraw = () => {
+        // with loops on the players redraw by themselves; with reduced
+        // motion, once the color has faded in
+        omi.draw();
+        setTimeout(() => omi.draw(), 400);
+      };
+      const setColor = (c) => {
+        if (c) root.style.setProperty("--omi", c);
+        else root.style.removeProperty("--omi");
+        for (const b of swatches.querySelectorAll("button"))
+          b.setAttribute("aria-pressed", String(b.dataset.color === c));
+        redraw();
+      };
+      for (const c of COLORS) {
+        const b = document.createElement("button");
+        b.className = "sw";
+        b.type = "button";
+        b.dataset.color = c;
+        b.style.background = c || "var(--accent)";
+        b.setAttribute("aria-label", c || "The page's accent");
+        b.addEventListener("click", () => setColor(c));
+        swatches.insertBefore(b, swatches.querySelector(".any"));
+      }
+      any.addEventListener("input", () => setColor(any.value));
+
+      // --- the theme: the system's, or light or dark
+      const themes = $("theme");
+      const setTheme = (t) => {
+        if (t) root.dataset.theme = t;
+        else delete root.dataset.theme;
+        for (const b of themes.querySelectorAll("button"))
+          b.setAttribute("aria-pressed", String(b.dataset.theme === t));
+        redraw();
+      };
+      themes.addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (b) setTheme(b.dataset.theme);
+      });
+      matchMedia("(prefers-color-scheme: dark)").addEventListener(
+        "change",
+        redraw,
+      );
+      setTheme("");
+      setColor("");
+
+      // --- copy the snippet (and Omi notices: it's a copy)
+      $("copy").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText($("code").textContent);
+          $("copy").textContent = "Copied";
+        } catch (e) {
+          $("copy").textContent = "Select and copy";
+        }
+        moment("copy");
+        setTimeout(() => ($("copy").textContent = "Copy"), 1600);
+      });
+
       // Omi starts as the plain logo and comes to life.
-      setTimeout(() => omi.set(mode, { instant: still }), 600);
+      setTimeout(() => ((started = true), update()), 600);
     </script>
   </body>
 </html>
