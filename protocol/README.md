@@ -91,7 +91,11 @@ When a `state` arrives, hand it to the player as a change that happened at
 - Else, morph to `mode` from whatever is on screen, as if the morph started
   at `since`: it is `now - since` along already (it may even have landed,
   and then its loops are that much past landing). The reference player does
-  this with `omi.set(mode, { since })`.
+  this with `omi.set(mode, { since })`. If it comes in the middle of the
+  last change, "on screen" means what that change had on screen at the new
+  `since`, worked out from the clock like any frame (even if this app's
+  frames have landed its morph since), not this app's last frame: every
+  app then morphs from the same frame.
 - An app that connects while a morph is still running has nothing on screen
   to morph from yet: show `from` at rest first, then morph to `mode` with
   `since`. Its first frames can differ slightly from apps that were already

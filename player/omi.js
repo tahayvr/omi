@@ -516,6 +516,10 @@ var Omi = (function () {
             : (Math.max(0, Date.now() - since) / 1000) *
               Math.max(0.05, this.speed),
         total = this.pack.morph.duration + this.pack.morph.stagger;
+      // a shared change in the middle of another starts from what the clock
+      // had on screen at `since`, the same in every app, not from this
+      // player's last frame, which its own frame timing put a little off
+      if (since != null && this._sync) this.seek(since);
       // a shared change runs on the wall clock, so every app shows the same
       // frame at the same moment however its own frames are timed; a local
       // change runs on this player's frames
@@ -567,6 +571,8 @@ var Omi = (function () {
         s.now = Object.assign({}, s.a);
       }
       this.morph = { steps, t: 0 };
+      // kept after it lands, for a change that comes in before its landing
+      if (this._sync) this._sync.morph = this.morph;
       if (late) {
         // catch up; if it has landed, run its loops on by what's left over
         this.stepMorph(late);
@@ -792,6 +798,19 @@ var Omi = (function () {
         raf && (this.morph || this._animate || this.gazing)
           ? raf(this._tick)
           : 0;
+    }
+    // Put a shared change where the clock has it at `ms` (Unix ms): its
+    // morph that far along, even one a later frame has landed, or its loops.
+    seek(ms) {
+      const S = this._sync,
+        el = (Math.max(0, ms - S.since) / 1000) * Math.max(0.05, this.speed),
+        M = this.morph || (el < S.after && S.morph);
+      if (M) {
+        this.morph = M;
+        M.t = el; // set, not added to: the same number in every app
+        this.stepMorph(0);
+      }
+      if (!this.morph && this._animate) this.t = Math.max(0, el - S.after);
     }
     stepMorph(dt) {
       const M = this.morph,

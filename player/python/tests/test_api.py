@@ -542,6 +542,38 @@ class Since(unittest.TestCase):
         self.assertTrue(watching.settled and late.settled)
         self.assertSameRects(late.rects(), watching.rects())
 
+    def test_a_change_in_the_middle_of_a_shared_morph(self):
+        # Two apps watch idle morph to thinking, their frames timed
+        # differently, and hear of error a few frames after it happened.
+        apps = []
+        for step in (16.0, 23.0):
+            app = Player(pack, mode="idle")
+            app.frame(self.NOW)
+            app.set("thinking", since=self.NOW)
+            clock = self.NOW
+            while clock < self.NOW + 340.0:
+                clock += step
+                app.frame(clock)
+            app.set("error", since=self.NOW + 300.0)
+            app.frame(self.NOW + 450.0)
+            apps.append(app)
+        # Each starts error from where the clock had thinking at 300 ms,
+        # not from its own last frame, so they show the same frame.
+        a, b = apps
+        self.assertTrue(a.morphing and b.morphing)
+        self.assertSameRects(a.rects(), b.rects())
+        # Even when a frame has landed the morph by the time the change
+        # arrives, the change starts from before the landing.
+        late = Player(pack, mode="idle")
+        late.frame(self.NOW)
+        late.set("thinking", since=self.NOW)
+        late.frame(self.NOW + 100.0)
+        late.frame(self.NOW + LAND + 50.0)
+        self.assertTrue(late.settled)
+        late.set("error", since=self.NOW + 300.0)
+        late.frame(self.NOW + 450.0)
+        self.assertSameRects(late.rects(), a.rects())
+
     def test_a_morph_that_has_landed(self):
         landed = []
         player = Player(pack, mode="idle", on_settled=landed.append)

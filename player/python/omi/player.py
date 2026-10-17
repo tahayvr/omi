@@ -55,7 +55,8 @@ class Player:
         self._morph_time = 0.0    # the morph, seconds
         self._last = None         # the last frame's clock, milliseconds
         # A change shared between apps: (when it happened in Unix
-        # milliseconds, how long after that the loops start).
+        # milliseconds, how long after that the loops start, its morph if
+        # it has one, kept after the landing).
         self._sync = None
 
         gaze = pack.gaze
@@ -130,9 +131,15 @@ class Player:
         """
         scene = self._scene_of(mode)
         seconds = self.pack.morph.duration + self.pack.morph.stagger
+        # A shared change in the middle of another starts from what the
+        # clock had on screen at `since`, the same in every app, not from
+        # this player's last frame, which its own frame timing put a little
+        # off.
+        if since is not None and self._sync is not None:
+            self._seek(float(since))
         # A shared change runs on the clock; a change of the player's own
         # runs on its frames.
-        self._sync = None if since is None else (float(since), 0.0 if instant else seconds)
+        self._sync = None if since is None else (float(since), 0.0 if instant else seconds, None)
         if scene is self._scene and self._plan is None:
             return
         source = self._base_rects()
@@ -154,6 +161,29 @@ class Player:
             source, scene.rects(0.0, self.body_motion, self._rest_scale),
             self.pack.morph, self.pack.grid, self._logo,
         )
+        if self._sync is not None:
+            self._sync = self._sync[:2] + (self._plan,)
+
+    def _seek(self, ms):
+        # Put a shared change where the clock has it at `ms`: its morph
+        # that far along, even one a later frame has landed, or its loops.
+        since, after, plan = self._sync
+        along = max(0.0, (ms - since) / 1000.0) * max(_SLOWEST, self.speed)
+        if self._plan is None and along < after:
+            self._plan = plan
+        self._base = None
+        self._drawn = None
+        if self._plan is not None and along < self._plan.seconds:
+            self._morph_time = along
+            return
+        if self._plan is not None:
+            # It has landed by then.
+            self._plan = None
+            self._morph_time = 0.0
+            if self.on_settled is not None:
+                self.on_settled(self._scene.mode.id)
+        if self._animate:
+            self._time = max(0.0, along - after)
 
     # Time
 
