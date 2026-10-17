@@ -37,15 +37,15 @@ The rules it's drawn by, in short (the long form is in
 
 [docs/modes.md](docs/modes.md) shows every mode with what it's for.
 
-- **[index.html](index.html):** the design jig, where Omi's modes and
-  animations are made, and where any mode is exported as a picture or a
-  video. `npm run dev` serves it at http://localhost:8000 and reloads it
-  as you edit; the site,
-  https://tahayvr.github.io/meet-omi/, is the same page, published from
-  `master` once its checks pass
-  ([.github/workflows/publish.yml](.github/workflows/publish.yml)). What it
-  shows is the pack, played by the player: add `?check` to either address
-  and the page checks that itself.
+- **The site:** [index.html](index.html), the home page that shows Omi
+  off, and [jig.html](jig.html), the design jig, where every mode is looked
+  at, restyled with the Controls, and exported as a picture or a video.
+  `npm run dev` serves both at http://localhost:8000 and reloads them as you
+  edit; the site, https://tahayvr.github.io/meet-omi/, is the same pages,
+  published from `master` once its checks pass
+  ([.github/workflows/publish.yml](.github/workflows/publish.yml)). What they
+  show is the pack, played by the player: add `?check` to the jig's address
+  and it checks that itself.
 - **[pack/](pack/):** what apps use: `omi.json` (every mode, with what a
   screen reader says for each), `omi.js` (the player), the spec and a JSON
   Schema.

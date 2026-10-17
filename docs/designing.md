@@ -1,7 +1,7 @@
 # Designing a mode
 
 How a mode goes from an idea to the pack that every app draws. The jig
-(`index.html`) is where Omi is designed, and the pack is what comes out of
+(`jig.html`) is where Omi is designed, and the pack is what comes out of
 it: apps never read the jig's code. Ideas waiting to be designed are in
 [ideas.md](ideas.md), each with a sketch of the pieces and the motion.
 
@@ -93,8 +93,9 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
    thinking"), the same words as any mode it is a variation of. The pack
    won't build without one.
 5. **Look at it in the jig.** `npm run dev` and open
-   http://localhost:8000: the Modes section shows every design looping, Morph
-   plays any pair, and the Terminal section shows it at half-block size.
+   http://localhost:8000/jig.html: every design looping, each one bigger in
+   its single view. The home page (http://localhost:8000) plays any pair in
+   Morph, and its Terminal section shows Omi at half-block size.
    Check it at the small end too: 44 device pixels across is where props
    must still read.
 6. **Build the pack.** `node tools/build-pack.js` writes `pack/omi.json`,
@@ -121,11 +122,11 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
 
 ## What the jig shows is what apps get
 
-The jig doesn't have a way of its own to draw Omi. It builds the pack from
-its sources as the page loads and hands it to the reference player, the same
-two things an app copies out of `pack/`:
+The site (the home page and the jig) doesn't have a way of its own to draw
+Omi. Each page builds the pack from its sources as it loads and hands it to
+the reference player, the same two things an app copies out of `pack/`:
 
-- The hero and the Morph section are players on a canvas.
+- The home page's hero and Morph section are players on a canvas.
 - Stills and video frames, and so every picture or video exported from the
   jig, are the player's rects (`playerRects` in `js/morph.js`).
 - A mode looping in a tile, in the single view or in an exported animated
@@ -137,17 +138,17 @@ two things an app copies out of `pack/`:
 without a window with `?check` on the address, and the page (`js/check.js`)
 checks that the pack it builds is the one in `pack/`, file for file, that the
 player it runs is the pack's, and that every mode as CSS is, at several
-moments, what the player draws. Open `http://localhost:8000/?check` to see
-the same report on the page.
+moments, what the player draws. Open `http://localhost:8000/jig.html?check`
+to see the same report on the page.
 
-The site, https://tahayvr.github.io/meet-omi/, is this page, published on
+The site, https://tahayvr.github.io/meet-omi/, is these pages, published on
 every push to `master` by `.github/workflows/publish.yml`, and only when
 `npm run check` passes. `tools/publish-site.js` puts it together, with the
 commit on the address of every script and stylesheet, so a browser never
 runs files of two builds together. The site check needs a browser, so it
 isn't part of that: run `npm run check:site` before pushing a change to the
 jig, and `node tools/check-site.js https://tahayvr.github.io/meet-omi/`
-(or `?check` on the address) asks the same of what is live.
+(or `?check` on the jig's address) asks the same of what is live.
 
 A change to the format itself (a new field a player must understand, a
 rule that changes what a correct player draws) is a different thing from

@@ -1,4 +1,5 @@
-/* The dev server for the design jig (index.html) and the web example.
+/* The dev server for the site (index.html, and the design jig, jig.html)
+   and the web example.
 
      npm run dev              http://localhost:8000, or the next free port
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Has the site check itself in a real browser: it opens index.html?check
+/* Has the site check itself in a real browser: it opens jig.html?check
    (js/check.js) in Chrome without a window and reports what the page found.
    The page holds what it shows to the pack in pack/ and to the player: see
    js/check.js for what that covers.
@@ -154,6 +154,8 @@ async function load(chrome, url) {
     url = `http://localhost:${port}/`;
   }
   // a site just published may still be the one before for a moment
+  // the jig is the page that checks itself; a site's address means its jig
+  if (!/\.html(\?|#|$)/.test(url)) url = url.replace(/\/?$/, "/") + "jig.html";
   let page, built;
   for (let tries = wanted && remote ? 18 : 1; tries > 0; tries--) {
     page = await load(chrome, url + (url.includes("?") ? "&" : "?") + "check");

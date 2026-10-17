@@ -102,7 +102,8 @@ function listen(port, done) {
 (function start(port) {
   listen(port, (err) => {
     if (!err) {
-      console.log(`Omi's design jig:  http://localhost:${port}/`);
+      console.log(`The site:          http://localhost:${port}/`);
+      console.log(`Omi's design jig:  http://localhost:${port}/jig.html`);
       console.log(`The web example:   http://localhost:${port}/examples/web/`);
       return;
     }

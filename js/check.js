@@ -1,4 +1,4 @@
-/* ---------- the page checks itself: index.html?check ----------
+/* ---------- the jig checks itself: jig.html?check ----------
    Everything this page shows comes from the pack it builds (pack.js) and
    the reference player, and the pack kept in pack/ is what apps copy. This
    holds the three together, in a real browser:

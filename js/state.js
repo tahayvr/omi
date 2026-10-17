@@ -1,4 +1,7 @@
-/* ---------- state ---------- */
+/* ---------- state: the settings, shared by the home page and the jig ----------
+   The jig's Controls (controls.js) change them, and both pages draw with
+   them; they're kept in localStorage, so the home page shows Omi the way the
+   jig left it. */
 // Omarchy's built-in themes (github.com/omacom/omarchy, quattro):
 // background + accent from each theme's colors.toml.
 const THEMES = [
@@ -76,8 +79,7 @@ const persist = () => {
 };
 
 const $ = (id) => document.getElementById(id);
-const grid = $("grid"),
-  stage = $("stage");
+const stage = $("stage");
 
 function lum(hex) {
   const n = parseInt(hex.slice(1), 16),
@@ -107,22 +109,43 @@ function uniformBox() {
   return { x: cx - hw, y: cy - hh, w: hw * 2, h: hh * 2 };
 }
 
-const RESET_ICON =
-  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>';
-const hasOver = (id) =>
-  !!(S.over || {})[id] && Object.keys(S.over[id]).length > 0;
-function clearOver(id) {
-  const o = { ...S.over };
-  delete o[id];
-  S = { ...S, over: o };
-  persist();
-  render();
+function applySpeed() {
+  requestAnimationFrame(() => {
+    if (!document.getAnimations) return;
+    document.getAnimations().forEach((a) => {
+      if (
+        window.CSSAnimation &&
+        a instanceof CSSAnimation &&
+        a.animationName.startsWith("omi-")
+      ) {
+        const t = a.effect && a.effect.target,
+          host = t && t.closest && t.closest("[data-sid]");
+        a.playbackRate = host ? eff(host.dataset.sid).speed : S.speed;
+      }
+    });
+  });
 }
-const DL_ICON =
-  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>';
+// Which export options apply to a format.
+const fmtRules = (fmt) => ({
+  raster: ["png", "jpg", "webp", "webm", "mp4"].includes(fmt),
+  video: ["webm", "mp4"].includes(fmt),
+  noClear: ["jpg", "txt", "json", "webm", "mp4"].includes(fmt),
+  noRatio: ["txt"].includes(fmt),
+  noPad: ["json"].includes(fmt),
+});
+const eff = (id) => ({ ...S, ...(S.over || {})[id] });
+const inView = () => typeof view !== "undefined" && view.open;
+const ctx = () => (inView() ? eff(DESIGNS[vi].id) : S);
+let X = S; // settings for the export in progress
+const RM = window.matchMedia("(prefers-reduced-motion: reduce)");
+const esc = (s) =>
+  String(s).replace(
+    /[&<>"]/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+  );
 
-function render() {
-  const vb = uniformBox();
+// The page in the current colors: what both pages' render() starts with.
+function paintStage() {
   const dark = S.bg ? lum(S.bg) < 0.35 : false;
   stage.classList.toggle("checker", !S.bg);
   stage.style.background = S.bg || "";
@@ -140,223 +163,4 @@ function render() {
     "--label-hover",
     dark ? "rgba(255,255,255,.1)" : "rgba(0,0,0,.07)",
   );
-  grid.style.setProperty("--tile", S.tile + "px");
-  const groups = [...new Set(DESIGNS.map((d) => d.group))];
-  const E = (d) => eff(d.id);
-  const tile = (d) => `
-    <figure class="tile" role="listitem">
-      <button class="open" data-id="${d.id}" aria-label="Open ${d.name}"><div class="art${E(d).bg !== S.bg ? " own" : ""}" data-sid="${d.id}"${E(d).bg !== S.bg ? ` style="background:${E(d).bg || "transparent"}"` : ""}>${svgFor(d, { color: E(d).fg, animated: E(d).anim, force: S.force, vb, label: labelOf(d) })}</div></button>
-      <figcaption class="meta">
-${S.names ? `<span class="name">${d.name}</span>` : ""}${hasOver(d.id) ? `<button class="reset" data-id="${d.id}" aria-label="Reset ${d.name} to global settings" title="Has its own settings. Reset to global">${RESET_ICON}</button>` : ""}
-<button class="save" data-id="${d.id}" aria-label="Export ${d.name}" title="Export ${d.name}">${DL_ICON}</button>
-      </figcaption>
-    </figure>`;
-  const shown = DESIGNS;
-  const gridHTML =
-    (shown.length
-      ? ""
-      : `<p style="padding:40px 0;color:var(--label)">Nothing here yet.</p>`) +
-    groups
-      .filter((g) => shown.some((d) => d.group === g))
-      .map(
-        (g) =>
-          `<section class="group" aria-label="${g}">${g === "Core" ? "" : `<h2>${g}</h2>`}<div class="tiles" role="list">${shown
-            .filter((d) => d.group === g)
-            .map(tile)
-            .join("")}</div></section>`,
-      )
-      .join("");
-  if (gridHTML !== grid._html) {
-    grid.innerHTML = gridHTML;
-    grid._html = gridHTML;
-  }
-  $("modeCount").textContent = DESIGNS.length;
-  renderSite();
-  syncControls();
-  if (typeof rmSync === "function") rmSync();
-  applySpeed();
 }
-
-function syncControls() {
-  const S = ctx();
-  $("bgPick").value = S.bg || "#ffffff";
-  $("bgHex").value = S.bg || "none";
-  $("fgPick").value = S.fg;
-  $("fgHex").value = S.fg;
-  const ti = THEMES.findIndex(
-    (t) => t.bg === (S.bg || "").toLowerCase() && t.fg === S.fg.toLowerCase(),
-  );
-  $("themeSel").value = ti < 0 ? "custom" : String(ti);
-  $("anim").checked = S.anim;
-  $("names").checked = S.names;
-  $("tile").value = S.tile;
-  $("fmt").value = S.fmt;
-  $("vlen").value = S.vlen;
-  $("ratio").value = S.ratio;
-  $("ratio").disabled = fmtRules(S.fmt).noRatio;
-  $("speed").value = S.speed;
-  $("speedOut").textContent = S.speed + "\u00d7";
-  $("size").value = S.size;
-  $("pad").value = S.pad;
-  $("clear").checked = S.clear;
-  const fr = fmtRules(S.fmt);
-  $("size").disabled = !fr.raster;
-  $("clear").disabled = fr.noClear;
-  $("lenField").hidden = !fr.video;
-  $("fmt").querySelector("[value=mp4]").disabled = !MP4;
-  $("pad").disabled = fr.noPad;
-  $("side").hidden = !S.side;
-  $("toggleSide").setAttribute("aria-expanded", String(S.side));
-  document
-    .querySelectorAll("#bgSw .sw")
-    .forEach((b) =>
-      b.setAttribute(
-        "aria-pressed",
-        String(
-          (b.dataset.c || null) === (S.bg ? S.bg.toLowerCase() : null) ||
-            (!b.dataset.c && !S.bg),
-        ),
-      ),
-    );
-  document
-    .querySelectorAll("#fgSw .sw")
-    .forEach((b) =>
-      b.setAttribute(
-        "aria-pressed",
-        String(b.dataset.c === S.fg.toLowerCase()),
-      ),
-    );
-}
-function applySpeed() {
-  requestAnimationFrame(() => {
-    if (!document.getAnimations) return;
-    document.getAnimations().forEach((a) => {
-      if (
-        window.CSSAnimation &&
-        a instanceof CSSAnimation &&
-        a.animationName.startsWith("omi-")
-      ) {
-        const t = a.effect && a.effect.target,
-          host = t && t.closest && t.closest("[data-sid]");
-        a.playbackRate = host ? eff(host.dataset.sid).speed : S.speed;
-      }
-    });
-  });
-}
-const OVK = [
-  "bg",
-  "fg",
-  "anim",
-  "speed",
-  "fmt",
-  "size",
-  "pad",
-  "clear",
-  "vlen",
-  "ratio",
-];
-// Which export options apply to a format.
-const fmtRules = (fmt) => ({
-  raster: ["png", "jpg", "webp", "webm", "mp4"].includes(fmt),
-  video: ["webm", "mp4"].includes(fmt),
-  noClear: ["jpg", "txt", "json", "webm", "mp4"].includes(fmt),
-  noRatio: ["txt"].includes(fmt),
-  noPad: ["json"].includes(fmt),
-});
-const eff = (id) => ({ ...S, ...(S.over || {})[id] });
-const inView = () => typeof view !== "undefined" && view.open;
-const ctx = () => (inView() ? eff(DESIGNS[vi].id) : S);
-let X = S; // settings for the export in progress
-function set(patch) {
-  if (inView()) {
-    const id = DESIGNS[vi].id,
-      o = {},
-      g = {};
-    for (const k in patch) (OVK.includes(k) ? o : g)[k] = patch[k];
-    S = {
-      ...S,
-      ...g,
-      over: {
-        ...S.over,
-        ...(Object.keys(o).length
-          ? { [id]: { ...(S.over || {})[id], ...o } }
-          : {}),
-      },
-    };
-  } else S = { ...S, ...patch };
-  persist();
-  render();
-  if (inView()) showView();
-}
-
-/* swatches + themes */
-$("bgSw").innerHTML = BG_SW.map((c) =>
-  c
-    ? `<button class="sw" data-c="${c}" style="background:${c}" aria-label="Background ${c}"></button>`
-    : `<button class="sw clear" data-c="" aria-label="Transparent background"></button>`,
-).join("");
-$("fgSw").innerHTML = FG_SW.map(
-  (c) =>
-    `<button class="sw" data-c="${c}" style="background:${c}" aria-label="Omi color ${c}"></button>`,
-).join("");
-$("themeSel").innerHTML =
-  '<option value="custom">Custom</option>' +
-  [
-    ["Dark", false],
-    ["Light", true],
-  ]
-    .map(
-      ([g, l]) =>
-        `<optgroup label="${g}">${THEMES.map((t, i) => [t, i])
-          .filter(([t]) => !!t.light === l)
-          .map(([t, i]) => `<option value="${i}">${t.name}</option>`)
-          .join("")}</optgroup>`,
-    )
-    .join("");
-$("bgSw").addEventListener("click", (e) => {
-  const b = e.target.closest(".sw");
-  if (b) set({ bg: b.dataset.c || null });
-});
-$("fgSw").addEventListener("click", (e) => {
-  const b = e.target.closest(".sw");
-  if (b) set({ fg: b.dataset.c });
-});
-$("themeSel").addEventListener("change", (e) => {
-  const t = THEMES[e.target.value];
-  if (t) set({ bg: t.bg, fg: t.fg });
-});
-const hexOk = (v) => /^#[0-9a-f]{6}$/i.test(v);
-$("bgPick").addEventListener("input", (e) => set({ bg: e.target.value }));
-$("fgPick").addEventListener("input", (e) => set({ fg: e.target.value }));
-$("bgHex").addEventListener("change", (e) => {
-  let v = e.target.value.trim();
-  if (v && v[0] !== "#") v = "#" + v;
-  if (hexOk(v)) set({ bg: v.toLowerCase() });
-  else if (v === "#none" || v === "#") set({ bg: null });
-  else syncControls();
-});
-$("fgHex").addEventListener("change", (e) => {
-  let v = e.target.value.trim();
-  if (v[0] !== "#") v = "#" + v;
-  if (hexOk(v)) set({ fg: v.toLowerCase() });
-  else syncControls();
-});
-["anim", "names", "clear"].forEach((k) =>
-  $(k).addEventListener("change", (e) => set({ [k]: e.target.checked })),
-);
-$("tile").addEventListener("input", (e) => set({ tile: +e.target.value }));
-$("speed").addEventListener("input", (e) => set({ speed: +e.target.value }));
-["fmt", "size", "pad", "vlen", "ratio"].forEach((k) =>
-  $(k).addEventListener("change", (e) => set({ [k]: e.target.value })),
-);
-const RM = window.matchMedia("(prefers-reduced-motion: reduce)");
-$("rmPlay").addEventListener("click", () => set({ force: !S.force }));
-const rmSync = () => {
-  const S = ctx();
-  $("rmHint").hidden = !RM.matches || !S.anim;
-  $("rmPlay").textContent = S.force
-    ? "Respect reduce motion"
-    : "Play animations anyway";
-};
-RM.addEventListener && RM.addEventListener("change", () => rmSync());
-$("toggleSide").addEventListener("click", () => set({ side: !S.side }));

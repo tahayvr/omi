@@ -7,7 +7,7 @@
 
    The one thing the player doesn't draw is a mode looping as CSS: the
    tiles, the single view and the animated SVG export, which have to run
-   without a script. index.html?check (check.js) holds those to the player. */
+   without a script. jig.html?check (check.js) holds those to the player. */
 let pagePackCache = null,
   pageSampler = null;
 // round-trip through JSON: the players get exactly what omi.json holds

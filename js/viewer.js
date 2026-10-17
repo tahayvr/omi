@@ -83,9 +83,3 @@ view.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") step(-1);
   else if (e.key === "ArrowRight") step(1);
 });
-
-const esc = (s) =>
-  String(s).replace(
-    /[&<>"]/g,
-    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
-  );

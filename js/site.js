@@ -1,4 +1,7 @@
-/* ---------- site sections ---------- */
+/* ---------- the home page: a showcase (index.html) ----------
+   The hero morphs through a few featured modes, the anatomy shows what Omi is
+   made of, the Morph section (morph.js) plays any pair, and the terminal
+   shows Omi as text. Every mode, to look at and export, is in the jig. */
 const FEATURED = [
   "idle",
   "wink",
@@ -100,77 +103,16 @@ function setHero(id, manual) {
   renderSite();
   applySpeed();
 }
-const RM2 = window.matchMedia("(prefers-reduced-motion: reduce)");
-if (!RM2.matches)
+if (!RM.matches)
   heroTimer = setInterval(() => {
-    if (!heroAuto || (typeof view !== "undefined" && view.open)) return;
+    if (!heroAuto) return;
     const i = FEATURED.indexOf(heroId);
     setHero(FEATURED[(i + 1) % FEATURED.length], false);
   }, 3600);
 
-grid.addEventListener("click", async (e) => {
-  const o = e.target.closest(".open");
-  if (o) {
-    openView(o.dataset.id);
-    return;
-  }
-  const r = e.target.closest(".reset");
-  if (r) {
-    clearOver(r.dataset.id);
-    toast("Back to global settings");
-    return;
-  }
-  const b = e.target.closest(".save");
-  if (!b) return;
-  openExport(DESIGNS.find((x) => x.id === b.dataset.id));
-});
-$("saveAll").addEventListener("click", async () => {
-  const btn = $("saveAll");
-  btn.disabled = true;
-  const label = btn.textContent;
-  btn.textContent = "Building ZIP\u2026";
-  try {
-    const files = [];
-    for (const [i, d] of DESIGNS.entries()) {
-      if (["webm", "mp4"].includes(S.fmt))
-        btn.textContent = `Recording ${i + 1} of ${DESIGNS.length}\u2026`;
-      const blob = await build(d);
-      files.push({
-        name: fileName(d),
-        data: new Uint8Array(await blob.arrayBuffer()),
-      });
-    }
-    await save(
-      `omi-${S.fmt === "svga" ? "svg-animated" : S.fmt}.zip`,
-      zip(files),
-    );
-  } catch (err) {
-    toast(err.message);
-  } finally {
-    btn.textContent = label;
-    btn.disabled = false;
-  }
-});
-$("copyAll").addEventListener("click", async () => {
-  const sprite =
-    '<svg xmlns="http://www.w3.org/2000/svg" style="display:none">\n' +
-    DESIGNS.map((d) => {
-      const sh = shapes(d),
-        vb = squareBox(sh.box, +S.pad);
-      const inner = svgFor(d, {
-        color: S.fg,
-        bg: null,
-        vb,
-      })
-        .replace(/^<svg[^>]*>/, "")
-        .replace(/<\/svg>$/, "");
-      return `  <symbol id="omi-${d.id}" viewBox="${vb.x} ${vb.y} ${vb.w} ${vb.h}">${inner}</symbol>`;
-    }).join("\n") +
-    "\n</svg>\n";
-  try {
-    await navigator.clipboard.writeText(sprite);
-    toast('SVG sprite copied. Use <svg><use href="#omi-idle"/></svg>.');
-  } catch (e) {
-    toast("Clipboard access was blocked. Export as SVG instead.");
-  }
-});
+function render() {
+  paintStage();
+  $("modeCount").textContent = DESIGNS.length;
+  renderSite();
+  applySpeed();
+}

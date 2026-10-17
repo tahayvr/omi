@@ -3,7 +3,7 @@
    (pack.js), and the player plays them: stills, video frames, the hero and
    the Morph section are all the player's. The one other reader is the CSS at
    the end of this file, for modes that loop without a script (the tiles, the
-   animated SVG export); index.html?check holds it to the player.
+   animated SVG export); jig.html?check holds it to the player.
 
    An animation loops every `rest` + `dur` seconds: it holds still for
    `rest` (0 if it has none), then plays its keys over `dur`. Apps can scale

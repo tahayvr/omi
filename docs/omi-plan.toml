@@ -16,7 +16,7 @@ language, checked against the conformance data.
 # Each layer only depends on the ones above it.
 [[layer]]
 name = "Design jig"
-path = "index.html, js/"
+path = "jig.html, js/"
 role = "Where modes and animations are designed. The source of truth."
 
 [[layer]]
