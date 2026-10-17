@@ -89,7 +89,7 @@ const FRAMES = {
       dl: (i / OUT_PATH.length) * 4,
     })),
   ],
-  "thinking-stack": [
+  "uploading-rising": [
     MISC[0],
     MISC[2],
     { ...MISC[1], o: 0.2 },
@@ -122,32 +122,6 @@ const FRAMES = {
       1.6,
       0.4,
       0.5,
-    ),
-  ],
-  "thinking-hmm": [
-    ...MISC,
-    ...INNER_RECTS,
-    ...cellsOf([
-      ...range(100, 280).map((x) => [x, 0]),
-      ...range(20, 280).map((y) => [280, y]),
-      ...range(260, 180, -20).map((x) => [x, 280]),
-      ...range(140, 0, -20).map((x) => [x, 280]),
-      ...range(260, 100, -20).map((y) => [0, y]),
-    ]),
-    ...chase(
-      [
-        [0, 80],
-        [0, 60],
-        [0, 40],
-        [0, 20],
-        [0, 0],
-        [20, 0],
-        [40, 0],
-        [60, 0],
-        [80, 0],
-      ],
-      1.6,
-      0.4,
     ),
   ],
   "low-battery": [

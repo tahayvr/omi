@@ -126,7 +126,7 @@ const ANIM = {
   },
   dot: {
     // thinking dots; pieces stagger with dl
-    dur: 1.2,
+    dur: 1.6,
     ease: "ease",
     keys: [
       [0, { op: 0.25 }],
@@ -134,23 +134,16 @@ const ANIM = {
       [1, { op: 0.25 }],
     ],
   },
-  trav: {
-    dur: 1.6,
-    ease: "ease-in-out",
-    keys: [
-      [0, { tx: 0 }],
-      [0.5, { tx: 40 }],
-      [1, { tx: 0 }],
-    ],
-  },
   look: {
-    dur: 3,
-    ease: "ease-in-out",
-    keys: [
-      [0, { tx: -10 }],
-      [0.5, { tx: 10 }],
-      [1, { tx: -10 }],
-    ],
+    // the eyes sway a cell right, a cell left and back, resting in the
+    // middle: a sine in 16 steps, since an ease on keys at the middle would
+    // stop the eyes there on every pass
+    dur: 6,
+    ease: "linear",
+    keys: Array.from({ length: 17 }, (_, i) => [
+      i / 16,
+      { tx: +(20 * Math.sin((i / 8) * Math.PI)).toFixed(3) },
+    ]),
   },
   scan: {
     dur: 1.6,

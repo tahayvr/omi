@@ -50,13 +50,16 @@ const Z = (x, y, s, dl = 0) => {
 };
 const F = {
   idle: [R(100, 110, 20, 40, "eye"), R(180, 110, 20, 40, "eye")],
+  // both thinkings rest with the eyes a cell up, in idle's columns
   thinking: [
-    R(120, 90, 20, 40, "eye"),
-    R(200, 90, 20, 40, "eye"),
+    R(100, 90, 20, 40, "eye"),
+    R(180, 90, 20, 40, "eye"),
+    // at rest the middle dot is at its peak, the first just past it and the
+    // last on its way up: all three lit, the wave going left to right
     ...as("extra", [
-      R(160, 40, 20, 20, "dot"),
-      { ...R(180, 40, 20, 20, "dot"), dl: 0.2 },
-      { ...R(200, 40, 20, 20, "dot"), dl: 0.4 },
+      { ...R(160, 40, 20, 20, "dot"), dl: 1.35 },
+      R(180, 40, 20, 20, "dot"),
+      { ...R(200, 40, 20, 20, "dot"), dl: 0.25 },
     ]),
   ],
   success: [
@@ -131,14 +134,8 @@ const QMARK = [
   R(186, 51, 7, 7, "pulseop"),
 ];
 Object.assign(F, {
-  drift: [
-    R(120, 90, 20, 40, "eye"),
-    R(200, 90, 20, 40, "eye"),
-    { ...R(160, 40, 20, 20, "trav"), role: "extra" },
-  ],
   sideeye: [R(100, 90, 20, 40, "look"), R(180, 90, 20, 40, "look")],
-  hmm: [R(80, 90, 20, 40, "eye"), R(160, 90, 20, 40, "eye")],
-  stack: [R(120, 90, 20, 40, "eye"), R(200, 90, 20, 40, "eye")],
+  rising: [R(120, 90, 20, 40, "eye"), R(200, 90, 20, 40, "eye")],
   updating: [R(100, 160, 20, 40, "eye"), R(180, 160, 20, 40, "eye")],
   uploading: [R(100, 80, 20, 40, "eye"), R(180, 80, 20, 40, "eye")],
   working: [R(100, 110, 20, 40, "scan"), R(180, 110, 20, 40, "scan")],
@@ -209,11 +206,14 @@ const SNAKE_PATH = [
   ...[220, 200, 180, 160, 140, 120, 100, 80, 60].map((y) => [40, y]),
   ...[40, 60, 80, 100, 120, 140].map((x) => [x, 40]),
 ];
+// At rest the head is at SNAKE_HEAD on the path: turning the bottom-right
+// corner, the body in one piece up the right side.
 const SNAKE_N = SNAKE_PATH.length,
-  SNAKE_DUR = 2.4;
+  SNAKE_DUR = 2.4,
+  SNAKE_HEAD = 15;
 const SNAKE = SNAKE_PATH.map(([x, y], i) => ({
   ...R(x, y, 20, 20, "sn"),
-  dl: (i / SNAKE_N) * SNAKE_DUR,
+  dl: (((i - SNAKE_HEAD + SNAKE_N) % SNAKE_N) / SNAKE_N) * SNAKE_DUR,
 }));
 
 /* emotions: eyes only (plus brows and tears). The mouth, when there is one,

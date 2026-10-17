@@ -2,7 +2,7 @@
 const FEATURED = [
   "idle",
   "wink",
-  "thinking-snake",
+  "thinking",
   "typing",
   "listening",
   "party",

@@ -175,7 +175,12 @@ const DESIGNS_OLD = [
     face: F.idle,
     mood: "m-bob",
   },
-  { id: "thinking", name: "Thinking", face: F.thinking, mood: "m-bob" },
+  {
+    id: "thinking-dots",
+    name: "Thinking, dots",
+    face: F.thinking,
+    mood: "m-bob",
+  },
   { id: "success", name: "Success", face: F.success, mood: "m-happy" },
   { id: "error", name: "Error", face: F.error, mood: "m-error" },
   { id: "sleeping", name: "Sleeping", face: F.sleeping, mood: "m-bob" },
@@ -206,38 +211,14 @@ const byId = (id) => DESIGNS_OLD.find((d) => d.id === id);
 const DESIGNS = [
   ...G_("Core", [byId("idle")]),
   ...G_("Thinking", [
-    byId("thinking"),
     {
-      id: "thinking-drift",
-      name: "Thinking, drift",
-      face: F.drift,
-      mood: "m-bob",
-    },
-    {
-      id: "thinking-sideeye",
-      name: "Thinking, side-eye",
-      face: F.sideeye,
-      mood: "m-bob",
-    },
-    {
-      id: "thinking-hmm",
-      name: "Thinking, hmm",
-      face: F.hmm,
-      mood: "m-bob",
-    },
-    {
-      id: "thinking-stack",
-      name: "Thinking, rising",
-      face: F.stack,
-      mood: "m-bob",
-    },
-    {
-      id: "thinking-snake",
-      name: "Thinking, snake",
+      id: "thinking",
+      name: "Thinking",
       logo: [...LOGO_OUT, ...SNAKE],
       face: F.sideeye,
       mood: "",
     },
+    byId("thinking-dots"),
   ]),
   ...G_("System states", [
     {
@@ -250,6 +231,12 @@ const DESIGNS = [
       id: "uploading",
       name: "Uploading",
       face: F.uploading,
+      mood: "m-bob",
+    },
+    {
+      id: "uploading-rising",
+      name: "Uploading, rising",
+      face: F.rising,
       mood: "m-bob",
     },
     { id: "working", name: "Working", face: F.working, mood: "" },

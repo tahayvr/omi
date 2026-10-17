@@ -44,16 +44,9 @@ const REACTIONS = {
   shake: 0.9,
 };
 const FAMILIES = {
-  thinking: [
-    "thinking",
-    "thinking-drift",
-    "thinking-sideeye",
-    "thinking-hmm",
-    "thinking-stack",
-    "thinking-snake",
-  ],
+  thinking: ["thinking", "thinking-dots"],
   offline: ["offline-standby", "offline-searching"],
-  transfer: ["updating", "uploading"],
+  transfer: ["updating", "uploading", "uploading-rising"],
 };
 const EASTER = ["glitch", "code-rain", "vim"];
 // What a screen reader says for each mode: every app gives it to its toolkit
@@ -64,13 +57,10 @@ const LABELS = {
   mark: "The Omarchy logo",
   idle: "Omi",
   thinking: "Omi is thinking",
-  "thinking-drift": "Omi is thinking",
-  "thinking-sideeye": "Omi is thinking",
-  "thinking-hmm": "Omi is thinking",
-  "thinking-stack": "Omi is thinking",
-  "thinking-snake": "Omi is thinking",
+  "thinking-dots": "Omi is thinking",
   updating: "Omi is updating",
   uploading: "Omi is uploading",
+  "uploading-rising": "Omi is uploading",
   working: "Omi is working",
   success: "Omi succeeded",
   warning: "Omi has a warning",
@@ -225,7 +215,7 @@ const CONFORMANCE_TIMES = [0, 0.9, 3.3],
     ["sleeping", "party"],
     ["idle", "peek"],
     ["peek", "sudo"],
-    ["thinking-snake", "love"],
+    ["thinking-dots", "love"],
   ],
   // [mode, direction]: the eyes turned there, from looking ahead
   CONFORMANCE_GAZES = [
