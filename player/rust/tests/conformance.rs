@@ -228,11 +228,18 @@ fn options_and_lookups() {
     assert_eq!(omi.mode(), "idle");
     assert_eq!(omi.kind("success"), omi::Kind::Reaction);
     assert_eq!(omi.kind("idle"), omi::Kind::State);
-    assert_eq!(omi.label("thinking"), "Omi is thinking");
+    // what a mode says and how long a reaction shows are the pack's
+    for mode in &pack.modes {
+        assert_eq!(omi.label(&mode.id), mode.label.as_deref().unwrap_or(""), "{}", mode.id);
+        if let Some(hold) = mode.hold {
+            assert!((omi.hold(&mode.id) - hold).abs() < 1e-9, "{}", mode.id);
+        } else {
+            // no hold of its own: its loop time, kept between 1.2 and 2.5 s
+            let h = omi.hold(&mode.id);
+            assert!((1.2..=2.5).contains(&h), "{}", mode.id);
+        }
+    }
     assert_eq!(omi.label("no such mode"), "");
-    assert!((omi.hold("success") - 1.2).abs() < 1e-9);
-    let h = omi.hold("idle");
-    assert!((1.2..=2.5).contains(&h));
     assert!(omi.loop_seconds("mark") == 0.0);
     assert!(omi.loop_seconds("idle") > 0.0);
     assert!(omi.mode_rects("no-such-mode", 0.0).is_err());

@@ -3,8 +3,14 @@
 These hold the player to rules of the pack README and the Omi state
 protocol that the conformance data doesn't exercise: the clocks, mode
 changes, the gaze meeting a morph, and changes with `since`.
+
+What a mode looks like, how long its loops are and how long a morph takes
+are the pack's to say, so every number here that depends on a design is
+worked out from omi.json, by the README's rules: a mode can be redrawn
+without touching these tests.
 """
 
+import json
 import os
 import sys
 import unittest
@@ -18,8 +24,58 @@ PACK = os.path.join(HERE, "..", "..", "..", "pack", "omi.json")
 
 
 def setUpModule():
-    global pack
+    global pack, RAW, MODES, LAND
     pack = Pack.load(PACK)
+    with open(PACK, encoding="utf-8") as f:
+        RAW = json.load(f)
+    MODES = {m["id"]: m for m in RAW["modes"]}
+    # how long a morph takes to land, in ms: duration + stagger
+    LAND = (RAW["morph"]["duration"] + RAW["morph"]["stagger"]) * 1000.0
+
+
+def loop_seconds(mode):
+    # "the longest of (duration + delay) over its pieces, its body `anim`
+    # and its window's, where duration is the piece's own if it sets one"
+    anims = RAW["animations"]
+    times = [
+        p.get("duration", anims[p["anim"]]["duration"]) + p.get("delay", 0)
+        for p in mode["pieces"]
+        if p.get("anim")
+    ]
+    for anim in (mode.get("anim"), (mode.get("clip") or {}).get("anim")):
+        if anim:
+            times.append(anims[anim]["duration"])
+    return max(times, default=0)
+
+
+def body_mode():
+    # a mode whose whole body moves, and the first moment it is off its rest
+    anims = RAW["animations"]
+    for mode in RAW["modes"]:
+        anim = anims.get(mode.get("anim") or "")
+        if anim and anim.get("body"):
+            for at, key in anim["keys"]:
+                if key.get("tx", 0) or key.get("ty", 0):
+                    return mode["id"], at * anim["duration"]
+    raise AssertionError("no mode in the pack moves its whole body")
+
+
+def gaze_move(rects, gx, gy):
+    # how far a look moves the gazing rects: reach, then held inside `inside`
+    gaze = RAW["gaze"]
+    move = [gx * gaze["reach"][0], gy * gaze["reach"][1]]
+    inside = gaze.get("inside")
+    if inside:
+        eyes = [r for r in rects if r.role in gaze["roles"]]
+        for axis, (pos, size) in enumerate(((0, 2), (1, 3))):
+            lo, hi = inside[pos], inside[pos] + inside[size]
+            fit = [r for r in eyes if r[pos] >= lo and r[pos] + r[size] <= hi]
+            if not fit:
+                continue
+            most = min(hi - (r[pos] + r[size]) for r in fit)
+            least = max(lo - r[pos] for r in fit)
+            move[axis] = 0 if least > most else min(max(move[axis], least), most)
+    return move
 
 
 def run_to(player, clock, target):
@@ -41,9 +97,9 @@ INK = 1.0
 class Loading(unittest.TestCase):
     def test_pack(self):
         self.assertEqual(pack.version, 1)
-        self.assertEqual(pack.grid, 20)
-        self.assertEqual(pack.view, (-70, -70, 440, 440))
-        self.assertIn("idle", pack.mode_ids)
+        self.assertEqual(pack.grid, RAW["grid"])
+        self.assertEqual(pack.view, tuple(RAW["view"]))
+        self.assertEqual(list(pack.mode_ids), list(MODES))
         self.assertTrue(pack.has("mark"))
         self.assertFalse(pack.has("thinkng"))
 
@@ -69,9 +125,16 @@ class Loading(unittest.TestCase):
 
     def test_rects(self):
         rects = Player(pack, mode="idle").rects()
-        self.assertEqual(len(rects), 15)
+        pieces = MODES["idle"]["pieces"]
+        self.assertEqual([r.role for r in rects], [p["role"] for p in pieces])
         self.assertIsInstance(rects[0], Rect)
-        self.assertEqual(rects[13], Rect(100, 110, 20, 40, 1, "eye"))
+        # A piece that doesn't move is drawn where the pack puts it.
+        for r, p in zip(rects, pieces):
+            if not p.get("anim"):
+                self.assertEqual(
+                    r,
+                    Rect(p["x"], p["y"], p["w"], p["h"], p.get("opacity", 1), p["role"]),
+                )
         with self.assertRaises(AttributeError):
             rects[0].x = 1
 
@@ -80,32 +143,28 @@ class WhatAModeIsFor(unittest.TestCase):
     def test_loop_seconds(self):
         player = Player(pack)
         self.assertEqual(player.loop_seconds("mark"), 0)
-        # idle: the eyes blink every 4 s, the body bobs every 2.8 s.
-        self.assertEqual(player.loop_seconds("idle"), 4)
-        # updating: a piece's own duration (2.8 s) and its delay (1.92 s).
-        self.assertAlmostEqual(player.loop_seconds("updating"), 2.8 + 1.92)
-        # peek: only its window moves.
-        self.assertEqual(player.loop_seconds("peek"), 4.5)
+        for id, mode in MODES.items():
+            with self.subTest(mode=id):
+                self.assertAlmostEqual(player.loop_seconds(id), loop_seconds(mode))
 
     def test_hold_and_kind(self):
         player = Player(pack)
-        self.assertEqual(player.kind("success"), "reaction")
-        self.assertEqual(player.kind("idle"), "state")
-        self.assertEqual(player.hold("success"), 1.2)
-        # No hold of its own: its loop time, kept between 1.2 and 2.5 s.
-        self.assertEqual(player.hold("idle"), 2.5)
-        self.assertEqual(player.hold("mark"), 1.2)
-        self.assertEqual(player.hold("typing"), min(max(player.loop_seconds("typing"), 1.2), 2.5))
+        for id, mode in MODES.items():
+            with self.subTest(mode=id):
+                self.assertEqual(player.kind(id), mode["kind"])
+                # Its own hold, or else its loop time kept between 1.2 and 2.5 s.
+                hold = mode.get("hold")
+                if hold is None:
+                    hold = min(max(loop_seconds(mode), 1.2), 2.5)
+                self.assertAlmostEqual(player.hold(id), hold)
 
 
 class Labels(unittest.TestCase):
     def test_what_a_screen_reader_says(self):
         player = Player(pack)
-        self.assertEqual(player.label("thinking"), "Omi is thinking")
-        # Variations of one mode say the same thing.
-        self.assertEqual(player.label("thinking-snake"), player.label("thinking"))
-        for mode in pack.modes:
-            self.assertTrue(player.label(mode))
+        for id, mode in MODES.items():
+            self.assertTrue(player.label(id))
+            self.assertEqual(player.label(id), mode["label"])
         self.assertRaises(UnknownMode, player.label, "thinkng")
 
 
@@ -163,15 +222,26 @@ class Time(unittest.TestCase):
         self.assertEqual(player.rects(), player.mode_rects("thinking", 0))
 
     def test_body_motion_off(self):
-        player = Player(pack, mode="idle", body_motion=False)
-        player.frame(0.0)
-        run_to(player, 0.0, 1400.0)
-        # The frame stays put; half way through its bob it is 12 units up.
-        self.assertEqual(player.rects()[0], Rect(0, 0, 300, 20, 1, "frame"))
-        bobbing = Player(pack, mode="idle")
-        bobbing.frame(0.0)
-        run_to(bobbing, 0.0, 1400.0)
-        self.assertAlmostEqual(bobbing.rects()[0].y, -12, places=6)
+        mode, at = body_mode()
+        ms = at * 1000.0
+        rest = Player(pack, mode=mode).mode_rects(mode, 0)
+        still = Player(pack, mode=mode, body_motion=False)
+        still.frame(0.0)
+        run_to(still, 0.0, ms)
+        moving = Player(pack, mode=mode)
+        moving.frame(0.0)
+        run_to(moving, 0.0, ms)
+        # The whole body has moved off its rest, unless body motion is off;
+        # what is left is the pieces' own loops.
+        for a, b in zip(moving.rects(), moving.mode_rects(mode, at)):
+            for x, y in zip(a[:5], b[:5]):
+                self.assertAlmostEqual(x, y, places=6)
+        self.assertNotEqual(
+            [(r.x, r.y) for r in moving.rects()], [(r.x, r.y) for r in still.rects()]
+        )
+        for a, b in zip(still.rects(), rest):
+            if a.role == "frame":
+                self.assertEqual(a, b)
 
 
 class Changes(unittest.TestCase):
@@ -214,7 +284,7 @@ class Changes(unittest.TestCase):
         middle = player.rects()
         player.set("sleeping")
         self.assertAlmostEqual(ink(player.rects()), ink(middle), delta=INK)
-        run_to(player, 300.0, 300.0 + 840.0)
+        run_to(player, 300.0, 300.0 + LAND)
         self.assertTrue(player.settled)
         self.assertEqual(player.rects(), player.mode_rects("sleeping", 0))
 
@@ -223,20 +293,20 @@ class Changes(unittest.TestCase):
         player = Player(pack, mode="idle", on_settled=landed.append)
         player.frame(0.0)
         player.set("thinking")
-        run_to(player, 0.0, 800.0)
+        run_to(player, 0.0, LAND - 40.0)
         self.assertEqual(landed, [])
         self.assertTrue(player.morphing)
         self.assertFalse(player.settled)
-        # The morph lands at duration + stagger = 0.84 s, on the first
-        # frame that gets there. That frame shows the new mode at rest:
-        # the 0.06 s it overshot by are dropped.
-        player.frame(900.0)
+        # The morph lands at duration + stagger, on the first frame that
+        # gets there. That frame shows the new mode at rest: the 0.06 s it
+        # overshot by are dropped.
+        player.frame(LAND + 60.0)
         self.assertEqual(landed, ["thinking"])
         self.assertTrue(player.settled)
         self.assertEqual(player.rects(), player.mode_rects("thinking", 0))
-        player.frame(950.0)
+        player.frame(LAND + 110.0)
         self.assertEqual(player.rects(), player.mode_rects("thinking", 0.05))
-        run_to(player, 950.0, 2000.0)
+        run_to(player, LAND + 110.0, LAND + 1200.0)
         self.assertEqual(landed, ["thinking"])
 
     def test_a_jump_settles_too(self):
@@ -263,9 +333,9 @@ class Changes(unittest.TestCase):
         player.set("error")
         run_to(player, 0.0, 300.0)
         player.set("error")
-        run_to(player, 300.0, 300.0 + 800.0)
+        run_to(player, 300.0, 300.0 + LAND - 40.0)
         self.assertTrue(player.morphing)
-        run_to(player, 1100.0, 1200.0)
+        run_to(player, 300.0 + LAND - 40.0, 300.0 + LAND + 60.0)
         self.assertTrue(player.settled)
 
 
@@ -281,11 +351,18 @@ class Gaze(unittest.TestCase):
         run_to(player, 0.0, 100.0)
         x, y = player.gaze()
         self.assertTrue(0 < x < 1 and -0.5 < y < 0)
-        run_to(player, 100.0, 400.0)
+        run_to(player, 100.0, 100.0 + RAW["gaze"]["duration"] * 1000.0)
         self.assertFalse(player.gazing)
         self.assertEqual(player.gaze(), (1.0, -0.5))
-        eye = player.rects()[13]
-        self.assertEqual((eye.x, eye.y), (100 + 30, 110 - 15))
+        # Every gazing rect moved by reach, held inside the inner square.
+        rest = player.mode_rects("idle", 0)
+        dx, dy = gaze_move(rest, 1.0, -0.5)
+        for r, at_rest in zip(player.rects(), rest):
+            if r.role in RAW["gaze"]["roles"]:
+                self.assertAlmostEqual(r.x, at_rest.x + dx)
+                self.assertAlmostEqual(r.y, at_rest.y + dy)
+            else:
+                self.assertEqual(r, at_rest)
         # Asking for the direction already set does nothing.
         player.look(1, -0.5)
         self.assertFalse(player.gazing)
@@ -315,14 +392,34 @@ class Gaze(unittest.TestCase):
         self.assertEqual(after, before)
         self.assertEqual(player.gaze(), (1.0, 0.0))
 
-    def test_wide_eyes_stay_inside(self):
-        player = Player(pack, mode="success", animate=False)
-        player.frame(0.0)
-        player.look(1, 0)
-        run_to(player, 0.0, 500.0)
-        eyes = [r for r in player.rects() if r.role == "eye"]
-        inside = pack.gaze.inside
-        self.assertEqual(max(r.x + r.w for r in eyes), inside[0] + inside[2])
+    def test_eyes_stay_inside(self):
+        # In every mode, a full look each way keeps the eyes that start
+        # inside the inner square inside it (wide eyes get less reach).
+        inside = RAW["gaze"].get("inside")
+        if not inside:
+            self.skipTest("the pack has no inner square for the gaze")
+        lo_x, lo_y = inside[0], inside[1]
+        hi_x, hi_y = inside[0] + inside[2], inside[1] + inside[3]
+        roles = RAW["gaze"]["roles"]
+        for id in MODES:
+            rest = Player(pack, mode=id).mode_rects(id, 0)
+            fits = [
+                (lo_x <= r.x and r.x + r.w <= hi_x, lo_y <= r.y and r.y + r.h <= hi_y)
+                for r in rest
+            ]
+            for gx, gy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                with self.subTest(mode=id, look=(gx, gy)):
+                    player = Player(pack, mode=id, animate=False)
+                    player.frame(0.0)
+                    player.look(gx, gy)
+                    run_to(player, 0.0, RAW["gaze"]["duration"] * 1000.0 + 100.0)
+                    for r, (fit_x, fit_y) in zip(player.rects(), fits):
+                        if r.role not in roles:
+                            continue
+                        if fit_x:
+                            self.assertTrue(lo_x - 1e-6 <= r.x and r.x + r.w <= hi_x + 1e-6)
+                        if fit_y:
+                            self.assertTrue(lo_y - 1e-6 <= r.y and r.y + r.h <= hi_y + 1e-6)
 
 
 class Since(unittest.TestCase):
@@ -351,8 +448,8 @@ class Since(unittest.TestCase):
         self.assertTrue(late.morphing)
         self.assertSameRects(late.rects(), watching.rects())
         # From then on they stay together, and land together.
-        run_to(watching, self.NOW + 300.0, self.NOW + 840.0)
-        run_to(late, self.NOW + 300.0, self.NOW + 840.0)
+        run_to(watching, self.NOW + 300.0, self.NOW + LAND)
+        run_to(late, self.NOW + 300.0, self.NOW + LAND)
         self.assertTrue(watching.settled and late.settled)
         self.assertSameRects(late.rects(), watching.rects())
 
@@ -367,7 +464,7 @@ class Since(unittest.TestCase):
         self.assertTrue(player.settled)
         self.assertEqual(landed, ["thinking"])
         self.assertSameRects(
-            player.rects(), player.mode_rects("thinking", 5.016 - 0.84)
+            player.rects(), player.mode_rects("thinking", 5.016 - LAND / 1000.0)
         )
 
     def test_before_the_first_frame(self):

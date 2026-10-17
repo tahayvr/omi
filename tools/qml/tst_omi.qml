@@ -26,10 +26,20 @@ TestCase {
     SignalSpy { id: loaded; target: omi; signalName: "loaded" }
     SignalSpy { id: settled; target: omi; signalName: "settled" }
 
+    // the pack as JSON, for what its modes are and say
+    property var pack: null
+    function mode(id) {
+        return pack.modes.find(function (m) { return m.id === id; });
+    }
+
     function initTestCase() {
         if (!omi.player) loaded.wait(5000);
         verify(omi.player !== null, "the pack loads");
-        compare(omi.modes.length, 49);
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", omi.pack, false);
+        xhr.send();
+        pack = JSON.parse(xhr.responseText);
+        compare(omi.modes.length, pack.modes.length);
     }
 
     function test_1_draws() {
@@ -50,13 +60,13 @@ TestCase {
     function test_3_reacts() {
         omi.mode = "idle";
         settled.wait(3000);
-        compare(omi.label, "Omi", "a screen reader hears the mode's label");
+        compare(omi.label, mode("idle").label, "a screen reader hears the mode's label");
         omi.react("happy", 0.6);
         compare(omi.showing, "happy", "the reaction plays over the mode");
-        compare(omi.label, "Omi is happy", "and the reaction's while it plays");
+        compare(omi.label, mode("happy").label, "and the reaction's while it plays");
         compare(omi.mode, "idle", "the mode stays");
         tryCompare(omi, "showing", "idle", 3000, "then goes back");
-        compare(omi.label, "Omi");
+        compare(omi.label, mode("idle").label);
     }
 
     function test_4_looks() {
