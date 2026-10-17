@@ -110,8 +110,7 @@ What a mode is for:
   `omi.label(mode)` gives it.
 - `family`: modes that mean the same thing ("thinking", "download",
   "upload"). Pick one per family for a situation; the rest are variations.
-- `easter`: true on the jokes (vim, glitch, code-rain). Leave them out of a
-  generic picker.
+- `easter`: true on a joke. Leave those out of a generic picker.
 - `group`: where the jig files it. For people, not for apps.
 
 ## Animations

@@ -83,8 +83,8 @@ the same situations:
 
 Modes come in families (`family`: thinking, download, upload): pick one per
 family for a situation and treat the rest as variations, so two apps don't
-mean the same thing with different faces. Modes marked `easter` (vim,
-glitch, code-rain) are jokes: leave them out of anything generic.
+mean the same thing with different faces. A mode marked `easter` is a
+joke: leave it out of anything generic.
 
 Some rules of thumb:
 

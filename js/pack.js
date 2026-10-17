@@ -33,7 +33,6 @@ const REACTIONS = {
   wink: 1.2,
   shy: 2,
   "mind-blown": 2.4,
-  glitch: 1.8,
 };
 const FAMILIES = {
   thinking: ["thinking", "thinking-dots"],
@@ -41,7 +40,8 @@ const FAMILIES = {
   upload: ["upload", "upload-rising"],
   sad: ["sad", "crying"],
 };
-const EASTER = ["glitch", "code-rain", "vim"];
+// jokes apps leave out of a generic picker (none at the moment)
+const EASTER = [];
 // What a screen reader says for each mode: every app gives it to its toolkit
 // as the picture's name, so Omi is announced the same way everywhere.
 // Variations of one mode say the same thing (every thinking is "Omi is
@@ -75,9 +75,6 @@ const LABELS = {
   sudo: "Omi needs your password",
   peek: "Omi is peeking in",
   party: "Omi is celebrating",
-  glitch: "Omi glitches",
-  "code-rain": "Omi is raining code",
-  vim: "Omi can\u2019t quit vim",
   tiling: "Omi is tiling windows",
   "mind-blown": "Omi\u2019s mind is blown",
 };
@@ -707,8 +704,7 @@ What a mode is for:
   \`omi.label(mode)\` gives it.
 - \`family\`: modes that mean the same thing ("thinking", "download",
   "upload"). Pick one per family for a situation; the rest are variations.
-- \`easter\`: true on the jokes (vim, glitch, code-rain). Leave them out of a
-  generic picker.
+- \`easter\`: true on a joke. Leave those out of a generic picker.
 - \`group\`: where the jig files it. For people, not for apps.
 
 ## Animations

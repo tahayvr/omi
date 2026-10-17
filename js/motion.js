@@ -81,21 +81,6 @@ const ANIM = {
       [1, { ty: 0 }],
     ],
   },
-  // vim's twitch: a still wait, then a quick shake
-  "m-twitch": {
-    body: true,
-    rest: 1.54,
-    dur: 0.66,
-    ease: "ease-in-out",
-    keys: [
-      [0, { tx: 0 }],
-      [0.1333, { tx: -9 }],
-      [0.3333, { tx: 9 }],
-      [0.5333, { tx: -6 }],
-      [0.7333, { tx: 6 }],
-      [1, { tx: 0 }],
-    ],
-  },
   // the logo rising over its ledge (peek's clipped layer, see d.clip)
   peek: {
     dur: 4.5,
@@ -105,6 +90,20 @@ const ANIM = {
       [0.25, { ty: 0 }],
       [0.75, { ty: 0 }],
       [1, { ty: 180 }],
+    ],
+  },
+  // peek's eyes, in step with the window (which rests risen): up, they
+  // look a cell to the left and back, and then the logo sinks
+  "peek-look": {
+    dur: 4.5,
+    ease: "ease-in-out",
+    keys: [
+      [0, { tx: 0 }],
+      [0.08, { tx: 0 }],
+      [0.16, { tx: -20 }],
+      [0.3, { tx: -20 }],
+      [0.38, { tx: 0 }],
+      [1, { tx: 0 }],
     ],
   },
 
@@ -442,28 +441,6 @@ const ANIM = {
     keys: [
       [0, { tx: 0, ty: 0, op: 1 }],
       [1, { tx: ["mx", 1], ty: ["my", 1], op: 0 }],
-    ],
-  },
-  gl: {
-    dur: 2.4,
-    ease: "linear",
-    keys: [
-      [0, { tx: 0 }],
-      [0.86, { tx: 0 }],
-      [0.88, { tx: -8 }],
-      [0.9, { tx: 6 }],
-      [0.92, { tx: -3 }],
-      [0.94, { tx: 0 }],
-      [1, { tx: 0 }],
-    ],
-  },
-  rain: {
-    dur: 1.4,
-    ease: "linear",
-    keys: [
-      [0, { ty: 0, op: 0 }],
-      [0.1, { op: 1 }],
-      [1, { ty: 160, op: 0 }],
     ],
   },
   tile: {

@@ -8,7 +8,6 @@ const FEATURED = [
   "party",
   "sleeping",
   "sudo",
-  "code-rain",
   "mind-blown",
 ];
 let heroId = "idle",

@@ -1,6 +1,6 @@
 # Every Omi mode
 
-Omi has 33 modes, each a set of rectangles with a looping
+Omi has 30 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
 `node tools/modes-doc.js` from the pack, so it always matches
 `pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
@@ -54,8 +54,5 @@ drawn by the reference player.
 | ![Omi needs your password](modes/sudo.svg) | `sudo` | Sudo | state | 3.6 s | Omi needs your password | About to ask for a password |
 | ![Omi is peeking in](modes/peek.svg) | `peek` | Peek | state | 4.5 s | Omi is peeking in | Looking in from the edge: a hint, a quick check-in |
 | ![Omi is celebrating](modes/party.svg) | `party` | Party | state | 3.1 s | Omi is celebrating | A real milestone, like finishing setup |
-| ![Omi glitches](modes/glitch.svg) | `glitch` | Glitch | reaction, 1.8 s | 4 s | Omi glitches | An easter egg: something went strange (easter egg) |
-| ![Omi is raining code](modes/code-rain.svg) | `code-rain` | Code rain | state | 4 s | Omi is raining code | An easter egg for the terminal (easter egg) |
-| ![Omi can’t quit vim](modes/vim.svg) | `vim` | Can’t quit vim | state | 2.2 s | Omi can’t quit vim | An easter egg: can't quit vim (easter egg) |
 | ![Omi is tiling windows](modes/tiling.svg) | `tiling` | Tiling | state | 3.7 s | Omi is tiling windows | Windows being arranged (the Omarchy tiling tutorial) |
 | ![Omi’s mind is blown](modes/mind-blown.svg) | `mind-blown` | Mind blown | reaction, 2.4 s | 2.4 s | Omi’s mind is blown | Something impressive just happened, then back |

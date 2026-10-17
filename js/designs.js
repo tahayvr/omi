@@ -49,48 +49,13 @@ const EGG = {
     face: [...heart(85, 110), ...heart(165, 110)],
     mood: "",
   },
-  glitch: {
-    face: [R(100, 110, 20, 40, "gl"), R(180, 110, 20, 40, "gl")].map((r, i) =>
-      withD(r, 2.4, 1.1 + i * 0.05),
-    ),
-    logo: LOGO.map((r, i) =>
-      withD({ ...r, c: "gl" }, 2.4, [0, 0.9, 1.6][i % 3]),
-    ),
-  },
-  rain: {
-    face: [
-      R(100, 110, 20, 40, "eye"),
-      R(180, 110, 20, 40, "eye"),
-      ...[
-        [70, 0],
-        [140, 0.5],
-        [156, 0.9],
-        [218, 0.3],
-        [86, 1.0],
-        [204, 0.7],
-        [132, 0.2],
-      ].map(([x, dl]) => ({
-        ...withD(R(x, 60, 8, 16, "rain"), 1.4, dl),
-        role: "extra",
-      })),
-    ],
-  },
-  vim: {
-    face: [
-      R(100, 100, 20, 20),
-      R(100, 140, 20, 20),
-      R(170, 100, 40, 10),
-      R(170, 110, 10, 30),
-      R(200, 110, 10, 60),
-      R(180, 140, 20, 10),
-    ],
-    mood: "m-twitch",
-  },
   tiling: {
     face: as("extra", [
-      ...outline(72, 72, 70, 156, 6, "tile").map((r) => withD(r, 3, 0)),
-      ...outline(152, 72, 76, 73, 6, "tile").map((r) => withD(r, 3, 0.35)),
-      ...outline(152, 155, 76, 73, 6, "tile").map((r) => withD(r, 3, 0.7)),
+      // three windows tiled in the inner square, drawn one after another:
+      // 10-unit outlines on the 10-unit grid, so they hold up small
+      ...outline(70, 70, 70, 160, 10, "tile").map((r) => withD(r, 3, 0)),
+      ...outline(160, 70, 70, 70, 10, "tile").map((r) => withD(r, 3, 0.35)),
+      ...outline(160, 160, 70, 70, 10, "tile").map((r) => withD(r, 3, 0.7)),
     ]),
   },
   mindblown: {
@@ -133,8 +98,8 @@ const DESIGNS_OLD = [
       { ...R(-20, 360, 340, 20), o: 0.2 },
     ],
     face: [
-      { ...R(110, 250, 20, 40, "eye"), clip: true },
-      { ...R(190, 250, 20, 40, "eye"), clip: true },
+      { ...R(110, 250, 20, 40, "peek-look"), clip: true },
+      { ...R(190, 250, 20, 40, "peek-look"), clip: true },
     ],
     mood: "",
   },
@@ -202,9 +167,6 @@ const DESIGNS = [
     byId("sudo"),
     byId("peek"),
     { id: "party", name: "Party", ...EGG.party },
-    { id: "glitch", name: "Glitch", ...EGG.glitch, mood: "" },
-    { id: "code-rain", name: "Code rain", ...EGG.rain, mood: "m-bob" },
-    { id: "vim", name: "Can\u2019t quit vim", ...EGG.vim },
     { id: "tiling", name: "Tiling", ...EGG.tiling, mood: "" },
     {
       id: "mind-blown",

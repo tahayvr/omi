@@ -56,9 +56,6 @@ const USE = {
   sudo: "About to ask for a password",
   peek: "Looking in from the edge: a hint, a quick check-in",
   party: "A real milestone, like finishing setup",
-  glitch: "An easter egg: something went strange",
-  "code-rain": "An easter egg for the terminal",
-  vim: "An easter egg: can't quit vim",
   tiling: "Windows being arranged (the Omarchy tiling tutorial)",
   "mind-blown": "Something impressive just happened, then back",
 };
