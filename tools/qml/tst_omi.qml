@@ -2,7 +2,7 @@
 // Qt Quick window: loading, morphing, reactions and their labels, gaze,
 // even drawing.
 //
-//     QML_XHR_ALLOW_FILE_READ=1 /usr/lib/qt6/bin/qmltestrunner -input tools/qml
+//     npm run check:qt   (qmltestrunner on PATH, or Qt's /usr/lib/qt6/bin)
 import QtQuick
 import QtTest
 import "../../examples/qml"

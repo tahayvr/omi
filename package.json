@@ -13,7 +13,7 @@
     "check:morphs": "node tools/check-morphs.js",
     "check:python": "cd player/python && python3 -m unittest discover -s tests",
     "check:rust": "cd player/rust && cargo test",
-    "check:qt": "QML_XHR_ALLOW_FILE_READ=1 /usr/lib/qt6/bin/qmltestrunner -input tools/qml",
+    "check:qt": "QML_XHR_ALLOW_FILE_READ=1 $(command -v qmltestrunner || echo /usr/lib/qt6/bin/qmltestrunner) -input tools/qml",
     "check:quickshell": "node tools/check-quickshell.js",
     "dev": "vite",
     "fmt": "oxfmt",

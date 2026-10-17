@@ -84,7 +84,8 @@ bash example's player, on the conformance data) and, in a Wayland session,
 `npm run build` rebuilds kit/ and docs/modes. All but the site's, the
 examples' and the Quickshell one run on every push
 ([.github/workflows/check.yml](.github/workflows/check.yml)); those are run
-by hand.
+by hand. `just check` runs every one of them, formatting and lint
+included, and `just quick` only what needs nothing but Node.
 
 None of that needs anything installed. `pnpm install` brings in the two
 tools the code is kept tidy with: `pnpm fmt` formats it (oxfmt) and
