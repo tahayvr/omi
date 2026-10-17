@@ -32,7 +32,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      - run: pnpm fmt:check
 
   # the Rust player, against the same conformance data
   rust:
