@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     omi.set(&mode)?;
 
-    // 60 Hz frames for a second and a half: through the morph from the mark
+    // 60 Hz frames for a second and a half: through the morph from the logo
     // (0.84 s), then into the mode's own loops. Every 30th frame is printed.
     for k in 0..=90 {
         let ms = k as f64 * 1000.0 / 60.0;

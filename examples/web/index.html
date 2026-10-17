@@ -156,7 +156,7 @@
       const canvas = document.getElementById("omi");
       // With reduced motion: no loops, no gaze, and modes jump instead of morphing.
       const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const omi = new Omi(canvas, pack, { animate: !still, mode: "mark" });
+      const omi = new Omi(canvas, pack, { animate: !still, mode: "logo" });
       window.omi = omi; // to play with from the browser's console
 
       // --- what Omi is doing: `mode`, with a reaction playing over it for a moment

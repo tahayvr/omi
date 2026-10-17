@@ -27,7 +27,7 @@ const omi = new ctx.Omi(null, pack, { color: "#000" });
 
 // What each mode is for, in an app. Reactions say "then back".
 const USE = {
-  mark: "The plain logo: a brand mark, and the entrance (set idle from it)",
+  logo: "The plain logo: a brand mark, and the entrance (set idle from it)",
   idle: "Nothing going on",
   thinking: "Checking, loading, waiting on the network",
   "thinking-dots": "A variation of thinking: three dots in the logo's gap",

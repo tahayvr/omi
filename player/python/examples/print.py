@@ -20,7 +20,7 @@ def main(argv):
         HERE, "..", "..", "..", "pack", "omi.json"
     )
     pack = Pack.load(path)
-    omi = Player(pack)  # starts at "mark", the plain logo
+    omi = Player(pack)  # starts at "logo", the plain logo
     try:
         omi.set(mode)   # morphs there from wherever Omi is
     except UnknownMode as error:

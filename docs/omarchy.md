@@ -86,7 +86,7 @@ the same situations:
 | Something wants a look: a notification, a finished job (reaction)  | `attention`         |
 | The screen is shared or recorded                                   | `recording`         |
 | A first meeting (reaction)                                         | `hello`             |
-| Logout, shutdown, reboot (reaction, then `mark`)                   | `goodbye`           |
+| Logout, shutdown, reboot (reaction, then `logo`)                   | `goodbye`           |
 | Yes / no, lightly (reactions)                                      | `nod` / `shake`     |
 
 Modes come in families (`family`: thinking, offline, transfer): pick one per
@@ -102,9 +102,9 @@ Some rules of thumb:
   or closes something. Leave Omi as it is.
 - **Keep reactions short** where the user is concentrating, such as while
   learning a shortcut.
-- **Show the plain logo when Omi is just a brand mark.** `mark` is the
+- **Show the plain logo when Omi is just a brand mark.** `logo` is the
   logo with nothing in the middle, and it morphs into any mode, which makes a
-  good entrance: start at `mark`, then set `idle`.
+  good entrance: start at `logo`, then set `idle`.
 
 ## Where Omi looks
 
@@ -123,7 +123,7 @@ Use it to draw the eye to what the user should look at next: the bar, a
 window that just opened, a panel. Keep it to something that's really there,
 and look ahead again once it's gone. A full look is always safe: the pack
 keeps the eyes inside the logo, so wide eyes (success, error) turn less far
-by themselves. Modes without eyes (`mark`, `tiling`, `confused`) ignore it.
+by themselves. Modes without eyes (`logo`, `tiling`, `confused`) ignore it.
 
 ## One Omi for the whole machine
 

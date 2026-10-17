@@ -26,7 +26,7 @@ drawn by the reference player.
 
 | | id | Name | Kind | Loop | A screen reader says | Use it for |
 | --- | --- | --- | --- | --- | --- | --- |
-| ![The Omarchy logo](modes/mark.svg) | `mark` | The mark | state | still | The Omarchy logo | The plain logo: a brand mark, and the entrance (set idle from it) |
+| ![The Omarchy logo](modes/logo.svg) | `logo` | Logo | state | still | The Omarchy logo | The plain logo: a brand mark, and the entrance (set idle from it) |
 | ![Omi](modes/idle.svg) | `idle` | Idle | state | 4 s | Omi | Nothing going on |
 | ![Omi is thinking](modes/thinking.svg) | `thinking` | Thinking | state | 6 s | Omi is thinking | Checking, loading, waiting on the network (family: thinking) |
 | ![Omi is thinking](modes/thinking-dots.svg) | `thinking-dots` | Thinking, dots | state | 4 s | Omi is thinking | A variation of thinking: three dots in the logo's gap (family: thinking) |

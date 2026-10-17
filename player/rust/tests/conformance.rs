@@ -267,7 +267,7 @@ fn options_and_lookups() {
         }
     }
     assert_eq!(omi.label("no such mode"), "");
-    assert!(omi.loop_seconds("mark") == 0.0);
+    assert!(omi.loop_seconds("logo") == 0.0);
     assert!(omi.loop_seconds("idle") > 0.0);
     assert!(omi.mode_rects("no-such-mode", 0.0).is_err());
 }

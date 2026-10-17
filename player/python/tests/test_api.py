@@ -115,7 +115,7 @@ class Loading(unittest.TestCase):
         self.assertEqual(pack.grid, RAW["grid"])
         self.assertEqual(pack.view, tuple(RAW["view"]))
         self.assertEqual(list(pack.mode_ids), list(MODES))
-        self.assertTrue(pack.has("mark"))
+        self.assertTrue(pack.has("logo"))
         self.assertFalse(pack.has("thinkng"))
 
     def test_not_a_pack(self):
@@ -135,7 +135,7 @@ class Loading(unittest.TestCase):
         with self.assertRaises(UnknownMode):
             player.mode_rects("thinkng", 0)
         # The failed change left the player as it was.
-        self.assertEqual(player.mode, "mark")
+        self.assertEqual(player.mode, "logo")
         self.assertTrue(player.settled)
 
     def test_rects(self):
@@ -157,7 +157,7 @@ class Loading(unittest.TestCase):
 class WhatAModeIsFor(unittest.TestCase):
     def test_loop_seconds(self):
         player = Player(pack)
-        self.assertEqual(player.loop_seconds("mark"), 0)
+        self.assertEqual(player.loop_seconds("logo"), 0)
         for id, mode in MODES.items():
             with self.subTest(mode=id):
                 self.assertAlmostEqual(player.loop_seconds(id), loop_seconds(mode))
@@ -557,17 +557,17 @@ class Since(unittest.TestCase):
         )
 
     def test_before_the_first_frame(self):
-        player = Player(pack, mode="mark")
+        player = Player(pack, mode="logo")
         player.set("idle", since=self.NOW - 400.0)
         player.frame(self.NOW)
-        other = Player(pack, mode="mark")
+        other = Player(pack, mode="logo")
         other.frame(self.NOW - 400.0)
         other.set("idle")
         run_to(other, self.NOW - 400.0, self.NOW)
         self.assertSameRects(player.rects(), other.rects())
 
     def test_instant(self):
-        player = Player(pack, mode="mark")
+        player = Player(pack, mode="logo")
         player.frame(self.NOW)
         player.set("idle", instant=True, since=self.NOW - 2500.0)
         player.frame(self.NOW + 100.0)
@@ -578,7 +578,7 @@ class Since(unittest.TestCase):
         # An app that stalls is back in step on its next frame: a frame
         # counts for 0.1 s at most, but a shared change is worked out from
         # the clock.
-        player = Player(pack, mode="mark")
+        player = Player(pack, mode="logo")
         player.frame(self.NOW)
         player.set("idle", instant=True, since=self.NOW)
         player.frame(self.NOW + 100.0)
@@ -591,11 +591,11 @@ class Since(unittest.TestCase):
 
     def test_a_time_still_to_come(self):
         # A clock a little behind the service's: the change starts now.
-        player = Player(pack, mode="mark")
+        player = Player(pack, mode="logo")
         player.frame(self.NOW)
         player.set("idle", since=self.NOW + 50.0)
         player.frame(self.NOW + 16.0)
-        other = Player(pack, mode="mark")
+        other = Player(pack, mode="logo")
         other.frame(self.NOW)
         other.set("idle")
         self.assertSameRects(player.rects(), other.rects())

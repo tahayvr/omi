@@ -23,7 +23,7 @@ const args = process.argv.slice(2),
       )
     : null;
 
-let state = { mode: "mark", from: null, since: Date.now(), instant: true },
+let state = { mode: "logo", from: null, since: Date.now(), instant: true },
   timer = null;
 const apps = new Set(),
   log = (...a) => console.log(new Date().toISOString(), ...a),

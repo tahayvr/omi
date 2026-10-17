@@ -102,9 +102,9 @@ ids.forEach(
   (id, i) =>
     ids.indexOf(id) !== i && problems.push(`two modes are called "${id}"`),
 );
-if (!ids.includes("mark"))
+if (!ids.includes("logo"))
   problems.push(
-    `there is no "mark", the plain logo every morph is cut against`,
+    `there is no "logo", the plain logo every morph is cut against`,
   );
 for (const r of (pack.gaze || {}).roles || [])
   if (!pack.roles.includes(r))
@@ -249,10 +249,10 @@ const omi = new ctx.Omi(null, pack, { color: "#000" }),
   grid = pack.grid,
   on = (v, step) => Math.abs(v / step - Math.round(v / step)) < 1e-9;
 
-const mark = pack.modes.find((m) => m.id === "mark");
+const logo = pack.modes.find((m) => m.id === "logo");
 rule(
-  "Omi is the Omarchy logo: mark is the frame alone, at rest",
-  mark.pieces
+  "Omi is the Omarchy logo: logo is the frame alone, at rest",
+  logo.pieces
     .filter((p) => p.role !== "frame" || p.anim)
     .map((p) => `${piece(p)} isn't a still piece of the frame`),
 );

@@ -30,7 +30,7 @@
      even         true (default) draws each logo cell a whole number of
                   device pixels, so every bar is the same thickness; Omi may
                   be a little smaller than the canvas. Drawing only.
-     mode         the mode to start in (default "mark", the plain logo)
+     mode         the mode to start in (default "logo", the plain logo)
      view         [x, y, w, h] to show, instead of the pack's view
      label        true (default) keeps the canvas's aria-label on the mode's
                   label, and gives it role="img" if it has no role, so a
@@ -199,9 +199,9 @@ var Omi = (function () {
       this.reach2 = m.splitReach ** 2;
       this.penalty = m.rolePenalty ** 2;
       this.roleIx = fromEntries(pack.roles.map((r, i) => [r, i]));
-      // the logo itself: the plain "mark" mode
-      const mark = pack.modes.find((d) => d.id === "mark");
-      this.logo = mark ? mark.pieces : [];
+      // the logo itself: the plain "logo" mode
+      const plain = pack.modes.find((d) => d.id === "logo");
+      this.logo = plain ? plain.pieces : [];
     }
     rolePenalty(a, b) {
       if (a.role === b.role) return 0;
@@ -441,7 +441,7 @@ var Omi = (function () {
       this._bodyMotion = opts.bodyMotion ?? true;
       this.even = opts.even ?? true;
       this._label = opts.label ?? true;
-      this.mode = this.modes[opts.mode] ? opts.mode : "mark";
+      this.mode = this.modes[opts.mode] ? opts.mode : "logo";
       this.name();
       this.t = 0; // seconds into the current mode's loops
       this.morph = null;

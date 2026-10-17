@@ -90,7 +90,7 @@ A mode can also have:
 Drawing order is the order of `pieces`, except that in a mode with a
 window the pieces seen through it come first, then the rest.
 
-"mark" is the plain logo, with nothing in the middle.
+"logo" is the plain Omarchy logo, with nothing in the middle.
 
 What a mode is for:
 
@@ -225,7 +225,7 @@ the nearest, halves going up (2.5 to 3, −2.5 to −2).
 2. Cut rects into grid cells, along the grid lines, so a cell that is in
    both modes can stay where it is: a rect whose four edges all sit on
    multiples of `grid` (within 1e-6), or that overlaps any piece of
-   `mark` (the logo; sharing an edge is not overlapping), is cut at every
+   `logo` (sharing an edge is not overlapping), is cut at every
    grid line that is more than 1e-6 inside it; the end cells keep their
    partial size. Its cells take its place in the list, column by column
    from the left, each column from the top. Other rects stay whole.

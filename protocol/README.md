@@ -20,7 +20,7 @@ The service holds one state:
 - `since`: when the change happened, in Unix time milliseconds.
 - `instant`: true if Omi jumped instead of morphing.
 
-At the start, the state is the plain logo: mode "mark", from null, instant
+At the start, the state is the plain logo: mode "logo", from null, instant
 true.
 
 Because every change carries `since`, apps don't have to receive it at the

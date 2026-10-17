@@ -61,7 +61,7 @@ pub struct Options {
     pub animate: bool,
     /// False leaves out whole-body moves (bob, hop, shake).
     pub body_motion: bool,
-    /// The mode to start in; "mark", the plain logo, when missing or unknown.
+    /// The mode to start in; "logo", the plain logo, when missing or unknown.
     pub mode: Option<String>,
 }
 
@@ -114,19 +114,19 @@ pub struct Player {
 }
 
 impl Player {
-    /// A player on this pack with default options, starting at "mark".
+    /// A player on this pack with default options, starting at "logo".
     pub fn new(pack: &Pack) -> Player {
         Player::with_options(pack, Options::default())
     }
 
     pub fn with_options(pack: &Pack, opts: Options) -> Player {
         let pack = pack.clone();
-        let start = opts.mode.as_deref().unwrap_or("mark");
+        let start = opts.mode.as_deref().unwrap_or("logo");
         let mode = pack
             .modes
             .iter()
             .position(|m| m.id == start)
-            .or_else(|| pack.modes.iter().position(|m| m.id == "mark"))
+            .or_else(|| pack.modes.iter().position(|m| m.id == "logo"))
             .unwrap_or(0);
         Player {
             pack,

@@ -6,8 +6,8 @@
    the format changes in a way an existing player would misread.
    tools/build-pack.js writes the same files into pack/. */
 const PACK_VERSION = 1;
-// "mark": the plain logo, with nothing in the middle
-const MORPH_MARK = { id: "mark", name: "The mark", face: [], mood: "" };
+// "logo": the plain logo, with nothing in the middle
+const MORPH_LOGO = { id: "logo", name: "Logo", face: [], mood: "" };
 // a square around the logo with room for the props
 const MORPH_VB = { x: -70, y: -70, w: 440, h: 440 };
 // morph timing, in seconds at 1x; each pair starts up to `stagger` late, the
@@ -55,7 +55,7 @@ const EASTER = ["glitch", "code-rain", "vim"];
 // Variations of one mode say the same thing (every thinking is "Omi is
 // thinking").
 const LABELS = {
-  mark: "The Omarchy logo",
+  logo: "The Omarchy logo",
   idle: "Omi",
   thinking: "Omi is thinking",
   "thinking-dots": "Omi is thinking",
@@ -162,7 +162,7 @@ function packMode(d) {
 }
 function buildPack() {
   const used = new Set();
-  const modes = [MORPH_MARK, ...DESIGNS].map((d) => {
+  const modes = [MORPH_LOGO, ...DESIGNS].map((d) => {
     if (!LABELS[d.id])
       throw new Error(
         `"${d.id}" has no label: say what a screen reader says for it, in LABELS`,
@@ -211,7 +211,7 @@ function buildPack() {
    pairs pieces, so they are a reference, not a requirement. */
 const CONFORMANCE_TIMES = [0, 0.9, 3.3],
   CONFORMANCE_MORPHS = [
-    ["mark", "idle"],
+    ["logo", "idle"],
     ["idle", "error"],
     ["idle", "thinking"],
     ["working", "happy"],
@@ -709,7 +709,7 @@ A mode can also have:
 Drawing order is the order of \`pieces\`, except that in a mode with a
 window the pieces seen through it come first, then the rest.
 
-"mark" is the plain logo, with nothing in the middle.
+"logo" is the plain Omarchy logo, with nothing in the middle.
 
 What a mode is for:
 
@@ -844,7 +844,7 @@ the nearest, halves going up (2.5 to 3, −2.5 to −2).
 2. Cut rects into grid cells, along the grid lines, so a cell that is in
    both modes can stay where it is: a rect whose four edges all sit on
    multiples of \`grid\` (within 1e-6), or that overlaps any piece of
-   \`mark\` (the logo; sharing an edge is not overlapping), is cut at every
+   \`logo\` (sharing an edge is not overlapping), is cut at every
    grid line that is more than 1e-6 inside it; the end cells keep their
    partial size. Its cells take its place in the list, column by column
    from the left, each column from the top. Other rects stay whole.

@@ -35,7 +35,7 @@ class Player:
     """
 
     def __init__(self, pack, speed=1.0, animate=True, body_motion=True,
-                 mode="mark", on_settled=None, rest=1.0):
+                 mode="logo", on_settled=None, rest=1.0):
         self.pack = pack
         self.speed = speed
         self.rest = rest
@@ -44,10 +44,10 @@ class Player:
         self.on_settled = on_settled
 
         self._scenes = {}
-        # The logo: a rect that overlaps any piece of "mark" is cut into
+        # The logo: a rect that overlaps any piece of "logo" is cut into
         # cells for a morph.
-        mark = pack.modes.get("mark")
-        self._logo = [(p.x, p.y, p.w, p.h) for p in mark.pieces] if mark else []
+        plain = pack.modes.get("logo")
+        self._logo = [(p.x, p.y, p.w, p.h) for p in plain.pieces] if plain else []
 
         self._scene = self._scene_of(mode)
         self._time = 0.0          # the mode's loops, seconds

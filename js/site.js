@@ -35,7 +35,7 @@ function renderSite() {
     heroOmi = mountOmi($("heroCanvas"), {
       margin: 36,
       bleed: 124,
-      mode: "mark",
+      mode: "logo",
     });
   else syncOmi(heroOmi);
   const fg = eff(hd.id).fg;

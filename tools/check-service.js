@@ -71,7 +71,7 @@ function gap(a, b) {
   let r = ctl("get");
   check(
     "omictl get",
-    r.status === 0 && r.stdout.startsWith("mark"),
+    r.status === 0 && r.stdout.startsWith("logo"),
     r.stdout.trim(),
   );
   r = ctl("set", "thinkng");
@@ -83,7 +83,7 @@ function gap(a, b) {
   r = ctl("set", "idle");
   check(
     "omictl set",
-    r.status === 0 && r.stdout.startsWith("idle from mark"),
+    r.status === 0 && r.stdout.startsWith("idle from logo"),
     r.stdout.trim(),
   );
 

@@ -16,7 +16,7 @@ fills the rects itself, in its accent colour. Dependencies: `serde` and
     use omi::{Pack, Player};
 
     let pack = Pack::parse(&std::fs::read_to_string("omi.json")?)?;
-    let mut omi = Player::new(&pack);   // starts at "mark", the plain logo
+    let mut omi = Player::new(&pack);   // starts at "logo", the plain logo
     omi.set("thinking")?;               // morphs there from wherever Omi is
     loop {
         omi.frame(now_ms());            // wall clock, milliseconds

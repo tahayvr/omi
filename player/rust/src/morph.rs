@@ -105,7 +105,7 @@ struct Planner {
     grid: f64,
     reach2: f64,
     penalty2: f64,
-    /// The logo itself (the "mark" mode): pieces touching it get cut.
+    /// The logo itself (the "logo" mode): pieces touching it get cut.
     logo: Vec<Rect>,
 }
 
@@ -126,7 +126,7 @@ fn is_face(role: &str) -> bool {
 impl Planner {
     fn new(pack: &Pack) -> Self {
         let logo = pack
-            .mode("mark")
+            .mode("logo")
             .map(|m| {
                 m.pieces
                     .iter()

@@ -60,8 +60,8 @@ function syncOmi(player) {
 
 /* ---------- the Morph section ---------- */
 const morphDesign = (id) =>
-  id === MORPH_MARK.id ? MORPH_MARK : DESIGNS.find((d) => d.id === id);
-const morphOrder = () => [MORPH_MARK.id, ...DESIGNS.map((d) => d.id)];
+  id === MORPH_LOGO.id ? MORPH_LOGO : DESIGNS.find((d) => d.id === id);
+const morphOrder = () => [MORPH_LOGO.id, ...DESIGNS.map((d) => d.id)];
 let omi = null,
   morphTour = 0;
 
@@ -87,7 +87,7 @@ function toggleTour() {
 }
 
 function syncMorphUI() {
-  const id = omi ? omi.mode : MORPH_MARK.id;
+  const id = omi ? omi.mode : MORPH_LOGO.id;
   document
     .querySelectorAll("#mpick .mbtn")
     .forEach((b) =>
@@ -108,7 +108,7 @@ function renderMorph() {
       `<button class="mbtn" data-id="${d.id}" aria-pressed="false">${d.name}</button>`;
     const groups = [...new Set(DESIGNS.map((d) => d.group))];
     pick.innerHTML =
-      `<div class="mgroup"><h3>Start</h3><div class="mbtns">${btn(MORPH_MARK)}<button class="mbtn tour" id="mtour" aria-pressed="false">Play tour</button></div></div>` +
+      `<div class="mgroup"><h3>Start</h3><div class="mbtns">${btn(MORPH_LOGO)}<button class="mbtn tour" id="mtour" aria-pressed="false">Play tour</button></div></div>` +
       groups
         .map(
           (g) =>

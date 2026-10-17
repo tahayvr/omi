@@ -470,7 +470,7 @@ def plan(source, target, settings, grid, logo):
 
     `source` and `target` are rects (x, y, w, h, opacity, role), `source`
     before the gaze is applied. `settings` is the pack's `morph`, `grid`
-    its `grid`, and `logo` the (x, y, w, h) of every piece of "mark".
+    its `grid`, and `logo` the (x, y, w, h) of every piece of "logo".
     Returns a `Plan`.
     """
     # 1. The rects on screen now and the new mode's rects at rest: of

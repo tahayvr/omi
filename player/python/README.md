@@ -30,14 +30,14 @@ later and only the standard library.
     from omi import Pack, Player
 
     pack = Pack.load("omi.json")
-    omi = Player(pack)                  # starts at "mark", the plain logo
+    omi = Player(pack)                  # starts at "logo", the plain logo
     omi.set("thinking")                 # morphs there from wherever Omi is
     while True:
         omi.frame(time.time() * 1000)   # wall clock, milliseconds
         for r in omi.rects():           # grid units, in drawing order
             fill(r.x, r.y, r.w, r.h, r.opacity)   # r.role says what it is
 
-`Player(pack, speed=1.0, animate=True, body_motion=True, mode="mark",
+`Player(pack, speed=1.0, animate=True, body_motion=True, mode="logo",
 on_settled=None, rest=1.0)` takes its options by name (`rest` scales the
 still time between passes of a loop: 1 as designed, 0 back to back, 2 twice
 as long); `on_settled(mode)` is called

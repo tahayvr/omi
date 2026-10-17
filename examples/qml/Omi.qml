@@ -23,7 +23,7 @@ Item {
     id: omi
 
     // What Omi is doing. Changing it morphs there from wherever Omi is.
-    property string mode: "mark"
+    property string mode: "logo"
     // One color: Omi is the Omarchy logo.
     property color color: "white"
     // A new color fades in over this many milliseconds (0: at once), so a
