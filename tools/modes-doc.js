@@ -38,7 +38,6 @@ const USE = {
   working: "Busy doing it for the user",
   success: "Done, then back",
   warning: "Something needs a look, but nothing is broken",
-  error: "Failed: as a reaction, or the mode while it stays failed",
   "offline-standby": "Offline and not trying",
   "offline-searching": "Offline, looking for a network",
   "low-battery": "The battery is low",
@@ -77,7 +76,7 @@ const USE = {
     "A ping: a notification arrived, a background job finished, then back",
   recording: "The screen is being shared or recorded, as long as it lasts",
   nod: "Yes: a small agreement, lighter than success, then back",
-  shake: "No: the gentle no that error is too strong for, then back",
+  shake: "No: a gentle no, then back",
 };
 
 // --- stills

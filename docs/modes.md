@@ -1,6 +1,6 @@
 # Every Omi mode
 
-Omi has 47 modes, each a set of rectangles with a looping
+Omi has 46 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
 `node tools/modes-doc.js` from the pack, so it always matches
 `pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
@@ -34,10 +34,9 @@ drawn by the reference player.
 | ![Omi is downloading](modes/download-falling.svg) | `download-falling` | Download, falling | state | 4 s | Omi is downloading | A variation of download: the frame's sides falling (family: download) |
 | ![Omi is uploading](modes/upload.svg) | `upload` | Upload | state | 4 s | Omi is uploading | Sending something away (family: upload) |
 | ![Omi is uploading](modes/upload-rising.svg) | `upload-rising` | Upload, rising | state | 4 s | Omi is uploading | A variation of upload: the frame's sides rising (family: upload) |
-| ![Omi is working](modes/working.svg) | `working` | Working | state | 3.2 s | Omi is working | Busy doing it for the user |
+| ![Omi is working](modes/working.svg) | `working` | Working | state | 1.5 s | Omi is working | Busy doing it for the user |
 | ![Omi succeeded](modes/success.svg) | `success` | Success | reaction, 1.2 s | 1.6 s | Omi succeeded | Done, then back |
-| ![Omi has a warning](modes/warning.svg) | `warning` | Warning | state | 2.8 s | Omi has a warning | Something needs a look, but nothing is broken |
-| ![Omi hit an error](modes/error.svg) | `error` | Error | state | 2.2 s | Omi hit an error | Failed: as a reaction, or the mode while it stays failed |
+| ![Omi has a warning](modes/warning.svg) | `warning` | Warning | state | 4 s | Omi has a warning | Something needs a look, but nothing is broken |
 | ![Omi is offline](modes/offline-standby.svg) | `offline-standby` | Offline, standby | state | 3 s | Omi is offline | Offline and not trying (family: offline) |
 | ![Omi is offline, looking for a network](modes/offline-searching.svg) | `offline-searching` | Offline, searching | state | 7.9 s | Omi is offline, looking for a network | Offline, looking for a network (family: offline) |
 | ![Omi is low on battery](modes/low-battery.svg) | `low-battery` | Low battery | state | 5 s | Omi is low on battery | The battery is low |
@@ -50,7 +49,7 @@ drawn by the reference player.
 | ![Omi says hello](modes/hello.svg) | `hello` | Hello | reaction, 1.6 s | 1.6 s | Omi says hello | A greeting: first boot, a first open, then back |
 | ![Omi says goodbye](modes/goodbye.svg) | `goodbye` | Goodbye | reaction, 1.4 s | 1.4 s | Omi says goodbye | Logout, shutdown, reboot: a tilt and the eyes close, then the host shows the plain logo |
 | ![Omi nods: yes](modes/nod.svg) | `nod` | Nod | reaction, 0.9 s | 0.7 s | Omi nods: yes | Yes: a small agreement, lighter than success, then back |
-| ![Omi shakes its head: no](modes/shake.svg) | `shake` | Shake | reaction, 0.9 s | 0.7 s | Omi shakes its head: no | No: the gentle no that error is too strong for, then back |
+| ![Omi shakes its head: no](modes/shake.svg) | `shake` | Shake | reaction, 0.9 s | 0.7 s | Omi shakes its head: no | No: a gentle no, then back |
 | ![Omi is happy](modes/happy.svg) | `happy` | Happy | reaction, 1.8 s | 4 s | Omi is happy | Pleased, then back |
 | ![Omi is laughing](modes/laughing.svg) | `laughing` | Laughing | reaction, 1.6 s | 0.7 s | Omi is laughing | A joke landed, then back |
 | ![Omi is excited](modes/excited.svg) | `excited` | Excited | reaction, 1.8 s | 0.9 s | Omi is excited | Something good is about to happen (a theme picker, a download that's nearly done) |

@@ -3,7 +3,7 @@
 
      node service/omictl.js set thinking
      node service/omictl.js set success --for 3 --then idle
-     node service/omictl.js set error --instant
+     node service/omictl.js set warning --instant
      node service/omictl.js get
      node service/omictl.js watch          print every change as it happens */
 const { connect } = require("./client.js");

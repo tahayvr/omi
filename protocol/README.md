@@ -45,13 +45,13 @@ don't know, so later versions can add to them.
 `set`: change the state.
 
     { "type": "set", "mode": "success" }
-    { "type": "set", "mode": "error", "instant": true }
+    { "type": "set", "mode": "warning", "instant": true }
     { "type": "set", "mode": "success", "for": 3, "then": "idle" }
 
 - `instant` (optional): jump instead of morphing.
 - `for` and `then` (optional, together): after `for` seconds, change to
   `then`, unless something else changed the state first. For short reactions:
-  a success, an error, a wink.
+  a success, a wink, a nod.
 
 Setting the mode Omi is already in doesn't change the state (`since` stays,
 so apps showing it don't restart), but its `for`/`then` replaces any pending

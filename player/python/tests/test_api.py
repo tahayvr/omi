@@ -348,10 +348,10 @@ class Changes(unittest.TestCase):
         player = Player(pack, mode="idle")
         player.frame(0.0)
         run_to(player, 0.0, 500.0)
-        player.set("error", instant=True)
+        player.set("warning", instant=True)
         self.assertTrue(player.settled)
-        self.assertEqual(player.mode, "error")
-        self.assertEqual(player.rects(), player.mode_rects("error", 0))
+        self.assertEqual(player.mode, "warning")
+        self.assertEqual(player.rects(), player.mode_rects("warning", 0))
 
     def test_morph_starts_from_what_is_on_screen(self):
         player = Player(pack, mode="idle")
@@ -366,9 +366,11 @@ class Changes(unittest.TestCase):
         self.assertGreater(len(player.rects()), len(before))
 
     def test_change_in_the_middle_of_a_morph(self):
+        # Through a mode with no props fading in: a piece the next mode
+        # splits off a half-faded prop starts on top of it, drawn twice.
         player = Player(pack, mode="idle")
         player.frame(0.0)
-        player.set("error")
+        player.set("working")
         run_to(player, 0.0, 300.0)
         middle = player.rects()
         player.set("sleeping")
@@ -402,8 +404,8 @@ class Changes(unittest.TestCase):
         landed = []
         player = Player(pack, mode="idle", on_settled=landed.append)
         player.frame(0.0)
-        player.set("error", instant=True)
-        self.assertEqual(landed, ["error"])
+        player.set("warning", instant=True)
+        self.assertEqual(landed, ["warning"])
 
     def test_nothing_on_screen_is_a_jump(self):
         # With nothing drawn there is nothing to morph from.
@@ -419,9 +421,9 @@ class Changes(unittest.TestCase):
         # like any other: a new morph, from what is on screen.
         player = Player(pack, mode="idle")
         player.frame(0.0)
-        player.set("error")
+        player.set("warning")
         run_to(player, 0.0, 300.0)
-        player.set("error")
+        player.set("warning")
         run_to(player, 300.0, 300.0 + LAND - 40.0)
         self.assertTrue(player.morphing)
         run_to(player, 300.0 + LAND - 40.0, 300.0 + LAND + 60.0)
@@ -544,7 +546,7 @@ class Since(unittest.TestCase):
 
     def test_a_change_in_the_middle_of_a_shared_morph(self):
         # Two apps watch idle morph to thinking, their frames timed
-        # differently, and hear of error a few frames after it happened.
+        # differently, and hear of warning a few frames after it happened.
         apps = []
         for step in (16.0, 23.0):
             app = Player(pack, mode="idle")
@@ -554,10 +556,10 @@ class Since(unittest.TestCase):
             while clock < self.NOW + 340.0:
                 clock += step
                 app.frame(clock)
-            app.set("error", since=self.NOW + 300.0)
+            app.set("warning", since=self.NOW + 300.0)
             app.frame(self.NOW + 450.0)
             apps.append(app)
-        # Each starts error from where the clock had thinking at 300 ms,
+        # Each starts warning from where the clock had thinking at 300 ms,
         # not from its own last frame, so they show the same frame.
         a, b = apps
         self.assertTrue(a.morphing and b.morphing)
@@ -570,7 +572,7 @@ class Since(unittest.TestCase):
         late.frame(self.NOW + 100.0)
         late.frame(self.NOW + LAND + 50.0)
         self.assertTrue(late.settled)
-        late.set("error", since=self.NOW + 300.0)
+        late.set("warning", since=self.NOW + 300.0)
         late.frame(self.NOW + 450.0)
         self.assertSameRects(late.rects(), a.rects())
 

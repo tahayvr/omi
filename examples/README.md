@@ -56,7 +56,7 @@ state instead of calling `set` yourself: see the
   environment variable.
 - **Terminal:** `node examples/terminal/omi-tty.js` tours every mode;
   `node examples/terminal/omi-tty.js idle thinking` cycles the modes you name;
-  `--once error` prints one still; `--follow` shows the shared Omi (start
+  `--once warning` prints one still; `--follow` shows the shared Omi (start
   `node service/omi-service.js` first, and change it with
   `node service/omictl.js set thinking`). It sizes Omi to a multiple of 22
   pixels so it stays crisp, refits when the window is resized, draws empty

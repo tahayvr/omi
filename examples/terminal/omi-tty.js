@@ -4,7 +4,7 @@
 
      node examples/terminal/omi-tty.js                 tour every mode
      node examples/terminal/omi-tty.js idle thinking   cycle these modes
-     node examples/terminal/omi-tty.js --once error    print one still and exit
+     node examples/terminal/omi-tty.js --once warning  print one still and exit
      node examples/terminal/omi-tty.js --follow        follow the shared Omi
                          (start service/omi-service.js, change it with
                          service/omictl.js; every follower moves together)

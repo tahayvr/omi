@@ -79,7 +79,6 @@ the same situations:
 | About to ask for a password                                        | `sudo`              |
 | Paused, or put off until later                                     | `sleeping`          |
 | Done (reaction)                                                    | `success`           |
-| Failed (reaction, or the mode while it stays failed)               | `error`             |
 | Not sure what happened                                             | `confused`          |
 | A real milestone, like finishing setup                             | `party`             |
 | Waiting for the user to decide (an agent wants approval, a dialog) | `asking`            |
@@ -122,7 +121,7 @@ Omi {
 Use it to draw the eye to what the user should look at next: the bar, a
 window that just opened, a panel. Keep it to something that's really there,
 and look ahead again once it's gone. A full look is always safe: the pack
-keeps the eyes inside the logo, so wide eyes (success, error) turn less far
+keeps the eyes inside the logo, so wide eyes (success) turn less far
 by themselves. Modes without eyes (`logo`, `tiling`, `confused`) ignore it.
 
 ## One Omi for the whole machine

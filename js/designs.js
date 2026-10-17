@@ -84,7 +84,7 @@ const EGG = {
       R(200, 110, 10, 60),
       R(180, 140, 20, 10),
     ],
-    mood: "m-error",
+    mood: "m-twitch",
   },
   tiling: {
     face: as("extra", [
@@ -181,8 +181,8 @@ const DESIGNS_OLD = [
     face: F.thinking,
     mood: "m-bob",
   },
-  { id: "success", name: "Success", face: F.success, mood: "m-happy" },
-  { id: "error", name: "Error", face: F.error, mood: "m-error" },
+  // the burst is the whole of it: no hop
+  { id: "success", name: "Success", face: F.success, mood: "" },
   { id: "sleeping", name: "Sleeping", face: F.sleeping, mood: "m-bob" },
   { id: "wink", name: "Wink", face: F.wink, mood: "m-bob" },
   { id: "sudo", name: "Sudo", face: F.sudo, mood: "m-bob" },
@@ -237,8 +237,7 @@ const DESIGNS = [
     },
     { id: "working", name: "Working", face: F.working, mood: "" },
     byId("success"),
-    { id: "warning", name: "Warning", face: F.warning, mood: "m-bob" },
-    byId("error"),
+    { id: "warning", name: "Warning", face: F.warning, mood: "" },
     {
       id: "offline-standby",
       name: "Offline, standby",

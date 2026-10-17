@@ -66,7 +66,6 @@ const LABELS = {
   working: "Omi is working",
   success: "Omi succeeded",
   warning: "Omi has a warning",
-  error: "Omi hit an error",
   "offline-standby": "Omi is offline",
   "offline-searching": "Omi is offline, looking for a network",
   "low-battery": "Omi is low on battery",
@@ -212,7 +211,7 @@ function buildPack() {
 const CONFORMANCE_TIMES = [0, 0.9, 3.3],
   CONFORMANCE_MORPHS = [
     ["logo", "idle"],
-    ["idle", "error"],
+    ["idle", "warning"],
     ["idle", "thinking"],
     ["working", "happy"],
     ["sleeping", "party"],
@@ -227,7 +226,7 @@ const CONFORMANCE_TIMES = [0, 0.9, 3.3],
     ["tiling", [1, 0]],
     // wide eyes: the look is limited so they stay inside gaze.inside
     ["success", [1, 1]],
-    ["error", [-1, 1]],
+    ["warning", [-1, 1]],
   ],
   // [mode, rest scale]: the still time between passes, scaled by an app
   CONFORMANCE_RESTS = [

@@ -54,6 +54,11 @@ const UP_R = [
 ];
 const DN_L = UP_L.slice().reverse(),
   DN_R = UP_R.slice().reverse();
+// which way a piece of the logo moves out: away from the middle, by `step`
+function outward(r, step) {
+  const dir = (v) => (Math.abs(v) < 40 ? 0 : Math.sign(v) * step);
+  return { dx: dir(r.x + r.w / 2 - 150), dy: dir(r.y + r.h / 2 - 150) };
+}
 function sides(dir) {
   const col = (x, from, to) =>
     (dir > 0 ? range(from, to) : range(to, from, -20)).map((y) => [x, y]);
@@ -103,13 +108,15 @@ const FRAMES = {
       ],
     ),
   ],
-  working: [...MISC, ...INNER_RECTS, ...chase(OUT_PATH, 1.6, 0.25)],
-  success: [...tint(MISC, "pop"), ...INNER_RECTS, ...tint(OUTER_RECTS, "pop")],
-  warning: [
-    ...tint(MISC, "pulseop"),
-    ...INNER_RECTS,
-    ...tint(OUTER_RECTS, "pulseop"),
-  ],
+  // the press: the inner square stamps down
+  working: [...OUTER_RECTS, ...MISC, ...tint(INNER_RECTS, "press")],
+  // the burst: every piece out a step from the middle (the inner square's
+  // half as far, so it never meets the frame) and back
+  success: LOGO.map((r) => ({
+    ...r,
+    c: "burst",
+    ...outward(r, INNER_RECTS.includes(r) ? 10 : 20),
+  })),
   "offline-searching": [
     ...MISC,
     ...INNER_RECTS,

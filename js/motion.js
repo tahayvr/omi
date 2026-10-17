@@ -81,7 +81,8 @@ const ANIM = {
       [1, { ty: 0 }],
     ],
   },
-  "m-error": {
+  // vim's twitch: a still wait, then a quick shake
+  "m-twitch": {
     body: true,
     rest: 1.54,
     dur: 0.66,
@@ -149,15 +150,6 @@ const ANIM = {
       i / 16,
       { tx: +(20 * Math.sin((i / 8) * Math.PI)).toFixed(3) },
     ]),
-  },
-  scan: {
-    dur: 1.6,
-    ease: "ease-in-out",
-    keys: [
-      [0, { tx: -30 }],
-      [0.5, { tx: 30 }],
-      [1, { tx: -30 }],
-    ],
   },
   pulse: {
     dur: 0.8,
@@ -304,7 +296,6 @@ const ANIM = {
 
   /* frame */
   // chase: a lit cell fading to a floor; pieces carry their own dur and dl
-  t25: fade(0.25, 0.2),
   t30: fade(0.3, 0.2),
   t40: fade(0.4, 0.2),
   t60: fade(0.6, 0.2),
@@ -334,6 +325,83 @@ const ANIM = {
       [0.75, { op: 0 }],
       [0.78, { op: 1 }],
       [1, { op: 1 }],
+    ],
+  },
+  // working (frames.js): the inner square lifts a cell, holds, and slams
+  // back down
+  press: {
+    rest: 0.5,
+    dur: 1,
+    ease: "ease-in-out",
+    keys: [
+      [0, { ty: 0 }],
+      [0.45, { ty: -20 }],
+      [0.6, { ty: -20 }],
+      [0.68, { ty: 0 }],
+      [1, { ty: 0 }],
+    ],
+  },
+  // the eyes ride with it, and squint on the impact
+  "press-eye": {
+    rest: 0.5,
+    dur: 1,
+    ease: "ease-in-out",
+    keys: [
+      [0, { ty: 0, sy: 1 }],
+      [0.45, { ty: -20, sy: 1 }],
+      [0.6, { ty: -20, sy: 1 }],
+      [0.68, { ty: 0, sy: 0.5 }],
+      [0.85, { ty: 0, sy: 1 }],
+      [1, { ty: 0, sy: 1 }],
+    ],
+  },
+  // sparks off both sides at the impact
+  "spark-l": {
+    rest: 0.5,
+    dur: 1,
+    ease: "ease-out",
+    keys: [
+      [0, { tx: 0, ty: 0, op: 0 }],
+      [0.67, { tx: 0, ty: 0, op: 0 }],
+      [0.69, { op: 1 }],
+      [0.92, { tx: -30, ty: -30, op: 0 }],
+      [1, { tx: 0, ty: 0, op: 0 }],
+    ],
+  },
+  "spark-r": {
+    rest: 0.5,
+    dur: 1,
+    ease: "ease-out",
+    keys: [
+      [0, { tx: 0, ty: 0, op: 0 }],
+      [0.67, { tx: 0, ty: 0, op: 0 }],
+      [0.69, { op: 1 }],
+      [0.92, { tx: 30, ty: -30, op: 0 }],
+      [1, { tx: 0, ty: 0, op: 0 }],
+    ],
+  },
+  // warning: the sign beside the head sways, slowly: a sine in 16 steps, so
+  // it doesn't stop as it passes the middle
+  placard: {
+    dur: 3,
+    ease: "linear",
+    keys: Array.from({ length: 17 }, (_, i) => [
+      i / 16,
+      { tx: +(8 * Math.sin((i / 8) * Math.PI)).toFixed(3) },
+    ]),
+  },
+  // success (frames.js): every piece of the logo out a step, a beat, and
+  // snapped back; each piece says which way, in dx and dy
+  burst: {
+    dur: 1.6,
+    ease: "ease-in-out",
+    vars: ["dx", "dy"],
+    keys: [
+      [0, { tx: 0, ty: 0 }],
+      [0.16, { tx: ["dx", 1], ty: ["dy", 1] }],
+      [0.4, { tx: ["dx", 1], ty: ["dy", 1] }],
+      [0.48, { tx: 0, ty: 0 }],
+      [1, { tx: 0, ty: 0 }],
     ],
   },
   sn: {

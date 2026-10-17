@@ -95,11 +95,11 @@ function gap(a, b) {
   await wait(300);
   const tickA = setInterval(() => A.frame(Date.now()), 16),
     tickB = setInterval(() => B.frame(Date.now()), 23);
-  await ctl("set", "error");
+  await ctl("set", "warning");
   await wait(150);
   check(
     "two apps mid-morph show the same frame",
-    A.morph && B.morph && A.mode === "error" && gap(A, B) < 0.5,
+    A.morph && B.morph && A.mode === "warning" && gap(A, B) < 0.5,
     `${A.morph ? "mid-morph" : "not morphing"}, gap ${gap(A, B).toFixed(3)}`,
   );
   // 3. a third app joins mid-morph
@@ -109,7 +109,7 @@ function gap(a, b) {
   await wait(1200);
   check(
     "all land on the same frame",
-    A.mode === "error" && gap(A, B) < 0.01 && gap(A, C) < 0.01,
+    A.mode === "warning" && gap(A, B) < 0.01 && gap(A, C) < 0.01,
     `${A.mode}/${B.mode}/${C.mode}, A-B ${gap(A, B).toFixed(4)}, A-C ${gap(A, C).toFixed(4)}`,
   );
   await wait(900);
@@ -124,7 +124,7 @@ function gap(a, b) {
   await wait(700);
   check(
     "for/then changes back",
-    A.mode === "idle" && seen.join() === "error,success,idle",
+    A.mode === "idle" && seen.join() === "warning,success,idle",
     seen.join(" > "),
   );
   // ...and a later change cancels the timer

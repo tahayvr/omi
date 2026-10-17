@@ -74,22 +74,6 @@ const F = {
       [2, 0],
     ]),
   ],
-  error: [
-    ...blk(80, 100, [
-      [0, 0],
-      [2, 0],
-      [1, 1],
-      [0, 2],
-      [2, 2],
-    ]),
-    ...blk(160, 100, [
-      [0, 0],
-      [2, 0],
-      [1, 1],
-      [0, 2],
-      [2, 2],
-    ]),
-  ],
   sleeping: [
     R(80, 144, 40, 12, "breathe"),
     R(160, 144, 40, 12, "breathe"),
@@ -135,12 +119,25 @@ const QMARK = [
 ];
 Object.assign(F, {
   sideeye: [R(100, 90, 20, 40, "look"), R(180, 90, 20, 40, "look")],
-  working: [R(100, 110, 20, 40, "scan"), R(180, 110, 20, 40, "scan")],
+  // working: the eyes ride the press, and sparks fly off both sides
+  working: [
+    R(100, 110, 20, 40, "press-eye"),
+    R(180, 110, 20, 40, "press-eye"),
+    ...as("extra", [
+      R(-30, 240, 20, 20, "spark-l"),
+      R(-20, 270, 10, 10, "spark-l"),
+      R(310, 240, 20, 20, "spark-r"),
+      R(310, 270, 10, 10, "spark-r"),
+    ]),
+  ],
+  // warning: a big "!" held up beside the head, and the eyes on it
   warning: [
-    R(100, 80, 20, 40),
-    R(100, 140, 20, 20),
-    R(180, 80, 20, 40),
-    R(180, 140, 20, 20),
+    R(120, 90, 20, 40, "eye"),
+    R(200, 90, 20, 40, "eye"),
+    ...as("extra", [
+      R(310, -50, 40, 70, "placard"),
+      R(310, 40, 40, 20, "placard"),
+    ]),
   ],
   offline: [R(80, 140, 40, 10), R(160, 140, 40, 10)],
   standby: [R(140, 140, 20, 20, "led")],

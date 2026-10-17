@@ -73,7 +73,7 @@ function renderSite() {
         ["wink", "Wink"],
         ["confused", "Confused"],
         ["success", "Success"],
-        ["error", "Error"],
+        ["working", "Working"],
         ["surprised", "Surprised"],
         ["warning", "Warning"],
         ["sudo", "Sudo"],
