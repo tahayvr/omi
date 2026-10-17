@@ -1,9 +1,11 @@
 #!/usr/bin/env node
-/* Serves the repo for the design jig (index.html) and the web example,
-   which fetch the pack and so can't be opened as files.
+/* Serves the repo, or the site as published, for tools/check-site.js. It
+   answers with the files exactly as they are on disk, with nothing added to
+   them, which is what a check of the published site needs. To work on the
+   jig, `npm run dev` (Vite, see vite.config.mjs) reloads the page as you go.
 
-     npm run dev              http://localhost:8000, or the next free port
-     npm run dev -- 3000      that port, or fail
+     node tools/dev.js               http://localhost:8000, or the next free port
+     node tools/dev.js 3000          that port, or fail
      node tools/dev.js 3000 _site    another folder (the site as published)
 
    It answers on this machine only (localhost, 127.0.0.1), so the page is

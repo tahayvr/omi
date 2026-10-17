@@ -39,7 +39,8 @@ The rules it's drawn by, in short (the long form is in
 
 - **[index.html](index.html):** the design jig, where Omi's modes and
   animations are made, and where any mode is exported as a picture or a
-  video. `npm run dev` serves it at http://localhost:8000; the site,
+  video. `npm run dev` serves it at http://localhost:8000 and reloads it
+  as you edit; the site,
   https://tahayvr.github.io/meet-omi/, is the same page, published from
   `master` once its checks pass
   ([.github/workflows/publish.yml](.github/workflows/publish.yml)). What it
