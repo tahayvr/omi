@@ -76,8 +76,8 @@ const F = {
   ],
   sleeping: [
     // shut: half a cell tall, on the half-cell grid
-    R(80, 140, 40, 10, "breathe"),
-    R(160, 140, 40, 10, "breathe"),
+    R(90, 140, 40, 10, "breathe"),
+    R(170, 140, 40, 10, "breathe"),
     // two z's of 10-unit pixels, half a loop apart, rising off the corner
     ...Z(310, 10, 40),
     ...Z(330, -50, 40, 1.3),

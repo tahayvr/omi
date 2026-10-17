@@ -92,17 +92,20 @@ const ANIM = {
       [1, { ty: 180 }],
     ],
   },
-  // peek's eyes, in step with the window (which rests risen): up, they
-  // look a cell to the left and back, and then the logo sinks
+  // peek's eyes, in step with the window (which rests risen): up, they look
+  // around, a little to the right, then further to the left, and back to
+  // the middle before the logo sinks
   "peek-look": {
     dur: 4.5,
     ease: "ease-in-out",
     keys: [
       [0, { tx: 0 }],
-      [0.08, { tx: 0 }],
-      [0.16, { tx: -20 }],
-      [0.3, { tx: -20 }],
-      [0.38, { tx: 0 }],
+      [0.05, { tx: 0 }],
+      [0.11, { tx: 10 }],
+      [0.18, { tx: 10 }],
+      [0.26, { tx: -20 }],
+      [0.36, { tx: -20 }],
+      [0.44, { tx: 0 }],
       [1, { tx: 0 }],
     ],
   },
@@ -455,17 +458,46 @@ const ANIM = {
       [1, { op: 0 }],
     ],
   },
+  // mind blown: the top of the head blows off, hangs, falls back down
+  // and bounces once
   lid: {
-    // mind blown: the top of the head lifts off
+    dur: 2.4,
+    ease: "ease-out",
+    keys: [
+      [0, { ty: 0 }],
+      [0.15, { ty: 0 }],
+      [0.22, { ty: -60 }],
+      [0.55, { ty: -66 }],
+      [0.68, { ty: 0 }],
+      [0.73, { ty: -12 }],
+      [0.78, { ty: 0 }],
+      [1, { ty: 0 }],
+    ],
+  },
+  // chunks burst out of the head with it and fade (mx, my: where to)
+  debris: {
+    dur: 2.4,
+    ease: "ease-out",
+    vars: ["mx", "my"],
+    keys: [
+      [0, { tx: 0, ty: 0, op: 0 }],
+      [0.15, { tx: 0, ty: 0, op: 0 }],
+      [0.16, { op: 1 }],
+      [0.45, { tx: ["mx", 1], ty: ["my", 1], op: 0 }],
+      [1, { tx: 0, ty: 0, op: 0 }],
+    ],
+  },
+  // the wide eyes snap down to pupils at the boom, then open wide again
+  shock: {
     dur: 2.4,
     ease: "ease-in-out",
     keys: [
-      [0, { ty: 0 }],
-      [0.2, { ty: 0 }],
-      [0.35, { ty: -60 }],
-      [0.7, { ty: -60 }],
-      [0.85, { ty: 0 }],
-      [1, { ty: 0 }],
+      [0, { sx: 1, sy: 1 }],
+      [0.15, { sx: 1, sy: 1 }],
+      [0.18, { sx: 0.5, sy: 0.5 }],
+      [0.7, { sx: 0.5, sy: 0.5 }],
+      [0.82, { sx: 1, sy: 1 }],
+      [1, { sx: 1, sy: 1 }],
     ],
   },
 };
