@@ -49,7 +49,7 @@ const ANIM = {
     ease: "ease-in-out",
     keys: [
       [0, { ty: 0 }],
-      [0.5, { ty: -12 }],
+      [0.5, { ty: -10 }],
       [1, { ty: 0 }],
     ],
   },
