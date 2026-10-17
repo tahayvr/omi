@@ -95,7 +95,7 @@ purpose is argued for in that file, in `ARGUED`, with the reason in a line:
 5. **Look at it in the jig.** `npm run dev` and open
    http://localhost:8000/jig.html: every design looping, each one bigger in
    its single view. The home page (http://localhost:8000) plays every mode in
-   its Modes section, and its Terminal section shows Omi at half-block size.
+   its Modes section, and its ASCII section shows Omi at half-block size.
    Check it at the small end too: 44 device pixels across is where props
    must still read.
 6. **Build the pack.** `node tools/build-pack.js` writes `pack/omi.json`,
