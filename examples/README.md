@@ -26,7 +26,11 @@ reaction, and ← → step through the modes.
   buttons say how their work went. Swatches and a color picker show it
   takes any one color, and the page has a light and a dark theme and a
   snippet to start from. With reduced motion on, Omi holds still.
-- **Qt:** the swatches show it takes any one color.
+- **Qt:** a window Omi follows along in, like the web page: it types and
+  thinks with a chat box, shows a transfer's direction, sleeps when the
+  window goes to the background or you're away, and lives in buttons as
+  small items of its own. Every mode, any color (with a color picker), and
+  light and dark.
 - **Terminal:** it also runs a command with Omi beside it.
 - **Python** and **Rust:** desktop windows with the same keys as the
   terminal (`c` color, `b` whole-body motion, `t` a tour). The Python one
