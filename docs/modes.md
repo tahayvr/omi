@@ -1,6 +1,6 @@
 # Every Omi mode
 
-Omi has 46 modes, each a set of rectangles with a looping
+Omi has 47 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
 `node tools/modes-doc.js` from the pack, so it always matches
 `pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
@@ -30,9 +30,10 @@ drawn by the reference player.
 | ![Omi](modes/idle.svg) | `idle` | Idle | state | 4 s | Omi | Nothing going on |
 | ![Omi is thinking](modes/thinking.svg) | `thinking` | Thinking | state | 6 s | Omi is thinking | Checking, loading, waiting on the network (family: thinking) |
 | ![Omi is thinking](modes/thinking-dots.svg) | `thinking-dots` | Thinking, dots | state | 4 s | Omi is thinking | A variation of thinking: three dots in the logo's gap (family: thinking) |
-| ![Omi is updating](modes/updating.svg) | `updating` | Updating / downloading | state | 4.7 s | Omi is updating | Downloading or installing (family: transfer) |
-| ![Omi is uploading](modes/uploading.svg) | `uploading` | Uploading | state | 4.7 s | Omi is uploading | Sending something away (family: transfer) |
-| ![Omi is uploading](modes/uploading-rising.svg) | `uploading-rising` | Uploading, rising | state | 4 s | Omi is uploading | A variation of uploading: something building up (family: transfer) |
+| ![Omi is downloading](modes/download.svg) | `download` | Download | state | 4.3 s | Omi is downloading | Downloading or installing (family: download) |
+| ![Omi is downloading](modes/download-falling.svg) | `download-falling` | Download, falling | state | 4 s | Omi is downloading | A variation of download: the frame's sides falling (family: download) |
+| ![Omi is uploading](modes/upload.svg) | `upload` | Upload | state | 4.3 s | Omi is uploading | Sending something away (family: upload) |
+| ![Omi is uploading](modes/upload-rising.svg) | `upload-rising` | Upload, rising | state | 4 s | Omi is uploading | A variation of upload: the frame's sides rising (family: upload) |
 | ![Omi is working](modes/working.svg) | `working` | Working | state | 3.2 s | Omi is working | Busy doing it for the user |
 | ![Omi succeeded](modes/success.svg) | `success` | Success | reaction, 1.2 s | 1.6 s | Omi succeeded | Done, then back |
 | ![Omi has a warning](modes/warning.svg) | `warning` | Warning | state | 2.8 s | Omi has a warning | Something needs a look, but nothing is broken |

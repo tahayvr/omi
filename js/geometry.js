@@ -135,9 +135,6 @@ const QMARK = [
 ];
 Object.assign(F, {
   sideeye: [R(100, 90, 20, 40, "look"), R(180, 90, 20, 40, "look")],
-  rising: [R(120, 90, 20, 40, "eye"), R(200, 90, 20, 40, "eye")],
-  updating: [R(100, 160, 20, 40, "eye"), R(180, 160, 20, 40, "eye")],
-  uploading: [R(100, 80, 20, 40, "eye"), R(180, 80, 20, 40, "eye")],
   working: [R(100, 110, 20, 40, "scan"), R(180, 110, 20, 40, "scan")],
   warning: [
     R(100, 80, 20, 40),

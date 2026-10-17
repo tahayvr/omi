@@ -303,7 +303,32 @@ const ANIM = {
   t30: fade(0.3, 0.2),
   t40: fade(0.4, 0.2),
   t60: fade(0.6, 0.2),
-  a40: fade(0.4, 0),
+  // transfer: a dip in the first tenth of the loop, whole after it
+  pass: {
+    dur: 2.8,
+    ease: "linear",
+    keys: [
+      [0, { op: 1 }],
+      [0.03, { op: 0.2 }],
+      [0.07, { op: 0.2 }],
+      [0.1, { op: 1 }],
+      [1, { op: 1 }],
+    ],
+  },
+  // the arrow: painted in at 0.04, whole until 0.6, gone by 0.62. Delayed
+  // by its place after the frame's gap, that is gone as the gap sets off
+  // and painted as it arrives.
+  paint: {
+    dur: 2.8,
+    ease: "linear",
+    keys: [
+      [0, { op: 0 }],
+      [0.04, { op: 1 }],
+      [0.6, { op: 1 }],
+      [0.62, { op: 0 }],
+      [1, { op: 0 }],
+    ],
+  },
   sn: {
     // snake; cells stagger with dl
     dur: 2.4,

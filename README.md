@@ -3,8 +3,8 @@
 > [!IMPORTANT]  
 > **Concept!** Not final designs.
 
-Omi is the Omarchy mascot: the Omarchy logo with a face. It has 49 modes,
-from idle and thinking to updating, success and party, morphs from any one
+Omi is the Omarchy mascot: the Omarchy logo with a face. It has modes
+from idle and thinking to download, success and party, morphs from any one
 to any other, and is drawn as plain rectangles in one color, so any app can
 show it: a shell plugin, a web page, a Qt app, a terminal, a Rust or a
 Python program.
@@ -15,7 +15,7 @@ Python program.
 
 Omarchy is a system that talks to its user: notices at first boot, updates,
 agents that work on their behalf. Omi gives those moments one face. An app
-sets what Omi is doing (`thinking` while it checks, `updating` while it
+sets what Omi is doing (`thinking` while it checks, `download` while it
 installs, `listening` while it waits for a key) and reacts to what just
 happened (`success`, `surprised`), and because every app uses the same
 modes for the same situations, Omi means the same thing everywhere.

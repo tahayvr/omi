@@ -17,18 +17,29 @@ const OUT_PATH = [
   ...range(280, 20, -20).map((y) => [0, y]),
 ];
 const tint = (rects, c) => rects.map((r) => ({ ...r, c }));
-/* growth: frame streams flow into a growing arrow, one continuous motion */
-function grow(paths, arrow, dt = 0.06, D = 2.8) {
-  const mk = (x, y, w, hh, k, floor) => {
-    const dl = k * dt;
-    return { ...R(x, y, w, hh, floor ? "t40" : "a40"), dur: D, dl };
-  };
+/* transfer: a short dark gap runs along the frame, one cell after another,
+   and when it gets to the end the arrow is painted, row by row from the
+   frame out. The arrow erased itself as the gap set off, and stays whole
+   from its last row to the next pass. Every piece plays its animation late
+   by its place in line ("pass" the frame's dip, "paint" the arrow's), and
+   all of it fits in the first part of the loop: at rest (and in the
+   still) the logo and the arrow are whole. */
+const PASS_DT = 0.04,
+  PAINT_DT = 0.12;
+function flow(paths, arrow = []) {
   const out = [];
   paths.forEach((p) =>
-    p.forEach(([x, y], k) => out.push(mk(x, y, 20, 20, k, 0.2))),
+    p.forEach(([x, y], k) =>
+      out.push({ ...R(x, y, 20, 20, "pass"), dl: k * PASS_DT }),
+    ),
   );
   const start = Math.max(...paths.map((p) => p.length));
-  arrow.forEach(([x, y, w, hh], k) => out.push(mk(x, y, w, hh, start + k, 0)));
+  arrow.forEach(([x, y, w, h], k) =>
+    out.push({
+      ...R(x, y, w, h, "paint"),
+      dl: start * PASS_DT + k * PAINT_DT,
+    }),
+  );
   return out;
 }
 const UP_L = [
@@ -47,11 +58,33 @@ const UP_R = [
 ];
 const DN_L = UP_L.slice().reverse(),
   DN_R = UP_R.slice().reverse();
+function sides(dir) {
+  const col = (x, from, to) =>
+    (dir > 0 ? range(from, to) : range(to, from, -20)).map((y) => [x, y]);
+  const outer = flow([col(0, 0, 280), col(280, 0, 280)]),
+    inner = flow([col(40, 60, 220), col(240, 60, 220)]).map((r) => ({
+      ...r,
+      dl: r.dl + 4 * PASS_DT,
+    }));
+  return [
+    ...MISC,
+    ...cellsOf(range(20, 260).map((x) => [x, 0])),
+    ...cellsOf([...range(20, 140), ...range(180, 260)].map((x) => [x, 280])),
+    ...outer,
+    ...cellsOf([
+      ...range(40, 140).map((x) => [x, 40]),
+      [220, 40],
+      [240, 40],
+      ...range(40, 240).map((x) => [x, 240]),
+    ]),
+    ...inner,
+  ];
+}
 const FRAMES = {
-  updating: [
-    ...MISC.map((r) => (r.y >= 260 ? r : { ...r, o: 0.2 })),
+  download: [
+    ...MISC,
     ...INNER_RECTS,
-    ...grow(
+    ...flow(
       [DN_L, DN_R],
       [
         [140, 300, 20, 20],
@@ -61,10 +94,10 @@ const FRAMES = {
       ],
     ),
   ],
-  uploading: [
-    ...MISC.map((r) => (r.y <= 20 ? r : { ...r, o: 0.2 })),
+  upload: [
+    ...MISC,
     ...INNER_RECTS,
-    ...grow(
+    ...flow(
       [UP_L, UP_R],
       [
         [140, -20, 20, 20],
@@ -89,41 +122,10 @@ const FRAMES = {
       dl: (i / OUT_PATH.length) * 4,
     })),
   ],
-  "uploading-rising": [
-    MISC[0],
-    MISC[2],
-    { ...MISC[1], o: 0.2 },
-    ...cellsOf(range(20, 260).map((x) => [x, 0])),
-    ...cellsOf([...range(20, 140), ...range(180, 260)].map((x) => [x, 280])),
-    ...chase(
-      range(280, 0, -20).map((y) => [0, y]),
-      1.6,
-      0.4,
-    ),
-    ...chase(
-      range(280, 0, -20).map((y) => [280, y]),
-      1.6,
-      0.4,
-    ),
-    ...cellsOf([
-      ...range(40, 140).map((x) => [x, 40]),
-      [220, 40],
-      [240, 40],
-      ...range(40, 240).map((x) => [x, 240]),
-    ]),
-    ...chase(
-      range(220, 60, -20).map((y) => [40, y]),
-      1.6,
-      0.4,
-      0.5,
-    ),
-    ...chase(
-      range(220, 60, -20).map((y) => [240, y]),
-      1.6,
-      0.4,
-      0.5,
-    ),
-  ],
+  // the variations: the gap climbs (or drops down) the frame's four sides,
+  // the inner ones a little behind the outer ones
+  "upload-rising": sides(-1),
+  "download-falling": sides(1),
   "low-battery": [
     ...MISC.map((r) => (r.y >= 260 ? r : { ...r, o: 0.2 })),
     ...INNER_RECTS,

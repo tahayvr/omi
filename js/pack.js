@@ -46,7 +46,8 @@ const REACTIONS = {
 const FAMILIES = {
   thinking: ["thinking", "thinking-dots"],
   offline: ["offline-standby", "offline-searching"],
-  transfer: ["updating", "uploading", "uploading-rising"],
+  download: ["download", "download-falling"],
+  upload: ["upload", "upload-rising"],
 };
 const EASTER = ["glitch", "code-rain", "vim"];
 // What a screen reader says for each mode: every app gives it to its toolkit
@@ -58,9 +59,10 @@ const LABELS = {
   idle: "Omi",
   thinking: "Omi is thinking",
   "thinking-dots": "Omi is thinking",
-  updating: "Omi is updating",
-  uploading: "Omi is uploading",
-  "uploading-rising": "Omi is uploading",
+  download: "Omi is downloading",
+  "download-falling": "Omi is downloading",
+  upload: "Omi is uploading",
+  "upload-rising": "Omi is uploading",
   working: "Omi is working",
   success: "Omi succeeded",
   warning: "Omi has a warning",
@@ -683,7 +685,7 @@ window the pieces seen through it come first, then the rest.
 What a mode is for:
 
 - \`kind\`: "state" or "reaction". A state stands for something going on
-  (thinking, updating, listening) and stays as long as it does. A reaction
+  (thinking, download, listening) and stays as long as it does. A reaction
   is something that just happened (success, surprised, a wink): show it,
   then go back to the state Omi was in.
 - \`hold\`: on a reaction, how many seconds to show it after its morph lands

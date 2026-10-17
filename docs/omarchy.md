@@ -72,7 +72,7 @@ the same situations:
 | ------------------------------------------------------------------ | ------------------- |
 | Nothing going on                                                   | `idle`              |
 | Checking, loading, waiting on the network                          | `thinking`          |
-| Downloading or installing                                          | `updating`          |
+| Downloading or installing                                          | `download`          |
 | Busy doing it for the user                                         | `working`           |
 | Offline                                                            | `offline-searching` |
 | Waiting for the user to press a key                                | `listening`         |

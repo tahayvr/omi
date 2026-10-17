@@ -1437,35 +1437,6 @@
         ]
       ]
     },
-    "t40": {
-      "duration": 1.6,
-      "ease": [
-        0,
-        0,
-        1,
-        1
-      ],
-      "keys": [
-        [
-          0,
-          {
-            "op": 1
-          }
-        ],
-        [
-          0.4,
-          {
-            "op": 0.2
-          }
-        ],
-        [
-          1,
-          {
-            "op": 0.2
-          }
-        ]
-      ]
-    },
     "t60": {
       "duration": 1.6,
       "ease": [
@@ -1495,8 +1466,8 @@
         ]
       ]
     },
-    "a40": {
-      "duration": 1.6,
+    "pass": {
+      "duration": 2.8,
       "ease": [
         0,
         0,
@@ -1511,7 +1482,60 @@
           }
         ],
         [
-          0.4,
+          0.03,
+          {
+            "op": 0.2
+          }
+        ],
+        [
+          0.07,
+          {
+            "op": 0.2
+          }
+        ],
+        [
+          0.1,
+          {
+            "op": 1
+          }
+        ],
+        [
+          1,
+          {
+            "op": 1
+          }
+        ]
+      ]
+    },
+    "paint": {
+      "duration": 2.8,
+      "ease": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "keys": [
+        [
+          0,
+          {
+            "op": 0
+          }
+        ],
+        [
+          0.04,
+          {
+            "op": 1
+          }
+        ],
+        [
+          0.6,
+          {
+            "op": 1
+          }
+        ],
+        [
+          0.62,
           {
             "op": 0
           }
@@ -3362,12 +3386,12 @@
       ]
     },
     {
-      "id": "updating",
-      "name": "Updating / downloading",
-      "label": "Omi is updating",
+      "id": "download",
+      "name": "Download",
+      "label": "Omi is downloading",
       "group": "System states",
       "kind": "state",
-      "family": "transfer",
+      "family": "download",
       "bounds": [
         0,
         0,
@@ -3381,16 +3405,14 @@
           "y": 20,
           "w": 20,
           "h": 20,
-          "role": "frame",
-          "opacity": 0.2
+          "role": "frame"
         },
         {
           "x": 20,
           "y": 140,
           "w": 20,
           "h": 20,
-          "role": "frame",
-          "opacity": 0.2
+          "role": "frame"
         },
         {
           "x": 140,
@@ -3440,8 +3462,7 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8
+          "anim": "pass"
         },
         {
           "x": 120,
@@ -3449,9 +3470,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.06
+          "anim": "pass",
+          "delay": 0.04
         },
         {
           "x": 100,
@@ -3459,9 +3479,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.12
+          "anim": "pass",
+          "delay": 0.08
         },
         {
           "x": 80,
@@ -3469,9 +3488,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.18
+          "anim": "pass",
+          "delay": 0.12
         },
         {
           "x": 60,
@@ -3479,9 +3497,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.24
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 40,
@@ -3489,9 +3506,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.3
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 20,
@@ -3499,9 +3515,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.36
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 0,
@@ -3509,9 +3524,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.42
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 0,
@@ -3519,9 +3533,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.48
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 0,
@@ -3529,9 +3542,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.54
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 0,
@@ -3539,9 +3551,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 0,
@@ -3549,9 +3560,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6599999999999999
+          "anim": "pass",
+          "delay": 0.44
         },
         {
           "x": 0,
@@ -3559,9 +3569,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.72
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 0,
@@ -3569,9 +3578,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.78
+          "anim": "pass",
+          "delay": 0.52
         },
         {
           "x": 0,
@@ -3579,9 +3587,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.84
+          "anim": "pass",
+          "delay": 0.56
         },
         {
           "x": 0,
@@ -3589,9 +3596,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.8999999999999999
+          "anim": "pass",
+          "delay": 0.6
         },
         {
           "x": 0,
@@ -3599,9 +3605,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.96
+          "anim": "pass",
+          "delay": 0.64
         },
         {
           "x": 0,
@@ -3609,9 +3614,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.02
+          "anim": "pass",
+          "delay": 0.68
         },
         {
           "x": 0,
@@ -3619,9 +3623,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.08
+          "anim": "pass",
+          "delay": 0.72
         },
         {
           "x": 0,
@@ -3629,9 +3632,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.14
+          "anim": "pass",
+          "delay": 0.76
         },
         {
           "x": 0,
@@ -3639,9 +3641,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.2
+          "anim": "pass",
+          "delay": 0.8
         },
         {
           "x": 0,
@@ -3649,9 +3650,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.26
+          "anim": "pass",
+          "delay": 0.84
         },
         {
           "x": 20,
@@ -3659,9 +3659,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.3199999999999998
+          "anim": "pass",
+          "delay": 0.88
         },
         {
           "x": 40,
@@ -3669,9 +3668,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.38
+          "anim": "pass",
+          "delay": 0.92
         },
         {
           "x": 60,
@@ -3679,9 +3677,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.44
+          "anim": "pass",
+          "delay": 0.96
         },
         {
           "x": 80,
@@ -3689,9 +3686,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.5
+          "anim": "pass",
+          "delay": 1
         },
         {
           "x": 100,
@@ -3699,9 +3695,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.56
+          "anim": "pass",
+          "delay": 1.04
         },
         {
           "x": 120,
@@ -3709,9 +3704,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.6199999999999999
+          "anim": "pass",
+          "delay": 1.08
         },
         {
           "x": 140,
@@ -3719,9 +3713,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.68
+          "anim": "pass",
+          "delay": 1.12
         },
         {
           "x": 160,
@@ -3729,8 +3722,7 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8
+          "anim": "pass"
         },
         {
           "x": 180,
@@ -3738,9 +3730,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.06
+          "anim": "pass",
+          "delay": 0.04
         },
         {
           "x": 200,
@@ -3748,9 +3739,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.12
+          "anim": "pass",
+          "delay": 0.08
         },
         {
           "x": 220,
@@ -3758,9 +3748,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.18
+          "anim": "pass",
+          "delay": 0.12
         },
         {
           "x": 240,
@@ -3768,9 +3757,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.24
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 260,
@@ -3778,9 +3766,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.3
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 280,
@@ -3788,9 +3775,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.36
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 280,
@@ -3798,9 +3784,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.42
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 280,
@@ -3808,9 +3793,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.48
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 280,
@@ -3818,9 +3802,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.54
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 280,
@@ -3828,9 +3811,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 280,
@@ -3838,9 +3820,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6599999999999999
+          "anim": "pass",
+          "delay": 0.44
         },
         {
           "x": 280,
@@ -3848,9 +3829,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.72
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 280,
@@ -3858,9 +3838,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.78
+          "anim": "pass",
+          "delay": 0.52
         },
         {
           "x": 280,
@@ -3868,9 +3847,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.84
+          "anim": "pass",
+          "delay": 0.56
         },
         {
           "x": 280,
@@ -3878,9 +3856,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.8999999999999999
+          "anim": "pass",
+          "delay": 0.6
         },
         {
           "x": 280,
@@ -3888,9 +3865,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.96
+          "anim": "pass",
+          "delay": 0.64
         },
         {
           "x": 280,
@@ -3898,9 +3874,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.02
+          "anim": "pass",
+          "delay": 0.68
         },
         {
           "x": 280,
@@ -3908,9 +3883,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.08
+          "anim": "pass",
+          "delay": 0.72
         },
         {
           "x": 280,
@@ -3918,9 +3892,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.14
+          "anim": "pass",
+          "delay": 0.76
         },
         {
           "x": 280,
@@ -3928,9 +3901,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.2
+          "anim": "pass",
+          "delay": 0.8
         },
         {
           "x": 260,
@@ -3938,9 +3910,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.26
+          "anim": "pass",
+          "delay": 0.84
         },
         {
           "x": 240,
@@ -3948,9 +3919,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.3199999999999998
+          "anim": "pass",
+          "delay": 0.88
         },
         {
           "x": 220,
@@ -3958,9 +3928,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.38
+          "anim": "pass",
+          "delay": 0.92
         },
         {
           "x": 200,
@@ -3968,9 +3937,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.44
+          "anim": "pass",
+          "delay": 0.96
         },
         {
           "x": 180,
@@ -3978,9 +3946,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.5
+          "anim": "pass",
+          "delay": 1
         },
         {
           "x": 140,
@@ -3988,9 +3955,8 @@
           "w": 20,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.74
+          "anim": "paint",
+          "delay": 1.16
         },
         {
           "x": 100,
@@ -3998,9 +3964,8 @@
           "w": 100,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.7999999999999998
+          "anim": "paint",
+          "delay": 1.2799999999999998
         },
         {
           "x": 120,
@@ -4008,9 +3973,8 @@
           "w": 60,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.8599999999999999
+          "anim": "paint",
+          "delay": 1.4
         },
         {
           "x": 140,
@@ -4018,13 +3982,12 @@
           "w": 20,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.92
+          "anim": "paint",
+          "delay": 1.52
         },
         {
           "x": 100,
-          "y": 160,
+          "y": 110,
           "w": 20,
           "h": 40,
           "role": "eye",
@@ -4032,7 +3995,7 @@
         },
         {
           "x": 180,
-          "y": 160,
+          "y": 110,
           "w": 20,
           "h": 40,
           "role": "eye",
@@ -4041,12 +4004,804 @@
       ]
     },
     {
-      "id": "uploading",
-      "name": "Uploading",
+      "id": "download-falling",
+      "name": "Download, falling",
+      "label": "Omi is downloading",
+      "group": "System states",
+      "kind": "state",
+      "family": "download",
+      "bounds": [
+        0,
+        0,
+        300,
+        300
+      ],
+      "anim": "m-bob",
+      "pieces": [
+        {
+          "x": 140,
+          "y": 20,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 20,
+          "y": 140,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 140,
+          "y": 260,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 20,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 40,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 60,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 80,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 100,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 120,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 140,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 160,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 180,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 200,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 220,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 240,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 260,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 20,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 40,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 60,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 80,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 100,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 120,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 140,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 180,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 200,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 220,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 240,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 260,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass"
+        },
+        {
+          "x": 0,
+          "y": 20,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.04
+        },
+        {
+          "x": 0,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.08
+        },
+        {
+          "x": 0,
+          "y": 60,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.12
+        },
+        {
+          "x": 0,
+          "y": 80,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.16
+        },
+        {
+          "x": 0,
+          "y": 100,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.2
+        },
+        {
+          "x": 0,
+          "y": 120,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.24
+        },
+        {
+          "x": 0,
+          "y": 140,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.28
+        },
+        {
+          "x": 0,
+          "y": 160,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.32
+        },
+        {
+          "x": 0,
+          "y": 180,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.36
+        },
+        {
+          "x": 0,
+          "y": 200,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.4
+        },
+        {
+          "x": 0,
+          "y": 220,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.44
+        },
+        {
+          "x": 0,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.48
+        },
+        {
+          "x": 0,
+          "y": 260,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.52
+        },
+        {
+          "x": 0,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.56
+        },
+        {
+          "x": 280,
+          "y": 0,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass"
+        },
+        {
+          "x": 280,
+          "y": 20,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.04
+        },
+        {
+          "x": 280,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.08
+        },
+        {
+          "x": 280,
+          "y": 60,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.12
+        },
+        {
+          "x": 280,
+          "y": 80,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.16
+        },
+        {
+          "x": 280,
+          "y": 100,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.2
+        },
+        {
+          "x": 280,
+          "y": 120,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.24
+        },
+        {
+          "x": 280,
+          "y": 140,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.28
+        },
+        {
+          "x": 280,
+          "y": 160,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.32
+        },
+        {
+          "x": 280,
+          "y": 180,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.36
+        },
+        {
+          "x": 280,
+          "y": 200,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.4
+        },
+        {
+          "x": 280,
+          "y": 220,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.44
+        },
+        {
+          "x": 280,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.48
+        },
+        {
+          "x": 280,
+          "y": 260,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.52
+        },
+        {
+          "x": 280,
+          "y": 280,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.56
+        },
+        {
+          "x": 40,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 60,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 80,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 100,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 120,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 140,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 220,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 240,
+          "y": 40,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 40,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 60,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 80,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 100,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 120,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 140,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 160,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 180,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 200,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 220,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 240,
+          "y": 240,
+          "w": 20,
+          "h": 20,
+          "role": "frame"
+        },
+        {
+          "x": 40,
+          "y": 60,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.16
+        },
+        {
+          "x": 40,
+          "y": 80,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.2
+        },
+        {
+          "x": 40,
+          "y": 100,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.24
+        },
+        {
+          "x": 40,
+          "y": 120,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.28
+        },
+        {
+          "x": 40,
+          "y": 140,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.32
+        },
+        {
+          "x": 40,
+          "y": 160,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.36
+        },
+        {
+          "x": 40,
+          "y": 180,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.4
+        },
+        {
+          "x": 40,
+          "y": 200,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.44000000000000006
+        },
+        {
+          "x": 40,
+          "y": 220,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.48
+        },
+        {
+          "x": 240,
+          "y": 60,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.16
+        },
+        {
+          "x": 240,
+          "y": 80,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.2
+        },
+        {
+          "x": 240,
+          "y": 100,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.24
+        },
+        {
+          "x": 240,
+          "y": 120,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.28
+        },
+        {
+          "x": 240,
+          "y": 140,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.32
+        },
+        {
+          "x": 240,
+          "y": 160,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.36
+        },
+        {
+          "x": 240,
+          "y": 180,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.4
+        },
+        {
+          "x": 240,
+          "y": 200,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.44000000000000006
+        },
+        {
+          "x": 240,
+          "y": 220,
+          "w": 20,
+          "h": 20,
+          "role": "frame",
+          "anim": "pass",
+          "delay": 0.48
+        },
+        {
+          "x": 100,
+          "y": 110,
+          "w": 20,
+          "h": 40,
+          "role": "eye",
+          "anim": "eye"
+        },
+        {
+          "x": 180,
+          "y": 110,
+          "w": 20,
+          "h": 40,
+          "role": "eye",
+          "anim": "eye"
+        }
+      ]
+    },
+    {
+      "id": "upload",
+      "name": "Upload",
       "label": "Omi is uploading",
       "group": "System states",
       "kind": "state",
-      "family": "transfer",
+      "family": "upload",
       "bounds": [
         0,
         -80,
@@ -4067,16 +4822,14 @@
           "y": 140,
           "w": 20,
           "h": 20,
-          "role": "frame",
-          "opacity": 0.2
+          "role": "frame"
         },
         {
           "x": 140,
           "y": 260,
           "w": 20,
           "h": 20,
-          "role": "frame",
-          "opacity": 0.2
+          "role": "frame"
         },
         {
           "x": 40,
@@ -4119,8 +4872,7 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8
+          "anim": "pass"
         },
         {
           "x": 120,
@@ -4128,9 +4880,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.06
+          "anim": "pass",
+          "delay": 0.04
         },
         {
           "x": 100,
@@ -4138,9 +4889,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.12
+          "anim": "pass",
+          "delay": 0.08
         },
         {
           "x": 80,
@@ -4148,9 +4898,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.18
+          "anim": "pass",
+          "delay": 0.12
         },
         {
           "x": 60,
@@ -4158,9 +4907,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.24
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 40,
@@ -4168,9 +4916,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.3
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 20,
@@ -4178,9 +4925,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.36
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 0,
@@ -4188,9 +4934,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.42
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 0,
@@ -4198,9 +4943,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.48
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 0,
@@ -4208,9 +4952,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.54
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 0,
@@ -4218,9 +4961,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 0,
@@ -4228,9 +4970,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6599999999999999
+          "anim": "pass",
+          "delay": 0.44
         },
         {
           "x": 0,
@@ -4238,9 +4979,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.72
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 0,
@@ -4248,9 +4988,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.78
+          "anim": "pass",
+          "delay": 0.52
         },
         {
           "x": 0,
@@ -4258,9 +4997,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.84
+          "anim": "pass",
+          "delay": 0.56
         },
         {
           "x": 0,
@@ -4268,9 +5006,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.8999999999999999
+          "anim": "pass",
+          "delay": 0.6
         },
         {
           "x": 0,
@@ -4278,9 +5015,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.96
+          "anim": "pass",
+          "delay": 0.64
         },
         {
           "x": 0,
@@ -4288,9 +5024,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.02
+          "anim": "pass",
+          "delay": 0.68
         },
         {
           "x": 0,
@@ -4298,9 +5033,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.08
+          "anim": "pass",
+          "delay": 0.72
         },
         {
           "x": 0,
@@ -4308,9 +5042,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.14
+          "anim": "pass",
+          "delay": 0.76
         },
         {
           "x": 0,
@@ -4318,9 +5051,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.2
+          "anim": "pass",
+          "delay": 0.8
         },
         {
           "x": 0,
@@ -4328,9 +5060,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.26
+          "anim": "pass",
+          "delay": 0.84
         },
         {
           "x": 20,
@@ -4338,9 +5069,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.3199999999999998
+          "anim": "pass",
+          "delay": 0.88
         },
         {
           "x": 40,
@@ -4348,9 +5078,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.38
+          "anim": "pass",
+          "delay": 0.92
         },
         {
           "x": 60,
@@ -4358,9 +5087,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.44
+          "anim": "pass",
+          "delay": 0.96
         },
         {
           "x": 80,
@@ -4368,9 +5096,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.5
+          "anim": "pass",
+          "delay": 1
         },
         {
           "x": 100,
@@ -4378,9 +5105,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.56
+          "anim": "pass",
+          "delay": 1.04
         },
         {
           "x": 120,
@@ -4388,9 +5114,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.6199999999999999
+          "anim": "pass",
+          "delay": 1.08
         },
         {
           "x": 140,
@@ -4398,9 +5123,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.68
+          "anim": "pass",
+          "delay": 1.12
         },
         {
           "x": 180,
@@ -4408,8 +5132,7 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8
+          "anim": "pass"
         },
         {
           "x": 200,
@@ -4417,9 +5140,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.06
+          "anim": "pass",
+          "delay": 0.04
         },
         {
           "x": 220,
@@ -4427,9 +5149,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.12
+          "anim": "pass",
+          "delay": 0.08
         },
         {
           "x": 240,
@@ -4437,9 +5158,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.18
+          "anim": "pass",
+          "delay": 0.12
         },
         {
           "x": 260,
@@ -4447,9 +5167,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.24
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 280,
@@ -4457,9 +5176,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.3
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 280,
@@ -4467,9 +5185,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.36
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 280,
@@ -4477,9 +5194,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.42
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 280,
@@ -4487,9 +5203,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.48
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 280,
@@ -4497,9 +5212,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.54
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 280,
@@ -4507,9 +5221,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 280,
@@ -4517,9 +5230,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.6599999999999999
+          "anim": "pass",
+          "delay": 0.44
         },
         {
           "x": 280,
@@ -4527,9 +5239,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.72
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 280,
@@ -4537,9 +5248,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.78
+          "anim": "pass",
+          "delay": 0.52
         },
         {
           "x": 280,
@@ -4547,9 +5257,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.84
+          "anim": "pass",
+          "delay": 0.56
         },
         {
           "x": 280,
@@ -4557,9 +5266,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.8999999999999999
+          "anim": "pass",
+          "delay": 0.6
         },
         {
           "x": 280,
@@ -4567,9 +5275,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 0.96
+          "anim": "pass",
+          "delay": 0.64
         },
         {
           "x": 280,
@@ -4577,9 +5284,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.02
+          "anim": "pass",
+          "delay": 0.68
         },
         {
           "x": 280,
@@ -4587,9 +5293,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.08
+          "anim": "pass",
+          "delay": 0.72
         },
         {
           "x": 280,
@@ -4597,9 +5302,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.14
+          "anim": "pass",
+          "delay": 0.76
         },
         {
           "x": 260,
@@ -4607,9 +5311,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.2
+          "anim": "pass",
+          "delay": 0.8
         },
         {
           "x": 240,
@@ -4617,9 +5320,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.26
+          "anim": "pass",
+          "delay": 0.84
         },
         {
           "x": 220,
@@ -4627,9 +5329,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.3199999999999998
+          "anim": "pass",
+          "delay": 0.88
         },
         {
           "x": 200,
@@ -4637,9 +5338,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.38
+          "anim": "pass",
+          "delay": 0.92
         },
         {
           "x": 180,
@@ -4647,9 +5347,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.44
+          "anim": "pass",
+          "delay": 0.96
         },
         {
           "x": 160,
@@ -4657,9 +5356,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "duration": 2.8,
-          "delay": 1.5
+          "anim": "pass",
+          "delay": 1
         },
         {
           "x": 140,
@@ -4667,9 +5365,8 @@
           "w": 20,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.74
+          "anim": "paint",
+          "delay": 1.16
         },
         {
           "x": 100,
@@ -4677,9 +5374,8 @@
           "w": 100,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.7999999999999998
+          "anim": "paint",
+          "delay": 1.2799999999999998
         },
         {
           "x": 120,
@@ -4687,9 +5383,8 @@
           "w": 60,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.8599999999999999
+          "anim": "paint",
+          "delay": 1.4
         },
         {
           "x": 140,
@@ -4697,13 +5392,12 @@
           "w": 20,
           "h": 20,
           "role": "extra",
-          "anim": "a40",
-          "duration": 2.8,
-          "delay": 1.92
+          "anim": "paint",
+          "delay": 1.52
         },
         {
           "x": 100,
-          "y": 80,
+          "y": 110,
           "w": 20,
           "h": 40,
           "role": "eye",
@@ -4711,7 +5405,7 @@
         },
         {
           "x": 180,
-          "y": 80,
+          "y": 110,
           "w": 20,
           "h": 40,
           "role": "eye",
@@ -4720,12 +5414,12 @@
       ]
     },
     {
-      "id": "uploading-rising",
-      "name": "Uploading, rising",
+      "id": "upload-rising",
+      "name": "Upload, rising",
       "label": "Omi is uploading",
       "group": "System states",
       "kind": "state",
-      "family": "transfer",
+      "family": "upload",
       "bounds": [
         0,
         0,
@@ -4742,19 +5436,18 @@
           "role": "frame"
         },
         {
-          "x": 140,
-          "y": 260,
+          "x": 20,
+          "y": 140,
           "w": 20,
           "h": 20,
           "role": "frame"
         },
         {
-          "x": 20,
-          "y": 140,
+          "x": 140,
+          "y": 260,
           "w": 20,
           "h": 20,
-          "role": "frame",
-          "opacity": 0.2
+          "role": "frame"
         },
         {
           "x": 20,
@@ -4937,7 +5630,7 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40"
+          "anim": "pass"
         },
         {
           "x": 0,
@@ -4945,8 +5638,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.10666666666666667
+          "anim": "pass",
+          "delay": 0.04
         },
         {
           "x": 0,
@@ -4954,8 +5647,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.21333333333333335
+          "anim": "pass",
+          "delay": 0.08
         },
         {
           "x": 0,
@@ -4963,8 +5656,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.32000000000000006
+          "anim": "pass",
+          "delay": 0.12
         },
         {
           "x": 0,
@@ -4972,8 +5665,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.4266666666666667
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 0,
@@ -4981,8 +5674,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.5333333333333333
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 0,
@@ -4990,8 +5683,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.6400000000000001
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 0,
@@ -4999,8 +5692,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.7466666666666667
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 0,
@@ -5008,8 +5701,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.8533333333333334
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 0,
@@ -5017,8 +5710,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.96
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 0,
@@ -5026,8 +5719,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.0666666666666667
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 0,
@@ -5035,8 +5728,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.1733333333333333
+          "anim": "pass",
+          "delay": 0.44
         },
         {
           "x": 0,
@@ -5044,8 +5737,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.2800000000000002
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 0,
@@ -5053,8 +5746,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.3866666666666667
+          "anim": "pass",
+          "delay": 0.52
         },
         {
           "x": 0,
@@ -5062,8 +5755,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.4933333333333334
+          "anim": "pass",
+          "delay": 0.56
         },
         {
           "x": 280,
@@ -5071,7 +5764,7 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40"
+          "anim": "pass"
         },
         {
           "x": 280,
@@ -5079,8 +5772,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.10666666666666667
+          "anim": "pass",
+          "delay": 0.04
         },
         {
           "x": 280,
@@ -5088,8 +5781,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.21333333333333335
+          "anim": "pass",
+          "delay": 0.08
         },
         {
           "x": 280,
@@ -5097,8 +5790,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.32000000000000006
+          "anim": "pass",
+          "delay": 0.12
         },
         {
           "x": 280,
@@ -5106,8 +5799,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.4266666666666667
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 280,
@@ -5115,8 +5808,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.5333333333333333
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 280,
@@ -5124,8 +5817,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.6400000000000001
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 280,
@@ -5133,8 +5826,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.7466666666666667
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 280,
@@ -5142,8 +5835,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.8533333333333334
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 280,
@@ -5151,8 +5844,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.96
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 280,
@@ -5160,8 +5853,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.0666666666666667
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 280,
@@ -5169,8 +5862,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.1733333333333333
+          "anim": "pass",
+          "delay": 0.44
         },
         {
           "x": 280,
@@ -5178,8 +5871,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.2800000000000002
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 280,
@@ -5187,8 +5880,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.3866666666666667
+          "anim": "pass",
+          "delay": 0.52
         },
         {
           "x": 280,
@@ -5196,8 +5889,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.4933333333333334
+          "anim": "pass",
+          "delay": 0.56
         },
         {
           "x": 40,
@@ -5338,8 +6031,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.5
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 40,
@@ -5347,8 +6040,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.6777777777777778
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 40,
@@ -5356,8 +6049,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.8555555555555556
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 40,
@@ -5365,8 +6058,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.0333333333333332
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 40,
@@ -5374,8 +6067,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.2111111111111112
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 40,
@@ -5383,8 +6076,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.3888888888888888
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 40,
@@ -5392,8 +6085,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.5666666666666667
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 40,
@@ -5401,8 +6094,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.14444444444444438
+          "anim": "pass",
+          "delay": 0.44000000000000006
         },
         {
           "x": 40,
@@ -5410,8 +6103,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.3222222222222222
+          "anim": "pass",
+          "delay": 0.48
         },
         {
           "x": 240,
@@ -5419,8 +6112,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.5
+          "anim": "pass",
+          "delay": 0.16
         },
         {
           "x": 240,
@@ -5428,8 +6121,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.6777777777777778
+          "anim": "pass",
+          "delay": 0.2
         },
         {
           "x": 240,
@@ -5437,8 +6130,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.8555555555555556
+          "anim": "pass",
+          "delay": 0.24
         },
         {
           "x": 240,
@@ -5446,8 +6139,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.0333333333333332
+          "anim": "pass",
+          "delay": 0.28
         },
         {
           "x": 240,
@@ -5455,8 +6148,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.2111111111111112
+          "anim": "pass",
+          "delay": 0.32
         },
         {
           "x": 240,
@@ -5464,8 +6157,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.3888888888888888
+          "anim": "pass",
+          "delay": 0.36
         },
         {
           "x": 240,
@@ -5473,8 +6166,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 1.5666666666666667
+          "anim": "pass",
+          "delay": 0.4
         },
         {
           "x": 240,
@@ -5482,8 +6175,8 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.14444444444444438
+          "anim": "pass",
+          "delay": 0.44000000000000006
         },
         {
           "x": 240,
@@ -5491,20 +6184,20 @@
           "w": 20,
           "h": 20,
           "role": "frame",
-          "anim": "t40",
-          "delay": 0.3222222222222222
+          "anim": "pass",
+          "delay": 0.48
         },
         {
-          "x": 120,
-          "y": 90,
+          "x": 100,
+          "y": 110,
           "w": 20,
           "h": 40,
           "role": "eye",
           "anim": "eye"
         },
         {
-          "x": 200,
-          "y": 90,
+          "x": 180,
+          "y": 110,
           "w": 20,
           "h": 40,
           "role": "eye",
