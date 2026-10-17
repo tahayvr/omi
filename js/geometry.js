@@ -258,7 +258,6 @@ Object.assign(F, {
     ]),
     R(100, 130, 20, 30, "eye"),
     R(180, 130, 20, 30, "eye"),
-    { ...R(100, 170, 10, 10, "drop"), role: "tear" },
   ],
   // closed eyes tilted inward: outer ends low, inner ends high
   crying: [
