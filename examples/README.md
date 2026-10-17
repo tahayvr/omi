@@ -4,12 +4,13 @@ Each example uses only the published pack in [`../pack`](../pack): `omi.json`
 (the data) and `omi.js` (the reference player). Copy those two files into your
 project and start from the example closest to your environment.
 
-| Example                         | Environment                        | How it draws                                                                                                                            |
-| ------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [omarchy](omarchy/)             | Omarchy shell plugins (Quickshell) | The player runs in QML's JavaScript engine; `Rectangle`s snapped to device pixels draw its rects, in the theme's accent                 |
-| [web](web/index.html)           | Web pages, Electron                | The player draws on a `<canvas>` by itself                                                                                              |
-| [qml](qml/Omi.qml)              | Qt Quick apps (Qt 6.4+)            | The same item as the Omarchy one (Rectangles snapped to device pixels, `even`, `look`, `react()`), reading the pack with XMLHttpRequest |
-| [terminal](terminal/omi-tty.js) | Any terminal (Node)                | Rects become half-block characters, in the Omarchy theme's accent or the terminal's own colors                                          |
+| Example                         | Environment                              | How it draws                                                                                                                              |
+| ------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [omarchy](omarchy/)             | Omarchy shell plugins (Quickshell)       | The player runs in QML's JavaScript engine; `Rectangle`s snapped to device pixels draw its rects, in the theme's accent                   |
+| [web](web/index.html)           | Web pages, Electron                      | The player draws on a `<canvas>` by itself                                                                                                |
+| [qml](qml/Omi.qml)              | Qt Quick apps (Qt 6.4+)                  | The same item as the Omarchy one (Rectangles snapped to device pixels, `even`, `look`, `react()`), reading the pack with XMLHttpRequest   |
+| [terminal](terminal/omi-tty.js) | Any terminal (Node)                      | Rects become half-block characters, in the Omarchy theme's accent or the terminal's own colors                                            |
+| [bash](bash/omi.sh)             | Any terminal, with only bash, jq and awk | Its own player in awk ([omi.awk](bash/omi.awk)), drawn the same way; [omi.bashrc](bash/omi.bashrc) makes the shared Omi follow your shell |
 
 The web and Qt examples are small showcases: Omi enters as the plain logo
 and comes to life, its eyes follow the pointer, a click or Space plays a
@@ -80,6 +81,24 @@ state instead of calling `set` yourself: see the
   and only rows that change are redrawn. `--look 0,-1` turns the eyes,
   `--fg` / `--bg` pick colors. Whole-body motion is off at first, since at
   terminal sizes it stutters a pixel at a time.
+
+- **Bash:** `examples/bash/omi.sh` is Omi in a terminal with no Node: a
+  player written in awk (`omi.awk`) that reads the pack through jq. Live,
+  it tours the modes, its eyes follow the mouse, a click or Space plays a
+  reaction, ← → step through the modes, `b` turns on whole-body motion, `t`
+  stops or starts the tour, `q` quits. `--once warning` prints a still and
+  `--say "Hello"` puts text beside it; `--size`, `--fg`, `--bg` and
+  `--bounce` are as in the Node one. It plays every animation exactly
+  (`node tools/check-bash.js` holds it to the conformance data) but pairs
+  pieces in a morph more simply than the reference player, which the pack
+  allows. Bash 4 or later keeps exact time; macOS's bash 3.2 counts each
+  frame as 1/30 s.
+
+  `source examples/bash/omi.bashrc` in your `~/.bashrc` makes the shared
+  Omi follow your shell: a command that runs over 2 seconds makes it think,
+  and when it ends Omi is happy or sad for a moment. `omi party` sets it by
+  hand, and `OMI_GREET="Hi"` greets you with Omi as the shell starts. It
+  needs the Omi service and socat or nc.
 
 ## Another language
 
