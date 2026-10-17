@@ -65,11 +65,6 @@ const USE = {
   vim: "An easter egg: can't quit vim",
   tiling: "Windows being arranged (the Omarchy tiling tutorial)",
   "mind-blown": "Something impressive just happened, then back",
-  hello: "A greeting: first boot, a first open, then back",
-  goodbye:
-    "Logout, shutdown, reboot: a tilt and the eyes close, then the host shows the plain logo",
-  nod: "Yes: a small agreement, lighter than success, then back",
-  shake: "No: a gentle no, then back",
 };
 
 // --- stills

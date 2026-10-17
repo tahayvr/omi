@@ -1,6 +1,6 @@
 # Every Omi mode
 
-Omi has 41 modes, each a set of rectangles with a looping
+Omi has 37 modes, each a set of rectangles with a looping
 animation, and it morphs from any one to any other. This page is made by
 `node tools/modes-doc.js` from the pack, so it always matches
 `pack/omi.json`; the stills are each mode at rest (time 0 of its loops),
@@ -41,10 +41,6 @@ drawn by the reference player.
 | ![Omi is asleep](modes/sleeping.svg) | `sleeping` | Sleeping | state | 4 s | Omi is asleep | Paused, put off until later, or the night light |
 | ![Omi is typing](modes/typing.svg) | `typing` | Typing | state | 3.1 s | Omi is typing | The user is typing, or something is being written for them |
 | ![Omi is listening](modes/listening.svg) | `listening` | Listening | state | 1 s | Omi is listening | Waiting for the user to press a key |
-| ![Omi says hello](modes/hello.svg) | `hello` | Hello | reaction, 1.6 s | 1.6 s | Omi says hello | A greeting: first boot, a first open, then back |
-| ![Omi says goodbye](modes/goodbye.svg) | `goodbye` | Goodbye | reaction, 1.4 s | 1.4 s | Omi says goodbye | Logout, shutdown, reboot: a tilt and the eyes close, then the host shows the plain logo |
-| ![Omi nods: yes](modes/nod.svg) | `nod` | Nod | reaction, 0.9 s | 0.7 s | Omi nods: yes | Yes: a small agreement, lighter than success, then back |
-| ![Omi shakes its head: no](modes/shake.svg) | `shake` | Shake | reaction, 0.9 s | 0.7 s | Omi shakes its head: no | No: a gentle no, then back |
 | ![Omi is happy](modes/happy.svg) | `happy` | Happy | reaction, 1.8 s | 4 s | Omi is happy | Pleased, then back |
 | ![Omi is laughing](modes/laughing.svg) | `laughing` | Laughing | reaction, 1.6 s | 0.7 s | Omi is laughing | A joke landed, then back |
 | ![Omi is excited](modes/excited.svg) | `excited` | Excited | reaction, 1.8 s | 0.9 s | Omi is excited | Something good is about to happen (a theme picker, a download that's nearly done) |

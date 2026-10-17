@@ -502,57 +502,6 @@ const ANIM = {
       [1, { op: 0 }],
     ],
   },
-  /* hello: a head tilt, the eyes alone: one eye up a cell and the other
-     down, swap, level again, then a quick blink. Each eye carries its own
-     direction (my: -20 for the left eye, 20 for the right). */
-  tilt: {
-    dur: 1.6,
-    ease: "ease-in-out",
-    vars: ["my"],
-    keys: [
-      [0, { ty: 0 }],
-      [0.15, { ty: ["my", 1] }],
-      [0.4, { ty: ["my", 1] }],
-      [0.55, { ty: ["my", -1] }],
-      [0.75, { ty: ["my", -1] }],
-      [0.85, { ty: 0 }],
-      [0.9, { ty: 0, sy: 0.1 }],
-      [0.95, { ty: 0 }],
-      [1, { ty: 0 }],
-    ],
-  },
-  // goodbye: one tilt, level again, then the eyes close and stay closed
-  // until the host morphs on (to the plain logo)
-  farewell: {
-    dur: 1.4,
-    ease: "ease-in-out",
-    vars: ["my"],
-    keys: [
-      [0, { ty: 0 }],
-      [0.2, { ty: ["my", 1] }],
-      [0.4, { ty: ["my", 1] }],
-      [0.55, { ty: 0 }],
-      [0.7, { ty: 0 }],
-      [1, { ty: 0, sy: 0.1 }],
-    ],
-  },
-
-  // nod: yes; shake: no. The eyes alone, a whole cell each way so it reads
-  // at any size, the frame still.
-  nod: emo(0.7, [
-    [0, {}],
-    [0.25, { ty: 20 }],
-    [0.5, {}],
-    [0.75, { ty: 20 }],
-    [1, {}],
-  ]),
-  shake: emo(0.7, [
-    [0, {}],
-    [0.2, { tx: -20 }],
-    [0.5, { tx: 20 }],
-    [0.8, { tx: -20 }],
-    [1, {}],
-  ]),
   lid: {
     // mind blown: the top of the head lifts off
     dur: 2.4,

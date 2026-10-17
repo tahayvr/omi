@@ -37,10 +37,6 @@ const REACTIONS = {
   scared: 1.6,
   "mind-blown": 2.4,
   glitch: 1.8,
-  hello: 1.6,
-  goodbye: 1.4,
-  nod: 0.9,
-  shake: 0.9,
 };
 const FAMILIES = {
   thinking: ["thinking", "thinking-dots"],
@@ -68,10 +64,6 @@ const LABELS = {
   sleeping: "Omi is asleep",
   typing: "Omi is typing",
   listening: "Omi is listening",
-  hello: "Omi says hello",
-  goodbye: "Omi says goodbye",
-  nod: "Omi nods: yes",
-  shake: "Omi shakes its head: no",
   happy: "Omi is happy",
   laughing: "Omi is laughing",
   excited: "Omi is excited",

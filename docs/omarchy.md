@@ -68,21 +68,18 @@ Omi has two layers:
 So that Omi means the same thing in every Omarchy app, use the same modes for
 the same situations:
 
-| Situation                                        | Omi             |
-| ------------------------------------------------ | --------------- |
-| Nothing going on                                 | `idle`          |
-| Checking, loading, waiting on the network        | `thinking`      |
-| Downloading or installing                        | `download`      |
-| Busy doing it for the user                       | `working`       |
-| Waiting for the user to press a key              | `listening`     |
-| About to ask for a password                      | `sudo`          |
-| Paused, or put off until later                   | `sleeping`      |
-| Done (reaction)                                  | `success`       |
-| Not sure what happened                           | `confused`      |
-| A real milestone, like finishing setup           | `party`         |
-| A first meeting (reaction)                       | `hello`         |
-| Logout, shutdown, reboot (reaction, then `logo`) | `goodbye`       |
-| Yes / no, lightly (reactions)                    | `nod` / `shake` |
+| Situation                                 | Omi         |
+| ----------------------------------------- | ----------- |
+| Nothing going on                          | `idle`      |
+| Checking, loading, waiting on the network | `thinking`  |
+| Downloading or installing                 | `download`  |
+| Busy doing it for the user                | `working`   |
+| Waiting for the user to press a key       | `listening` |
+| About to ask for a password               | `sudo`      |
+| Paused, or put off until later            | `sleeping`  |
+| Done (reaction)                           | `success`   |
+| Not sure what happened                    | `confused`  |
+| A real milestone, like finishing setup    | `party`     |
 
 Modes come in families (`family`: thinking, download, upload): pick one per
 family for a situation and treat the rest as variations, so two apps don't

@@ -100,26 +100,6 @@ const EGG = {
     ),
   },
 };
-/* ---------- hello, goodbye, nod, shake ----------
-   Designed from the sketches in docs/ideas.md. */
-// the eyes with a direction each, for the head tilt (the left eye goes up
-// first, the right one down)
-const TILT = (c) => [
-  { ...R(100, 110, 20, 40, c), my: -20 },
-  { ...R(180, 110, 20, 40, c), my: 20 },
-];
-const MORE = {
-  hello: { face: TILT("tilt"), mood: "" },
-  goodbye: { face: TILT("farewell"), mood: "" },
-  nod: {
-    face: [R(100, 110, 20, 40, "nod"), R(180, 110, 20, 40, "nod")],
-    mood: "",
-  },
-  shake: {
-    face: [R(100, 110, 20, 40, "shake"), R(180, 110, 20, 40, "shake")],
-    mood: "",
-  },
-};
 const DESIGNS_OLD = [
   { id: "logo", name: "Logo", face: [], mood: "" },
   {
@@ -198,14 +178,8 @@ const DESIGNS = [
       mood: "m-slow",
     },
     byId("sleeping"),
-  ]),
-  ...G_("Omi reactions", [
     byId("typing"),
     { id: "listening", name: "Listening", face: F.listening, mood: "" },
-    { id: "hello", name: "Hello", ...MORE.hello },
-    { id: "goodbye", name: "Goodbye", ...MORE.goodbye },
-    { id: "nod", name: "Nod", ...MORE.nod },
-    { id: "shake", name: "Shake", ...MORE.shake },
   ]),
   ...G_("Emotions", [
     { id: "happy", name: "Happy", face: F.happy, mood: "" },
