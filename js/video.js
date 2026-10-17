@@ -17,7 +17,7 @@ function drawFrame(ctx, d, t, vb, size, color, bg, hgt) {
   ctx.fillStyle = color;
   // the player's rects, t seconds into the mode's loops, their edges snapped
   // to pixels as the player draws them: neighbours meet with no seam
-  for (const r of playerRects(d, t)) {
+  for (const r of playerRects(d, t, { body: X.body, rest: X.rest })) {
     const x0 = px(r.x, vb.x),
       y0 = px(r.y, vb.y),
       x1 = px(r.x + r.w, vb.x),

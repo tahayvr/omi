@@ -19,8 +19,10 @@ const labelOf = (d) =>
 /* What the player draws of a design, t seconds into its loops (0: at rest),
    body motion and all. A design the pack doesn't have (the anatomy's bare
    logo) is packed on the spot. */
-function playerRects(d, t) {
+function playerRects(d, t, { body = true, rest = 1 } = {}) {
   if (!pageSampler) pageSampler = new Omi(null, pagePack(), { animate: false });
+  pageSampler.bodyMotion = body;
+  pageSampler.rest = rest;
   return pageSampler
     .modeRects(pageSampler.modes[d.id] || packMode(d), t)
     .filter((r) => r.o > 0.001);
@@ -28,7 +30,12 @@ function playerRects(d, t) {
 // what the players should do under the current settings
 function pagePlayerOpts() {
   const still = RM.matches && !S.force;
-  return { speed: S.speed || 1, animate: S.anim && !still, instant: still };
+  return {
+    speed: S.speed || 1,
+    rest: S.rest ?? 1,
+    animate: S.anim && !still,
+    instant: still,
+  };
 }
 /* A player on a canvas inside an .omi-stage. `margin` is the room around the
    logo inside the stage, in pack units; the canvas bleeds `bleed` units
@@ -54,6 +61,7 @@ function mountOmi(canvas, { margin = 70, bleed = 90, mode } = {}) {
 function syncOmi(player) {
   const o = pagePlayerOpts();
   player.speed = o.speed;
+  player.rest = o.rest;
   if (player.animate !== o.animate) player.animate = o.animate;
   player.draw(); // picks up a new theme color
 }

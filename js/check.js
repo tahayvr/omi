@@ -53,7 +53,10 @@ function checkSite() {
     say(false, `the pack could not be read (${err.message})`);
   }
 
-  // 2. the CSS against the player
+  // 2. the CSS against the player, both as designed: the rests at 1x (the
+  // viewer's own rest scale back after) and the body moving
+  const viewerRest = MOTION_REST;
+  setRest(1);
   const TIMES = [0, 0.9, 3.3, 7.77],
     NEAR = { position: 0.01, opacity: 0.001 }, // the pack's own tolerance
     vb = { ...MORPH_VB },
@@ -135,6 +138,7 @@ function checkSite() {
     }
   }
   host.remove();
+  setRest(viewerRest);
   if (!wrong)
     say(
       true,

@@ -61,6 +61,8 @@ const DEF = {
   vlen: "8",
   filter: "all",
   speed: 1,
+  body: true, // whole-body motion: bobs, hops, shakes
+  rest: 1, // the still time between passes of a loop, scaled
   ratio: "1:1",
   force: false,
   over: {},
@@ -179,6 +181,7 @@ const esc = (s) =>
 
 // The page in the current colors: what both pages' render() starts with.
 function paintStage() {
+  setRest(S.rest ?? 1);
   const dark = S.bg ? lum(S.bg) < 0.35 : false;
   stage.classList.toggle("checker", !S.bg);
   stage.style.background = S.bg || "";

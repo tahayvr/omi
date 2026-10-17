@@ -48,6 +48,7 @@ function svgString(d, animated) {
     color: X.fg,
     bg: exportBg(),
     animated,
+    body: X.body,
     style: animated,
     vb,
     size: animated || X.fmt === "svg" ? null : outSize().w,

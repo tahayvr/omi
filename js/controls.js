@@ -6,6 +6,7 @@ const OVK = [
   "bg",
   "fg",
   "anim",
+  "body",
   "speed",
   "fmt",
   "size",
@@ -56,6 +57,9 @@ function syncControls() {
 
   $("speed").value = S.speed;
   $("speedOut").textContent = S.speed + "\u00d7";
+  $("body").checked = S.body !== false;
+  $("rest").value = S.rest ?? 1;
+  $("restOut").textContent = (S.rest ?? 1) + "\u00d7";
   $("size").value = S.size;
   $("pad").value = S.pad;
   $("clear").checked = S.clear;
@@ -149,7 +153,7 @@ $("fgHex").addEventListener("change", (e) => {
   if (hexOk(v)) set({ fg: v.toLowerCase() });
   else syncControls();
 });
-["anim", "names"].forEach((k) =>
+["anim", "names", "body"].forEach((k) =>
   $(k).addEventListener("change", (e) => set({ [k]: e.target.checked })),
 );
 $("clear").addEventListener("change", (e) =>
@@ -157,6 +161,14 @@ $("clear").addEventListener("change", (e) =>
 );
 $("tile").addEventListener("input", (e) => set({ tile: +e.target.value }));
 $("speed").addEventListener("input", (e) => set({ speed: +e.target.value }));
+// the rests are in the loops' CSS, which is one for the page: the rest scale
+// is global, never one design's own
+$("rest").addEventListener("input", (e) => {
+  S = { ...S, rest: +e.target.value };
+  persist();
+  render();
+  if (inView()) showView();
+});
 // a format brings its own options; an option picked is kept for the format
 $("fmt").addEventListener("change", (e) =>
   set({ fmt: e.target.value, ...fmtOpts(e.target.value) }),

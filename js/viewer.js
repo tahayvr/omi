@@ -21,6 +21,7 @@ function showView() {
   const vHTML = svgFor(d, {
     color: C.fg,
     animated: C.anim,
+    body: C.body,
     force: S.force,
     vb,
     label: labelOf(d),

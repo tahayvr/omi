@@ -619,6 +619,9 @@ const easeCSS = (e) =>
     : Array.isArray(e)
       ? `cubic-bezier(${e.join(",")})`
       : e;
+// The rest scale the CSS loops play at (the player's rest option): setRest()
+// in render.js sets it and writes the CSS again.
+let MOTION_REST = 1;
 function animCSS(name, a) {
   const num = (v) =>
     Array.isArray(v)
@@ -626,7 +629,7 @@ function animCSS(name, a) {
       : `${+v.toFixed(4)}px`;
   // the rest comes first: the keys play over the end of the cycle, and the
   // first key holds until then
-  const rest = a.rest || 0,
+  const rest = (a.rest || 0) * MOTION_REST,
     cycle = rest + a.dur,
     at = (p) => +(((rest + p * a.dur) / cycle) * 100).toFixed(4);
   const style = (v) => {
@@ -650,7 +653,7 @@ function pieceStyle(r) {
   const a = r.c && ANIM[r.c];
   if (!a) return "";
   const dur = r.dur || a.dur,
-    cycle = dur + (a.rest || 0),
+    cycle = dur + (a.rest || 0) * MOTION_REST,
     s = [];
   if (dur !== a.dur) s.push(`animation-duration:${cycle}s`);
   // run dl seconds behind the loop, as the player does: a negative delay,

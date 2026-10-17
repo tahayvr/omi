@@ -29,7 +29,7 @@ function clipTo(r, b) {
 }
 // A piece of the frame that moves, looping as CSS, is drawn on a layer of its
 // own, and where it meets the rest of the frame the two show a seam. A
-// one-pixel outline in its own color covers it (.mv in MOTION_CSS); pieces
+// one-pixel outline in its own color covers it (.mv in motionCSS); pieces
 // that fade don't get one, so no outline shows while they're faint.
 const seams = (r) => {
   const a = r.c && ANIM[r.c];
@@ -40,18 +40,25 @@ const rectTag = (r, roles) => {
   return `<rect${roles && r.role ? ` data-role="${r.role}"` : ""}${r.c ? ` class="${r.c}${seams(r) ? " mv" : ""}"` : ""}${s ? ` style="${s}"` : ""}${r.o != null ? ` fill-opacity="${r.o}"` : ""} x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}"/>`;
 };
 
-/* All keyframes come from ANIM (motion.js); only the plumbing lives here. */
-const MOTION_CSS = `.omi-a g,.omi-a rect{transform-box:fill-box;transform-origin:center}
+/* All keyframes come from ANIM (motion.js); only the plumbing lives here.
+   The rests between loops are in the keyframes, so a new rest scale writes
+   the CSS again (setRest). */
+const motionCSS =
+  () => `.omi-a g,.omi-a rect{transform-box:fill-box;transform-origin:center}
 .omi-a .mv{stroke-width:1px;vector-effect:non-scaling-stroke}
 ${Object.entries(ANIM)
   .map(([name, a]) => animCSS(name, a))
   .join("\n")}
 @media (prefers-reduced-motion:reduce){.omi-a:not(.force) *{animation:none!important}}`;
-{
-  const st = document.createElement("style");
-  st.textContent = MOTION_CSS;
-  document.head.appendChild(st);
+const motionStyle = document.createElement("style");
+document.head.appendChild(motionStyle);
+function setRest(k) {
+  const v = Math.max(0, +k || 0);
+  if (v === MOTION_REST && motionStyle.textContent) return;
+  MOTION_REST = v;
+  motionStyle.textContent = motionCSS();
 }
+setRest(1);
 
 const RATIOS = {
   "1:1": 1,
@@ -132,13 +139,15 @@ function svgFor(d, o) {
         inner;
     }
   }
-  const content = `<g fill="${o.color}"${o.animated ? ` stroke="${o.color}" stroke-width="0"` : ""}${d.mood ? ` class="${d.mood}"` : ""}>${inner}</g>`;
+  // the body's own motion (a bob, a hop), unless it is turned off
+  const mood = o.body === false ? "" : d.mood;
+  const content = `<g fill="${o.color}"${o.animated ? ` stroke="${o.color}" stroke-width="0"` : ""}${mood ? ` class="${mood}"` : ""}>${inner}</g>`;
   const bg = o.bg
     ? `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${o.bg}"/>`
     : "";
   const size = o.size
     ? ` width="${o.size}" height="${Math.round((o.size * vb.h) / vb.w)}"`
     : "";
-  const style = o.style ? `<style>${MOTION_CSS}</style>` : "";
+  const style = o.style ? `<style>${motionCSS()}</style>` : "";
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb.x} ${vb.y} ${vb.w} ${vb.h}"${size}${o.animated ? ` class="omi-a${o.force ? " force" : ""}"` : ""} shape-rendering="crispEdges"${o.label ? ` role="img" aria-label="${o.label}"` : ""}>${style}${bg}${content}</svg>`;
 }
