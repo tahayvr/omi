@@ -56,7 +56,7 @@ const DEF = {
   fmt: "svg",
   size: "1024",
   pad: "0.08",
-  clear: false,
+  clear: true,
   side: false,
   vlen: "8",
   filter: "all",
@@ -64,6 +64,39 @@ const DEF = {
   ratio: "1:1",
   force: false,
   over: {},
+  fmtOpts: {}, // per format, the export options last picked for it
+};
+// What each export format starts with, until it is given others: a still
+// square with a little room, transparent where the format can be; a 1080p
+// landscape video; text and data as they are.
+const FMT_KEYS = ["ratio", "size", "pad", "clear", "vlen"];
+const FMT_DEFAULTS = {
+  svg: { ratio: "1:1", pad: "0.08", clear: true },
+  svga: { ratio: "1:1", pad: "0.08", clear: true },
+  png: { ratio: "1:1", size: "1024", pad: "0.08", clear: true },
+  jpg: { ratio: "1:1", size: "1024", pad: "0.16", clear: false },
+  webp: { ratio: "1:1", size: "1024", pad: "0.08", clear: true },
+  mp4: { ratio: "16:9", size: "1920", pad: "0.16", vlen: "8" },
+  webm: { ratio: "16:9", size: "1920", pad: "0.16", vlen: "8" },
+  txt: { pad: "0" },
+  json: { ratio: "1:1", pad: "0" },
+};
+// A format's export options: its defaults, then what was last picked for it.
+const fmtOpts = (fmt, from = S) => ({
+  ...FMT_DEFAULTS[fmt],
+  ...(from.fmtOpts || {})[fmt],
+});
+// What each format is, in a line.
+const FMT_NOTES = {
+  svg: "A still, as vectors: sharp at any size.",
+  svga: "A loop, as vectors: plays in any browser.",
+  png: "A still picture, transparent if you like.",
+  jpg: "A still picture on the background color: JPG has no transparency.",
+  webp: "A still picture, smaller than PNG, transparent if you like.",
+  mp4: "A video of the loop, for anywhere video goes.",
+  webm: "A video of the loop, for the web.",
+  txt: "Omi as text, for terminals and READMEs.",
+  json: "Every rect of the design, for your own renderer.",
 };
 let S = { ...DEF };
 try {

@@ -83,90 +83,162 @@
           </div>
         </main>
         <aside class="side" id="side" aria-label="Controls">
-          <div class="v-only editing">
-            <h2>Editing <span id="editName"></span></h2>
-            <p class="hint" style="margin-top: 0">
-              Changes here apply only to this design. Everything else keeps the
-              global settings.
-            </p>
-            <button class="btn" id="resetOver" style="margin-top: 10px">
-              Reset to global settings
-            </button>
-          </div>
-
-          <h2>Theme</h2>
-          <select id="themeSel" aria-label="Theme"></select>
-
-          <h2>Background</h2>
-          <div class="colorrow">
-            <input type="color" id="bgPick" aria-label="Background color" />
-            <input
-              type="text"
-              id="bgHex"
-              aria-label="Background hex"
-              spellcheck="false"
-              maxlength="7"
-            />
-          </div>
-          <div class="swatches" id="bgSw"></div>
-
-          <h2>Omi color</h2>
-          <div class="colorrow">
-            <input type="color" id="fgPick" aria-label="Omi color" />
-            <input
-              type="text"
-              id="fgHex"
-              aria-label="Omi hex"
-              spellcheck="false"
-              maxlength="7"
-            />
-          </div>
-          <div class="swatches" id="fgSw"></div>
-
-          <h2>Display</h2>
-          <label class="switch"
-            ><span>Animate</span><input type="checkbox" id="anim"
-          /></label>
-          <p class="hint" id="rmHint" hidden>
-            Reduce motion is on in your system settings, so animations are
-            paused.
+          <div class="sidehead">
+            <h2>Controls</h2>
             <button
-              class="btn"
-              id="rmPlay"
-              style="width: 100%; margin-top: 8px"
+              class="iconbtn"
+              id="closeSide"
+              type="button"
+              aria-label="Close controls"
             >
-              Play animations anyway
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18"></path>
+              </svg>
             </button>
-          </p>
-          <label class="switch g-only"
-            ><span>Names</span><input type="checkbox" id="names"
-          /></label>
-          <label class="field"
-            ><span>Animation speed <output id="speedOut">1×</output></span
-            ><input type="range" id="speed" min="0.25" max="3" step="0.25"
-          /></label>
-          <label class="field g-only"
-            ><span>Tile size</span
-            ><input type="range" id="tile" min="140" max="420" step="20"
-          /></label>
+          </div>
 
-          <h2>Export</h2>
-          <label class="field"
-            ><span>Format</span>
-            <select id="fmt">
-              <option value="svg">SVG</option>
-              <option value="svga">SVG, animated</option>
-              <option value="png">PNG</option>
-              <option value="jpg">JPG</option>
-              <option value="webp">WebP</option>
-              <option value="txt">ASCII (.txt)</option>
-              <option value="json">JSON (geometry)</option>
-              <option value="webm">Video, WebM</option>
-              <option value="mp4">Video, MP4</option>
-            </select>
-          </label>
-          <div class="two">
-            <label class="field" style="grid-column: 1 / -1"
+          <div class="v-only editing">
+            <p class="edithead">
+              <span>Editing <b id="editName"></b></span>
+              <span class="info">
+                <button
+                  class="infobtn"
+                  type="button"
+                  aria-label="What this means"
+                  aria-describedby="editTip"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 11v6M12 7.5v.5"></path>
+                  </svg>
+                </button>
+                <span class="infotip" id="editTip" role="tooltip">
+                  Changes here apply to this design only; everything else keeps
+                  the global settings.
+                </span>
+              </span>
+              <button
+                class="iconbtn tip reset"
+                id="resetOver"
+                type="button"
+                aria-label="Reset to global settings"
+                data-tip="Reset to global settings"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+              </button>
+            </p>
+          </div>
+
+          <section class="sec" aria-labelledby="secLook">
+            <h3 id="secLook">Look</h3>
+            <label class="field"
+              ><span>Theme</span
+              ><select id="themeSel"></select
+            ></label>
+            <div class="field color">
+              <div class="colorhead">
+                <span>Background</span>
+                <input
+                  type="text"
+                  class="hex"
+                  id="bgHex"
+                  aria-label="Background color hex"
+                  spellcheck="false"
+                  maxlength="7"
+                />
+              </div>
+              <div class="swrow">
+                <div class="swatches" id="bgSw"></div>
+                <label class="sw pick" id="bgCustom" title="Any color">
+                  <input
+                    type="color"
+                    id="bgPick"
+                    aria-label="Background color, any color"
+                  />
+                </label>
+              </div>
+            </div>
+            <div class="field color">
+              <div class="colorhead">
+                <span>Omi</span>
+                <input
+                  type="text"
+                  class="hex"
+                  id="fgHex"
+                  aria-label="Omi color hex"
+                  spellcheck="false"
+                  maxlength="7"
+                />
+              </div>
+              <div class="swrow">
+                <div class="swatches" id="fgSw"></div>
+                <label class="sw pick" id="fgCustom" title="Any color">
+                  <input
+                    type="color"
+                    id="fgPick"
+                    aria-label="Omi color, any color"
+                  />
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="sec" aria-labelledby="secDisplay">
+            <h3 id="secDisplay">Display</h3>
+            <label class="switch"
+              ><span>Animate</span
+              ><input type="checkbox" role="switch" id="anim"
+            /></label>
+            <div class="note" id="rmHint" hidden>
+              <p>
+                Reduce motion is on in your system settings, so animations are
+                paused.
+              </p>
+              <button class="btn" id="rmPlay" type="button">
+                Play animations anyway
+              </button>
+            </div>
+            <label class="switch g-only"
+              ><span>Names under the designs</span
+              ><input type="checkbox" role="switch" id="names"
+            /></label>
+            <label class="field"
+              ><span>Speed <output id="speedOut">1×</output></span
+              ><input type="range" id="speed" min="0.25" max="3" step="0.25"
+            /></label>
+            <label class="field g-only"
+              ><span>Tile size</span
+              ><input type="range" id="tile" min="140" max="420" step="20"
+            /></label>
+          </section>
+
+          <section class="sec" aria-labelledby="secExport">
+            <h3 id="secExport">Export</h3>
+            <label class="field"
+              ><span>Format</span>
+              <select id="fmt">
+                <optgroup label="Image">
+                  <option value="svg">SVG</option>
+                  <option value="svga">SVG, animated</option>
+                  <option value="png">PNG</option>
+                  <option value="jpg">JPG</option>
+                  <option value="webp">WebP</option>
+                </optgroup>
+                <optgroup label="Video">
+                  <option value="mp4">MP4</option>
+                  <option value="webm">WebM</option>
+                </optgroup>
+                <optgroup label="Data">
+                  <option value="txt">ASCII (.txt)</option>
+                  <option value="json">JSON (geometry)</option>
+                </optgroup>
+              </select>
+            </label>
+            <p class="hint fmtnote" id="fmtNote"></p>
+            <label class="field" id="ratioField"
               ><span>Aspect ratio</span>
               <select id="ratio">
                 <option value="1:1">1:1 square</option>
@@ -178,53 +250,63 @@
                 <option value="21:9">21:9 wide</option>
               </select>
             </label>
-            <label class="field"
-              ><span>Size, long edge (px)</span>
-              <select id="size">
-                <option>256</option>
-                <option>512</option>
-                <option>1024</option>
-                <option value="1280">1280 (720p)</option>
-                <option value="1920">1920 (1080p)</option>
-                <option>2048</option>
-                <option value="3840">3840 (4K)</option>
+            <div class="two">
+              <label class="field" id="sizeField"
+                ><span>Size (long edge)</span>
+                <select id="size">
+                  <option value="256">256 px</option>
+                  <option value="512">512 px</option>
+                  <option value="1024">1024 px</option>
+                  <option value="1280">1280 px (720p)</option>
+                  <option value="1920">1920 px (1080p)</option>
+                  <option value="2048">2048 px</option>
+                  <option value="3840">3840 px (4K)</option>
+                </select>
+              </label>
+              <label class="field" id="padField"
+                ><span>Padding</span>
+                <select id="pad">
+                  <option value="0">None</option>
+                  <option value="0.08">Small</option>
+                  <option value="0.16">Medium</option>
+                  <option value="0.28">Large</option>
+                </select>
+              </label>
+            </div>
+            <label class="field" id="lenField"
+              ><span>Length</span>
+              <select id="vlen">
+                <option value="4">4 seconds</option>
+                <option value="8">8 seconds</option>
+                <option value="12">12 seconds</option>
               </select>
             </label>
-            <label class="field"
-              ><span>Padding</span>
-              <select id="pad">
-                <option value="0">None</option>
-                <option value="0.08">Small</option>
-                <option value="0.16">Medium</option>
-                <option value="0.28">Large</option>
-              </select>
-            </label>
-          </div>
-          <label class="field" id="lenField"
-            ><span>Video length</span>
-            <select id="vlen">
-              <option value="4">4 seconds</option>
-              <option value="8">8 seconds</option>
-              <option value="12">12 seconds</option>
-            </select>
-          </label>
-          <label class="switch"
-            ><span>Transparent background</span
-            ><input type="checkbox" id="clear"
-          /></label>
-          <div class="stack v-only" style="margin-top: 8px">
-            <button class="btn primary" id="saveOne">Export this design</button>
-          </div>
-          <div class="stack g-only" style="margin-top: 8px">
-            <button class="btn primary" id="saveAll">Export all as ZIP</button>
-            <button class="btn" id="copyAll">Copy SVG sprite</button>
-            <button class="btn" id="savePack">Export Omi pack</button>
-          </div>
-          <p class="hint g-only" id="saveHint">
-            Use the download button under any design to export just that one.
-            The Omi pack holds every mode and animation as data, for apps that
-            draw and morph Omi themselves.
-          </p>
+            <label class="switch" id="clearField"
+              ><span>Transparent background</span
+              ><input type="checkbox" role="switch" id="clear"
+            /></label>
+            <div class="stack v-only">
+              <button class="btn primary" id="saveOne" type="button">
+                Export this design
+              </button>
+            </div>
+            <div class="stack g-only">
+              <button class="btn primary" id="saveAll" type="button">
+                Export all as ZIP
+              </button>
+              <button class="btn" id="copyAll" type="button">
+                Copy SVG sprite
+              </button>
+              <button class="btn" id="savePack" type="button">
+                Export Omi pack
+              </button>
+            </div>
+            <p class="hint g-only" id="saveHint">
+              To export one design, use the download button under it. The Omi
+              pack is every mode and animation as data, for apps that draw and
+              morph Omi themselves.
+            </p>
+          </section>
         </aside>
       </div>
     </div>

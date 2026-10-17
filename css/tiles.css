@@ -1,15 +1,4 @@
 /* Mode grid tiles */
-.main > .side {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  bottom: 16px;
-  max-width: calc(100% - 32px);
-  border: 1px solid var(--line);
-  border-radius: 0;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-  z-index: 4;
-}
 .group h2 {
   margin: 40px 0 20px;
   font-size: 17px;

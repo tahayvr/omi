@@ -53,18 +53,21 @@ function syncControls() {
   $("fmt").value = S.fmt;
   $("vlen").value = S.vlen;
   $("ratio").value = S.ratio;
-  $("ratio").disabled = fmtRules(S.fmt).noRatio;
+
   $("speed").value = S.speed;
   $("speedOut").textContent = S.speed + "\u00d7";
   $("size").value = S.size;
   $("pad").value = S.pad;
   $("clear").checked = S.clear;
+  // only the options that apply to the format
   const fr = fmtRules(S.fmt);
-  $("size").disabled = !fr.raster;
-  $("clear").disabled = fr.noClear;
+  $("ratioField").hidden = fr.noRatio;
+  $("sizeField").hidden = !fr.raster;
+  $("padField").hidden = fr.noPad;
+  $("clearField").hidden = fr.noClear;
   $("lenField").hidden = !fr.video;
+  $("fmtNote").textContent = FMT_NOTES[S.fmt] || "";
   $("fmt").querySelector("[value=mp4]").disabled = !MP4;
-  $("pad").disabled = fr.noPad;
   $("side").hidden = !S.side;
   $("toggleSide").setAttribute("aria-expanded", String(S.side));
   document
@@ -78,6 +81,12 @@ function syncControls() {
         ),
       ),
     );
+  // the any-color swatch is on when the color isn't one of the others
+  $("bgCustom").classList.toggle(
+    "on",
+    !!S.bg && !BG_SW.includes(S.bg.toLowerCase()),
+  );
+  $("fgCustom").classList.toggle("on", !FG_SW.includes(S.fg.toLowerCase()));
   document
     .querySelectorAll("#fgSw .sw")
     .forEach((b) =>
@@ -140,13 +149,27 @@ $("fgHex").addEventListener("change", (e) => {
   if (hexOk(v)) set({ fg: v.toLowerCase() });
   else syncControls();
 });
-["anim", "names", "clear"].forEach((k) =>
+["anim", "names"].forEach((k) =>
   $(k).addEventListener("change", (e) => set({ [k]: e.target.checked })),
+);
+$("clear").addEventListener("change", (e) =>
+  keepForFormat("clear", e.target.checked),
 );
 $("tile").addEventListener("input", (e) => set({ tile: +e.target.value }));
 $("speed").addEventListener("input", (e) => set({ speed: +e.target.value }));
-["fmt", "size", "pad", "vlen", "ratio"].forEach((k) =>
-  $(k).addEventListener("change", (e) => set({ [k]: e.target.value })),
+// a format brings its own options; an option picked is kept for the format
+$("fmt").addEventListener("change", (e) =>
+  set({ fmt: e.target.value, ...fmtOpts(e.target.value) }),
+);
+const keepForFormat = (k, v) => {
+  const fmt = ctx().fmt;
+  set({
+    [k]: v,
+    fmtOpts: { ...S.fmtOpts, [fmt]: { ...(S.fmtOpts || {})[fmt], [k]: v } },
+  });
+};
+["size", "pad", "vlen", "ratio"].forEach((k) =>
+  $(k).addEventListener("change", (e) => keepForFormat(k, e.target.value)),
 );
 $("rmPlay").addEventListener("click", () => set({ force: !S.force }));
 const rmSync = () => {
@@ -158,3 +181,4 @@ const rmSync = () => {
 };
 RM.addEventListener && RM.addEventListener("change", () => rmSync());
 $("toggleSide").addEventListener("click", () => set({ side: !S.side }));
+$("closeSide").addEventListener("click", () => set({ side: false }));
