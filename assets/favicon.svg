@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" shape-rendering="crispEdges">
+  <style>
+    path { fill: #1a1b26; }
+    @media (prefers-color-scheme: dark) { path { fill: #9ece6a; } }
+  </style>
+  <path d="M0 0h300v20h-300zM0 20h20v260h-20zM280 20h20v260h-20zM0 280h160v20h-160zM180 280h120v20h-120zM140 20h20v20h-20zM40 40h120v20h-120zM220 40h40v20h-40zM40 60h20v180h-20zM240 60h20v180h-20zM40 240h220v20h-220zM20 140h20v20h-20zM140 260h20v20h-20zM100 110h20v40h-20zM180 110h20v40h-20z"/>
+</svg>

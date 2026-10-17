@@ -41,9 +41,11 @@
 .brand {
   display: block;
 }
+/* Omi's idle face for the O, then a blocky m and i: 15 logo cells tall, so
+   at 30px every cell is 2 device pixels and the edges stay crisp */
 .brand svg {
   display: block;
-  height: 24px;
+  height: 30px;
   width: auto;
 }
 .nav {
