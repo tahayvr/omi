@@ -189,22 +189,14 @@ const DESIGNS = [
     byId("wink"),
     { id: "shy", name: "Shy", face: F.shy, mood: "" },
     {
-      id: "surprised",
-      name: "Surprised",
-      face: F.surprised,
-      mood: "m-happy",
-    },
-    {
       id: "confused",
       name: "Confused",
       face: F.confused,
       mood: "m-bob",
     },
     { id: "skeptical", name: "Skeptical", face: F.skeptical, mood: "" },
-    { id: "bored", name: "Bored", face: F.bored, mood: "" },
     { id: "sad", name: "Sad", face: F.sad, mood: "" },
     { id: "crying", name: "Crying", face: F.crying, mood: "" },
-    { id: "scared", name: "Scared", face: F.scared, mood: "" },
     { id: "angry", name: "Angry", face: F.angry, mood: "" },
   ]),
   ...G_("Easter eggs", [

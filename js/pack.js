@@ -33,8 +33,6 @@ const REACTIONS = {
   love: 2,
   wink: 1.2,
   shy: 2,
-  surprised: 1.4,
-  scared: 1.6,
   "mind-blown": 2.4,
   glitch: 1.8,
 };
@@ -70,13 +68,10 @@ const LABELS = {
   love: "Omi loves it",
   wink: "Omi winks",
   shy: "Omi is shy",
-  surprised: "Omi is surprised",
   confused: "Omi is confused",
   skeptical: "Omi is skeptical",
-  bored: "Omi is bored",
   sad: "Omi is sad",
   crying: "Omi is crying",
-  scared: "Omi is scared",
   angry: "Omi is angry",
   sudo: "Omi needs your password",
   peek: "Omi is peeking in",
@@ -699,7 +694,7 @@ What a mode is for:
 
 - \`kind\`: "state" or "reaction". A state stands for something going on
   (thinking, download, listening) and stays as long as it does. A reaction
-  is something that just happened (success, surprised, a wink): show it,
+  is something that just happened (success, a laugh, a wink): show it,
   then go back to the state Omi was in.
 - \`hold\`: on a reaction, how many seconds to show it after its morph lands
   before going back. For a mode without one, hold it for its loop time

@@ -47,8 +47,7 @@ square, along with the pack's own shape (`pack/omi.schema.json`: every mode
 has a kind and a label, every reaction a hold) and that it hangs together
 (no animation or role named that isn't there). A mode that breaks a rule on
 purpose is argued for in that file, in `ARGUED`, with the reason in a line:
-`scared`'s frame makes a mouth between the middles of its eyes, off the
-cells, and `peek`'s eyes are below the logo.
+`peek`'s eyes are below the logo.
 
 ## Where things are
 

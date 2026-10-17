@@ -9,7 +9,7 @@
      omi.set("idle", { since: 1767225600000 });  // a change made at that
                                           // Unix time (ms): shared state
      omi.on("settled", () => …);          // a morph landed
-     omi.loopSeconds("bored");            // 10: how long until every piece of
+     omi.loopSeconds("idle");             // 4: how long until every piece of
                                           // a mode has played its loop once
      omi.look(0, -1);                     // the eyes look up, on top of any
                                           // mode; omi.look(0, 0) looks ahead

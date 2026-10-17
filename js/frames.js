@@ -148,11 +148,6 @@ const FRAMES = {
       0.3,
     ),
   ],
-  surprised: [
-    ...tint(MISC, "pop"),
-    ...INNER_RECTS,
-    ...tint(OUTER_RECTS, "pop"),
-  ],
 };
 
 /* mouths: the inner frame's bottom becomes the mouth. Same geometry: the
@@ -200,12 +195,4 @@ Object.assign(FRAMES, {
     ]),
     bottom: [[40, 260]],
   }),
-  shy: mouth({ dimDip: true }),
-  skeptical: mouth({
-    right: [[200, 240, "skm"]],
-    bottom: [[140, 260, "skm"]],
-  }),
-  bored: mouth({ bottom: [[100, 180]] }),
-  scared: mouth({ bottom: [[110, 190, "flash"]] }),
-  angry: mouth({ bottom: [[40, 260]] }),
 });

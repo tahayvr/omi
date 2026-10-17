@@ -256,32 +256,6 @@ const ANIM = {
     [0.85, {}],
     [1, { op: 0, ty: 10 }],
   ]),
-  skm: emo(5, [
-    [0, { op: 0.2 }],
-    [0.25, { op: 0.2 }],
-    [0.4, {}],
-    [0.85, {}],
-    [1, { op: 0.2 }],
-  ]),
-  // bored: eyes wander slowly under heavy lids, then a long slow blink
-  doze: emo(10, [
-    [0, {}],
-    [0.12, { tx: -10 }],
-    [0.3, { tx: -10 }],
-    [0.45, { tx: 10 }],
-    [0.6, { tx: 10 }],
-    [0.7, { tx: 0 }],
-    [0.78, {}],
-    [0.85, { sy: 0.01 }],
-    [0.92, { sy: 0.01 }],
-    [1, {}],
-  ]),
-  // scared: eyes tremble
-  tremble: emo(0.25, [
-    [0, { tx: -2 }],
-    [0.5, { tx: 2 }],
-    [1, { tx: -2 }],
-  ]),
   // angry: brows press down
   furrow: emo(2, [
     [0, {}],
@@ -453,19 +427,6 @@ const ANIM = {
       [1, { op: 1 }],
     ],
   },
-  flash: {
-    dur: 2.2,
-    ease: "ease-in-out",
-    keys: [
-      [0, { op: 1 }],
-      [0.7, { op: 1 }],
-      [0.74, { op: 0.2 }],
-      [0.8, { op: 1 }],
-      [0.86, { op: 0.2 }],
-      [0.92, { op: 1 }],
-      [1, { op: 1 }],
-    ],
-  },
 
   /* easter eggs */
   conf: {
@@ -624,9 +585,8 @@ Object.values(ANIM).forEach(prep);
 const START = {
   peek: 0.25, // risen, looking over the ledge
   shades: 0.18, // on
-  skq: 0.4, // the full skeptical look (all three move together)
+  skq: 0.4, // the full skeptical look (the eye and the brow move together)
   skb: 0.4,
-  skm: 0.4,
   drop: 0.3, // a tear on the cheek
   tile: 0.12, // window drawn
   dot: 0.3, // lit

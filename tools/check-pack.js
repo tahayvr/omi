@@ -22,10 +22,7 @@ const dir = path.join(__dirname, "..", "pack"),
 // mode: why it may
 const ARGUED = {
   // The grid: the frame sits on the logo's cells.
-  grid: {
-    scared:
-      "the mouth its frame makes runs from the middle of one eye to the middle of the other",
-  },
+  grid: {},
   // The eyes are inside the inner square at rest, so a look can keep them there.
   eyes: {
     peek: "its eyes are below the logo, looking over the ledge",

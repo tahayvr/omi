@@ -182,7 +182,6 @@ Object.assign(F, {
     ),
     R(140, 200, 20, 20, "pulseop"),
   ]),
-  surprised: [R(80, 100, 40, 40), R(160, 100, 40, 40)],
   wink: [
     ...blk(90, 100, [
       [0, 0],
@@ -249,12 +248,6 @@ Object.assign(F, {
     { ...R(170, 90, 40, 10, "skb"), role: "brow" },
     R(180, 110, 20, 40, "eye"),
   ],
-  bored: [
-    R(90, 130, 40, 10),
-    R(100, 140, 20, 10, "doze"),
-    R(170, 130, 40, 10),
-    R(180, 140, 20, 10, "doze"),
-  ],
   // worried brows, inner ends raised
   sad: [
     ...as("brow", [
@@ -275,7 +268,6 @@ Object.assign(F, {
     R(190, 140, 20, 10),
     ...as("tear", [R(95, 160, 10, 10, "drop"), R(195, 160, 10, 10, "drop")]),
   ],
-  scared: [R(100, 110, 20, 20, "tremble"), R(180, 110, 20, 20, "tremble")],
   angry: [
     ...as("brow", [
       R(80, 100, 20, 10, "furrow"),

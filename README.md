@@ -17,7 +17,7 @@ Omarchy is a system that talks to its user: notices at first boot, updates,
 agents that work on their behalf. Omi gives those moments one face. An app
 sets what Omi is doing (`thinking` while it checks, `download` while it
 installs, `listening` while it waits for a key) and reacts to what just
-happened (`success`, `surprised`), and because every app uses the same
+happened (`success`, `love`), and because every app uses the same
 modes for the same situations, Omi means the same thing everywhere.
 
 The rules it's drawn by, in short (the long form is in

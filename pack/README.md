@@ -96,7 +96,7 @@ What a mode is for:
 
 - `kind`: "state" or "reaction". A state stands for something going on
   (thinking, download, listening) and stays as long as it does. A reaction
-  is something that just happened (success, surprised, a wink): show it,
+  is something that just happened (success, a laugh, a wink): show it,
   then go back to the state Omi was in.
 - `hold`: on a reaction, how many seconds to show it after its morph lands
   before going back. For a mode without one, hold it for its loop time

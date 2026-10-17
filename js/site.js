@@ -74,7 +74,7 @@ function renderSite() {
         ["confused", "Confused"],
         ["success", "Success"],
         ["working", "Working"],
-        ["surprised", "Surprised"],
+        ["laughing", "Laughing"],
         ["warning", "Warning"],
         ["sudo", "Sudo"],
         ["love", "Love"],
