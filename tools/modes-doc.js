@@ -164,8 +164,8 @@ drawn by the reference player.
 - **loop** is how long the mode takes to play every piece's loop once
   (\`loopSeconds\`): show a mode at least that long in a tour.
 - A **family** groups modes that mean the same thing: pick one per
-  situation and treat the rest as variations. **Easter eggs** are jokes;
-  leave them out of anything generic.
+  situation and treat the rest as variations. A mode marked \`easter\` is a
+  joke: leave it out of anything generic.
 - **A screen reader says** is the mode's \`label\` in the pack: the
   accessible name every app gives the picture, so Omi is announced the same
   way everywhere. It is each still's own name on this page.

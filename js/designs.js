@@ -1,4 +1,4 @@
-/* ---------- easter eggs ---------- */
+/* ---------- extras ---------- */
 // a piece with its own place in its loop (dl) and anything else it needs
 const withD = (r, dur, dl, extra = {}) => ({ ...r, dl, dur, ...extra });
 // A 50x40 pixel heart. Each rect carries its offset from the heart's center
@@ -177,7 +177,7 @@ const DESIGNS = [
     { id: "crying", name: "Crying", face: F.crying, mood: "" },
     { id: "angry", name: "Angry", face: F.angry, mood: "" },
   ]),
-  ...G_("Easter eggs", [
+  ...G_("Extras", [
     byId("sudo"),
     byId("peek"),
     { id: "party", name: "Party", ...EGG.party },

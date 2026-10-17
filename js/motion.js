@@ -434,7 +434,7 @@ const ANIM = {
     ],
   },
 
-  /* easter eggs */
+  /* extras */
   conf: {
     // confetti flies out to its own (mx, my)
     dur: 1.6,

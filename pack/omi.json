@@ -8737,7 +8737,7 @@
       "id": "sudo",
       "name": "Sudo",
       "label": "Omi needs your password",
-      "group": "Easter eggs",
+      "group": "Extras",
       "kind": "state",
       "bounds": [
         0,
@@ -8868,7 +8868,7 @@
       "id": "peek",
       "name": "Peek",
       "label": "Omi is peeking in",
-      "group": "Easter eggs",
+      "group": "Extras",
       "kind": "state",
       "bounds": [
         -20,
@@ -9035,7 +9035,7 @@
       "id": "party",
       "name": "Party",
       "label": "Omi is celebrating",
-      "group": "Easter eggs",
+      "group": "Extras",
       "kind": "state",
       "bounds": [
         0,
@@ -9433,7 +9433,7 @@
       "id": "tiling",
       "name": "Tiling",
       "label": "Omi is tiling windows",
-      "group": "Easter eggs",
+      "group": "Extras",
       "kind": "state",
       "bounds": [
         0,
@@ -9643,7 +9643,7 @@
       "id": "mind-blown",
       "name": "Mind blown",
       "label": "Omi’s mind is blown",
-      "group": "Easter eggs",
+      "group": "Extras",
       "kind": "reaction",
       "hold": 2.4,
       "bounds": [
