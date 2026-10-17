@@ -635,7 +635,9 @@ function animCSS(name, a) {
       d.push(
         `transform:translate(${num(v.tx ?? 0)},${num(v.ty ?? 0)}) scale(${v.sx ?? 1},${v.sy ?? 1})`,
       );
-    if ("op" in v) d.push(`opacity:${v.op}`);
+    // fill-opacity, not opacity: animating opacity draws each piece on its
+    // own layer, and neighbours drawn apart show a seam where they meet
+    if ("op" in v) d.push(`fill-opacity:${v.op}`);
     return d.join(";");
   };
   const frames =

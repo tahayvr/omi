@@ -909,6 +909,11 @@ These hold for every host, a canvas, Qt, a terminal or a GPU:
 
 - Snap each rect's edges to device pixels (round the edges, not the size),
   so edges are sharp and neighbouring pieces meet exactly.
+- Draw the rects together, one surface for all of them. A toolkit that
+  draws each one on a layer of its own (an element whose own opacity is
+  animated, in CSS for one) smooths each layer's edges apart, and
+  neighbouring pieces show a seam where they meet: fade the fill (CSS
+  \`fill-opacity\`), not the element.
 - Draw at a scale where one cell is a whole number of device pixels. The
   view is view[2] / grid = 22 cells across, so a view 44, 66, 88… device
   pixels wide keeps every bar the same thickness; anything in between makes

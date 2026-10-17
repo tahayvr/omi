@@ -27,13 +27,22 @@ function clipTo(r, b) {
     ? { ...r, x, y, w: x2 - x, h: y2 - y }
     : null;
 }
+// A piece of the frame that moves, looping as CSS, is drawn on a layer of its
+// own, and where it meets the rest of the frame the two show a seam. A
+// one-pixel outline in its own color covers it (.mv in MOTION_CSS); pieces
+// that fade don't get one, so no outline shows while they're faint.
+const seams = (r) => {
+  const a = r.c && ANIM[r.c];
+  return !!a && r.role === "frame" && !!a.move && !a.fade && (r.o ?? 1) === 1;
+};
 const rectTag = (r, roles) => {
   const s = pieceStyle(r);
-  return `<rect${roles && r.role ? ` data-role="${r.role}"` : ""}${r.c ? ` class="${r.c}"` : ""}${s ? ` style="${s}"` : ""}${r.o != null ? ` fill-opacity="${r.o}"` : ""} x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}"/>`;
+  return `<rect${roles && r.role ? ` data-role="${r.role}"` : ""}${r.c ? ` class="${r.c}${seams(r) ? " mv" : ""}"` : ""}${s ? ` style="${s}"` : ""}${r.o != null ? ` fill-opacity="${r.o}"` : ""} x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}"/>`;
 };
 
 /* All keyframes come from ANIM (motion.js); only the plumbing lives here. */
 const MOTION_CSS = `.omi-a g,.omi-a rect{transform-box:fill-box;transform-origin:center}
+.omi-a .mv{stroke-width:1px;vector-effect:non-scaling-stroke}
 ${Object.entries(ANIM)
   .map(([name, a]) => animCSS(name, a))
   .join("\n")}
@@ -123,7 +132,7 @@ function svgFor(d, o) {
         inner;
     }
   }
-  const content = `<g fill="${o.color}"${d.mood ? ` class="${d.mood}"` : ""}>${inner}</g>`;
+  const content = `<g fill="${o.color}"${o.animated ? ` stroke="${o.color}" stroke-width="0"` : ""}${d.mood ? ` class="${d.mood}"` : ""}>${inner}</g>`;
   const bg = o.bg
     ? `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${o.bg}"/>`
     : "";

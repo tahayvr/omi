@@ -93,11 +93,9 @@ function checkSite() {
       const win = d.clip ? placed(body, d.clip) : null;
       const css = [];
       for (const el of rects) {
-        const o =
-          parseFloat(getComputedStyle(el).opacity) *
-          (el.hasAttribute("fill-opacity")
-            ? +el.getAttribute("fill-opacity")
-            : 1);
+        // a piece's opacity, still or animated, is its fill-opacity
+        const cs = getComputedStyle(el),
+          o = parseFloat(cs.opacity) * parseFloat(cs.fillOpacity);
         if (!(o > 0.001)) continue;
         let r = placed(el, {
           x: +el.getAttribute("x"),

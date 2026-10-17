@@ -12,13 +12,19 @@ function drawFrame(ctx, d, t, vb, size, color, bg, hgt) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, size, hgt || size);
-  const s = size / vb.w;
-  ctx.setTransform(s, 0, 0, s, -vb.x * s, -vb.y * s);
+  const s = size / vb.w,
+    px = (v, o) => Math.round((v - o) * s);
   ctx.fillStyle = color;
-  // the player's rects, t seconds into the mode's loops
+  // the player's rects, t seconds into the mode's loops, their edges snapped
+  // to pixels as the player draws them: neighbours meet with no seam
   for (const r of playerRects(d, t)) {
+    const x0 = px(r.x, vb.x),
+      y0 = px(r.y, vb.y),
+      x1 = px(r.x + r.w, vb.x),
+      y1 = px(r.y + r.h, vb.y);
+    if (x1 <= x0 || y1 <= y0) continue;
     ctx.globalAlpha = Math.min(1, r.o);
-    ctx.fillRect(r.x, r.y, r.w, r.h);
+    ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
   }
   ctx.globalAlpha = 1;
 }
