@@ -1,6 +1,26 @@
 /* The docs page: every doc on the left, the one that's open in the middle,
    its sections on the right. On a phone, the docs are a row that scrolls
    sideways under the header, and the sections are left out. */
+/* Text on this page: brighter than the site's own, since it's for reading
+   at length. Body text, headings and bold, and what's quieter. */
+:root {
+  --ink: #1a1d2b;
+  --ink-strong: #0b0d17;
+  --ink-dim: #4c5372;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #e8ebf6;
+    --ink-strong: #ffffff;
+    --ink-dim: #b4bcdc;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #e8ebf6;
+  --ink-strong: #ffffff;
+  --ink-dim: #b4bcdc;
+}
+
 /* the page's one column never grows past the screen: a wide code block or
    table scrolls inside the doc instead */
 .app:has(.docs) {
@@ -49,25 +69,25 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--dim);
+  color: var(--ink-dim);
 }
 .dnav a,
 .toc a {
   display: block;
   padding: 6px 10px;
   border-left: 2px solid var(--line);
-  color: var(--dim);
+  color: var(--ink-dim);
   text-decoration: none;
   font-size: 13px;
   line-height: 1.4;
 }
 .dnav a:hover,
 .toc a:hover {
-  color: var(--text);
+  color: var(--ink-strong);
   border-left-color: var(--dim);
 }
 .dnav a[aria-current="page"] {
-  color: var(--text);
+  color: var(--ink-strong);
   border-left-color: var(--focus);
   font-weight: 600;
 }
@@ -82,18 +102,19 @@
 .doc {
   padding: 36px 0 96px;
   min-width: 0;
+  color: var(--ink);
   font-size: 15px;
   line-height: 1.7;
 }
 .dnote {
-  color: var(--dim);
+  color: var(--ink-dim);
 }
 .doc h1,
 .doc h2,
 .doc h3,
 .doc h4 {
   line-height: 1.25;
-  color: var(--text);
+  color: var(--ink-strong);
 }
 .doc h1 {
   margin: 0 0 24px;
@@ -138,10 +159,10 @@
   text-underline-offset: 3px;
 }
 .doc a:hover {
-  color: var(--text);
+  color: var(--ink-strong);
 }
 .doc strong {
-  color: var(--text);
+  color: var(--ink-strong);
 }
 .doc img {
   display: block;
@@ -198,12 +219,12 @@
 .doc blockquote {
   padding: 4px 16px;
   border-left: 3px solid var(--line);
-  color: var(--dim);
+  color: var(--ink-dim);
 }
 .doc blockquote.alert {
   border-left-color: var(--focus);
   background: var(--panel);
-  color: var(--text);
+  color: var(--ink);
 }
 .doc blockquote.alert p:last-child {
   margin-bottom: 8px;
@@ -215,7 +236,7 @@
   font-size: 12px;
 }
 .dsource a {
-  color: var(--dim);
+  color: var(--ink-dim);
 }
 
 /* ---- narrower: no sections column */
