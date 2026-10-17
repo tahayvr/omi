@@ -15,8 +15,8 @@
    kit/package.json for npm, and a copy of omi.json and LICENSE in the
    Python and the Rust player, so `Kit.bundled()` works from an install.
    Every package's version is the one in the root package.json: this
-   writes it into kit/package.json, pyproject.toml, Cargo.toml and the
-   Cargo.lock files. */
+   writes it into kit/package.json, pyproject.toml, Cargo.toml, the
+   Cargo.lock files and the site's header. */
 const fs = require("fs"),
   path = require("path"),
   vm = require("vm");
@@ -78,6 +78,13 @@ Object.assign(files, {
     `version = "${version}"`,
   ),
 });
+// the site shows the release it's at, with a link to it
+for (const page of ["index.html", "jig.html"])
+  files[page] = setVersion(
+    read(page),
+    /(releases\/tag\/v)[^"]+("[^]*?>v)[^<]+(<\/a)/,
+    `$1${version}$2${version}$3`,
+  );
 for (const lock of ["player/rust/Cargo.lock", "examples/rust/Cargo.lock"])
   if (fs.existsSync(path.join(root, lock)))
     files[lock] = setVersion(

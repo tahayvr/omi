@@ -1,7 +1,7 @@
 /* Breakpoints */
 @media (max-width: 720px) {
   .pill {
-    display: none;
+    padding: 4px 8px;
   }
   .grid {
     padding: 8px 16px 48px;

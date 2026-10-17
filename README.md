@@ -1,8 +1,5 @@
 # Omi - The Omarchy logo, brought to life.
 
-> [!IMPORTANT]  
-> **Concept!** Not final designs.
-
 Omi is the Omarchy mascot: the Omarchy logo with a face. It has modes
 from idle and thinking to download, success and party, morphs from any one
 to any other, and is drawn as plain rectangles in one color, so any app can
